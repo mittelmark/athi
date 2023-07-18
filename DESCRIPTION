@@ -1,10 +1,10 @@
-Package: Rpkg
+Package: athi
 Type: Package
-Title: your package title change the name on top
+Title: calculate age normalized z-scores for childrens height and weight
 Version: 0.1
-Date: 2023-02-05
-Author: Max Musterman, University of Mustercity
-Maintainer: Max Musterman <musti@uni-mustercity.de>
+Date: 2023-07-18
+Author: Detlef Groth, University of Potsdam
+Maintainer: Detlef Groth <dgroth@uni-potsdam.de>
 Description: R package for ...
 Suggests: knitr, rmarkdown
 VignetteBuilder: knitr
