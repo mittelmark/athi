@@ -9,8 +9,12 @@
 #' \format{Object of class environment with some functions for statistics}
 #' \details{
 #' \describe{
+#'   \item{\link[athi:athi_cdist]{athi$cdist(x,method="spearman",type="abs")}}{Calculate correlation distances.}
+#'   \item{\link[athi:athi_df2md]{athi_df2md(x,rownames=TRUE,caption='')}{Print a matrix or data frame as a Markdown table}
 #'   \item{\link[athi:athi_impute]{athi$impute(x,method="rpart",k=5,cor.method="spearman")}}{impute missing values.}
 #'   \item{\link[athi:athi_introNAs]{athi$introNAs(x,prop="0.05")}}{introduce missing values.}
+#'   \item{\link[athi:athi_lm_plot]{athi$lm_plot(x,y=NULL,data=NULL,...)}}{plot a linear model with confidence intervals.}
+#'   \item{\link[athi:athi_mds_plot]{athi$mds_plot(x,method="euclidean",...)}}{plot a multidimensional scaling.}
 #'   \item{\link[athi:athi_norm]{athi$norm(x,method="z",ties.method="average")}}{normalize data.}
 #'   \item{\link[athi:athi_randomize]{athi$randomize(x)}}{randomize column data within matrix or data frame.}
 #'   \item{\link[athi:athi_ref_score]{athi$ref_score(x,age,sex,type)}}{reference score for the given age, sex and type.}
@@ -25,6 +29,313 @@
 #' \author{Detlef Groth <email: dgroth@uni-potsdam.de>}
 
 athi=new.env()
+
+#' \name{athi$cdist}
+#' \alias{athi$cdist}
+#' \alias{athi_cdist}
+#' \title{ correlation distances }
+#' \description{
+#'     Calculate correlation distance.
+#' }
+#' \usage{ athi_cdist(x,method="pearson",type="abs") }
+#' \arguments{
+#'   \item{x}{
+#'     data frame or matrix 
+#'   }
+#'   \item{method}{
+#'     correlation measure, either 'pearson', 'spearman','kendall, default: 'pearson'
+#'   }
+#'   \item{type}{
+#'     either absolute, squared or negative (negativly correlated items are far away, default: 'absolute'
+#'   }
+#' }
+#' \value{Object of class dist.}
+#' \examples{
+#'     athi$cdist(t(iris[,1:4]))
+#'     athi$cdist(t(iris[,1:4]),method="spearman",type="square")
+#' }
+#' \seealso{
+#'    \link[athi:athi-class]{athi-class} 
+#' }
+#'
+
+
+athi$cdist <- function (x,method="pearson",type="abs") {
+    D=cor(t(x),method=method)
+    if (type=="abs") {
+        D=stats::as.dist(1-abs(D))
+    } else if (type == "square") {
+        D=stats::as.dist(1-D^2)
+    } else if (type == "negative") {
+        D = stats::as.dist(1-((D+1)/2))
+    } else {
+        stop("Error: Unknown cdist type, valid types are 'abs',  'square' or 'negative'!")
+    }
+    return(D)
+}
+
+#' \name{athi$mds_plot}
+#' \alias{athi$mds_plot}
+#' \alias{athi_mds_plot}
+#' \title{ Plot a data matrix or frame using Multidimensional Scaling }
+#' \description{
+#'     This is a convinience method to plot a data set using MDS.
+#' }
+#' \usage{ athi_mds_plot(x,method="euclidean",p=0.5,row.labels=TRUE,grid=TRUE,...) }
+#' \arguments{
+#'   \item{x}{
+#'     data frame or matrix 
+#'   }
+#'   \item{method}{
+#'     distance measure 'euclidean', 'manhattan' or any other method supported by the dist method or 'correlation', default: 'euclidean'
+#'   }
+#'   \item{p}{
+#'     exponent if distance measure is minkowski, default: 0.5
+#'   }
+#'   \item{row.labels}{should be row labels computed, if FALSE or if row.names are not existing, plotting characters are displayed, default: TRUE}
+#'   \item{grid}{should a grid being show, default: TRUE}
+#'   \item{\ldots}{delegating all remaining arguments to plot, points and text calls}
+#' }
+#' \value{NULL}
+#' \examples{
+#'   data(iris)
+#'   # single plots
+#'   par(mfrow=c(1,2))
+#'   athi$mds_plot(iris[,1:4],method="manhattan")
+#'   athi$mds_plot(iris[,1:4],method="manhattan",row.labels=FALSE)
+#'   # multiplot
+#'   opar=par(mai=c(0.1,0.1,0.5,0.1))
+#'   athi$mds_plot(iris[,1:4],
+#'      method=c("cor","euclidean","canberra","mink","max","man"),
+#'      p=0.2,row.labels=FALSE,pch=15,
+#'      col=as.numeric(as.factor(iris$Species))+1)
+#'   par(opar)
+#' }
+#' \seealso{
+#'    \link[athi:athi-class]{athi-class} 
+#' }
+#'
+athi$mds_plot = function (x,method="euclidean",p=0.5,row.labels=TRUE,grid=TRUE,...) {
+    if (length(method)>1) {
+        opar=par(mfrow=c(2,ceiling(length(method)/2)))
+    }
+    for (m in method) {
+        if (m %in% c("cor","correlation")) {
+            # negative cor: low sim, -> high -> dissim
+            d.obj=(1-stats::cor(t(x),use="pairwise.complete.obs")+1)/2
+        } else {
+            d.obj=dist(x, method = m,p=p)
+        }
+        cmd=stats::cmdscale(d.obj)
+        limits = range(cmd)
+        diff=diff(limits)*0.05
+        xlim=c(limits[1]-diff,limits[2]+diff)
+        ylim=xlim
+        plot(cmd,type="n",xlim=xlim,ylim=ylim,xlab="Dim 1",ylab="Dim 2", ...)
+        if (grid) {
+            grid()
+        }
+        if (row.labels & length(rownames(x))== nrow(x)) {
+            text(cmd,labels=rownames(x),...) 
+        } else {
+            points(cmd, ...)
+        }
+        if (length(method)>1) {
+            title(m)
+        }
+    }
+    if (length(method)>1) {
+        par(opar)
+    }
+}
+
+#' \name{athi$df2md}
+#' \alias{athi$df2md}
+#' \alias{athi_df2md}
+#' \title{ Convert a data frame or a matrix into a Markdown table.}
+#' \description{
+#'   This function can be used within Rmarkdown documents to display easily
+#'   a simple Markdown table. For more advanced use cases you should other commands
+#'   such as the kable method from the knitr package.
+#' }
+#' \usage{ athi_df2md(x,rownames=TRUE,caption='') }
+#' \arguments{
+#'    \item{x}{matrix or data frame}
+#'    \item{rownames}{should  the rownames be displayed, default: TRUE}
+#'    \item{caption}{the caption for the table, it is just displayed below of the table, default: ''}
+#' }
+#' \value{prints to stdout}
+#' \examples{
+#' data(swiss)
+#' athi$df2md(head(swiss))
+#' }
+#' \seealso{
+#'    \link[athi:athi-class]{athi-class} 
+#' }
+#'
+
+
+athi$df2md <- function(x,caption='',rownames=TRUE) {
+    df=x
+    cn <- colnames(df)
+    if (is.null(cn[1])) {
+        cn=as.character(1:ncol(df))
+    }
+    rn <- rownames(df)
+    if (is.null(rn[1])) {
+        rn=as.character(1:nrow(df))
+    }
+    if (rownames) {
+        headr <- paste0(c("","", cn),  sep = "|", collapse='')
+        sepr <- paste0(c('|', rep(paste0(c(rep('-',3), "|"), 
+                                         collapse=''),length(cn)+1)), collapse ='')
+    } else {
+        headr <- paste0(c("", cn),  sep = "|", collapse='')
+        sepr <- paste0(c('|', rep(paste0(c(rep('-',3), "|"), 
+                                         collapse=''),length(cn))), collapse ='')
+        
+    }
+    st <- "|"
+    for (i in 1:nrow(df)){
+        if (rownames) {
+            st <- paste0(st, "**",as.character(rn[i]), "**|", collapse='')
+        }
+        for(j in 1:ncol(df)){
+            if (j%%ncol(df) == 0) {
+                st <- paste0(st, as.character(df[i,j]), "|", 
+                             "\n", "" , "|", collapse = '')
+            } else {
+                st <- paste0(st, as.character(df[i,j]), "|", 
+                             collapse = '')
+            }
+        }
+    }
+    fin <- paste0(c(headr, sepr, substr(st,1,nchar(st)-1)), collapse="\n")
+    if (caption!='') {
+        fin=paste0(fin,'\n',caption,'\n')
+    }
+    cat(fin)
+}
+
+#' \name{athi$lm_plot}
+#' \alias{athi$lm_plot}
+#' \alias{athi_lm_plot}
+#' \title{ Plot a linear model with confidence intervals }
+#' \description{
+#'     This is a convinience method to plot a linear model for confidence intervals for
+#'     the slope and for the predictions based on the model.
+#' }
+#' \usage{ athi_lm_plot(x,y=NULL, data=NULL,col="blue",pch=19,col.lm="red",col.plm="red",col.pi="blue",
+#'                       grid=TRUE,polygon=TRUE,col.polygon="#cccccc33",xlab=NULL,ylab=NULL,...)}
+#' \arguments{
+#'   \item{x}{
+#'     vector of numerical values or a formula
+#'   }
+#'   \item{y}{
+#'     vector of numerical values, ignored if x is a formula
+#'   }
+#'   \item{data}{
+#'     optionsal data frame containing the variables for the formula
+#'   }
+#'   \item{col}{scalar or vector for the color for the plotting character default: 'blue'}
+#'   \item{pch}{plotting character, default: 19}
+#'   \item{col.lm}{color for the regression line, default: 'red'}
+#'   \item{col.plm}{color for the regression line confidence interval, default: 'red'}
+#'   \item{col.pi}{color for the prediction confidence interval, default: 'blue'}
+#'   \item{grid}{should a grid be drawn in the plot, default: TRUE}
+#'   \item{polygon}{should the confidence interval for the regression line been shown as transparent polygon, default: TRUE}
+#'   \item{col.polygon}{the color for the polygon, default: "#cccccc33"}
+#'   \item{xlab}{the x-label, if not given chosen by the variable name, default: NULL}
+#'   \item{ylab}{the y-label, if not given chosen by the variable name, default: NULL}
+#'   \item{\ldots}{other arguments which will be forwarded to the plot function}
+#'  }
+#' \value{NULL}
+#' \examples{
+#' par(mfrow=c(1,2))
+#' data(iris) 
+#' athi$lm_plot(iris$Sepal.Width, iris$Sepal.Length,
+#'    col=as.numeric(iris$Species)+1,col.pi="bisque4",
+#'    col.lm="black",xlab="Sepal.Width",ylab="Sepal.Length")
+#' props=c(0.0441,0.0133,0.0183,0.0238,0.0389,
+#'         0.0648,0.0275,0.0704,0.0796,0.036,0.0132,
+#'         0.108,0.136,0.0383,0.1008)
+#' years=2005:2019
+#' athi$lm_plot(years,props,ylim=c(0,0.3),xlab="Year",ylab="Proportion",
+#'    col.pi=NULL,col.plm='#FFB0B066',col.polygon='#FFB0B066')
+#' }
+#' \seealso{
+#'    \link[athi:athi-class]{athi-class} 
+#' }
+#'
+
+athi$lm_plot = function (x,y=NULL, data=NULL,col="blue",pch=19,col.lm="red",col.plm="red",col.pi="blue",
+                       grid=TRUE,polygon=TRUE,col.polygon="#cccccc33",xlab=NULL,ylab=NULL,...) {
+    cnames=c('x','y')
+    if (class(x)[1]=="formula") {
+        if (!is.data.frame(data)) {
+            df <- model.frame(x)
+            colnames(df)=gsub(".+\\$","",colnames(df))
+        } else {
+            df <- model.frame(x, data = data)
+        }
+        df=df[,c(2,1)]
+        cnames=colnames(df)
+        colnames(df)=c('x','y')
+        x=df$x
+        y=df$y
+    } else {
+        df <- data.frame(x=x,y=y)
+    }
+    if (is.null(xlab)) {
+        xlab=cnames[1]
+    }
+    if (is.null(ylab)) {
+        ylab=cnames[2]
+    }
+    plot(y ~ x, data=df, pch=pch, col=col,xlab=xlab,ylab=ylab,...)
+    if (grid) {
+        grid (NULL,NULL, lty = 3, col = "grey30")
+    }
+    mod <- lm(y ~ x, data=df)
+    new.x.df = data.frame(
+        x = seq(from   = range(df$x)[1],
+                to     = range(df$x)[2],
+                length = 11 ))
+    lty=list(upr=2,lwr=2,fit=1)
+    lcol=list(upr=col.plm,lwr=col.plm,fit=col.lm)
+    poly.y=c()
+    poly.x=c()
+    for (lim in c("upr","lwr","fit")) {
+        nx=new.x.df$x
+        ny=predict(mod, new.x.df,   
+                            interval = "confidence" )[,lim]
+        lines(x   = nx,
+              y   = ny,
+              col = lcol[[lim]],lty=lty[[lim]],lwd=2 )
+        if (lim == "upr") {              
+            poly.x=nx
+            poly.y=ny
+        } else if (lim == "lwr") {
+            poly.x=c(poly.x,rev(nx))
+            poly.y=c(poly.y,rev(ny))               
+        }
+    }
+    if (polygon) {
+        polygon(poly.x,poly.y,col=col.polygon,border=col.polygon)
+        options(warn=-1)
+        do.call('points',list(y ~ x, data=df, pch=pch, col=col,...))
+        options(warn=0)
+    }
+    for (lim in c("upr","lwr")) {
+        if (!is.null(col.pi)) {
+            lines(
+                  x   = new.x.df$x,
+                  y   = predict( mod, new.x.df, 
+                                interval = "prediction" )[ , lim ],
+                  col = col.pi ,lty=2,lwd=2)
+        }
+     }
+}
 
 #' \name{athi$ref_table}
 #' \alias{athi$ref_table}
@@ -456,8 +767,11 @@ athi$randomize <- function (x) {
     return(x)
 }
 
+athi_cdist = athi$cdist
 athi_impute = athi$impute
 athi_introNAs = athi$introNAs
+athi_lm_plot = athi$lm_plot
+athi_mds_plot = athi$mds_plot
 athi_ref_score = athi$ref_score
 athi_ref_table = athi$ref_table
 athi_norm = athi$norm
