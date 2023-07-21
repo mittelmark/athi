@@ -1,17 +1,18 @@
 #' \docType{data}
 #' \name{athi-class}
-#' \alias{athi}
 #' \alias{athi-class}
+#' \alias{athi}
 #' \title{athi - functions for the Guelpe Summerschool}
 #' \description{This environment has some useful function required for the
 #' the Guelpe Summer school Human Biology and Publich Health - Data Analysis and Statistics.
 #' }
-#' \usage{athi}
 #' \format{Object of class environment with some functions for statistics}
 #' \details{
 #' \describe{
 #'   \item{\link[athi:athi_impute]{athi$impute(x,method="rpart",k=5,cor.method="spearman")}}{impute missing values.}
 #'   \item{\link[athi:athi_introNAs]{athi$introNAs(x,prop="0.05")}}{introduce missing values.}
+#'   \item{\link[athi:athi_norm]{athi$norm(x,method="z",ties.method="average")}}{normalize data.}
+#'   \item{\link[athi:athi_randomize]{athi$randomize(x)}}{randomize column data within matrix or data frame.}
 #'   \item{\link[athi:athi_ref_score]{athi$ref_score(x,age,sex,type)}}{reference score for the given age, sex and type.}
 #'   \item{\link[athi:athi_ref_table]{athi$ref_table(sex,type)}}{reference table for WHO for the given sex and measure type.}
 #' }
@@ -27,10 +28,12 @@ athi=new.env()
 
 #' \name{athi$ref_table}
 #' \alias{athi$ref_table}
+#' \alias{athi_ref_table}
 #' \title{ reference tables }
 #' \description{
 #'     Function to retrieve reference tables.
 #' }
+#' \usage{ athi_ref_table(sex,type) }
 #' \arguments{
 #'   \item{sex}{
 #'     character string, either "M" for male/boy of "F" for female 
@@ -62,11 +65,12 @@ athi$ref_table <- function (sex,type) {
 
 #' \name{athi$ref_score}
 #' \alias{athi$ref_score}
+#' \alias{athi_ref_score}
 #' \title{ age corrected z-scores based on WHO references }
 #' \description{
 #'     Function to retrieve age corrected z-scores based on WHO references
 #' }
-#' \usage{ athi$ref_score(x,age,sex,type) }
+#' \usage{ athi_ref_score(x,age,sex,type) }
 #' \arguments{
 #'   \item{x}{
 #'     the numerical value for height (cm) or weight (kg) or ...
@@ -164,7 +168,7 @@ athi$ref_score <- function (x,age,sex,type) {
 #' \description{
 #'   Replaces missing values with a reasonable guess by different imputation methods.
 #' }
-#' \usage{ athi$impute(x,method="rpart",k=5,cor.method="spearman") }
+#' \usage{ athi_impute(x,method="rpart",k=5,cor.method="spearman") }
 #' \arguments{
 #'   \item{x}{
 #'     either a matrix or data frame
@@ -231,13 +235,13 @@ athi$impute <- function (x,method="rpart",k=5,cor.method="spearman")  {
                 next
             }
             if (is.factor(data[,i])) { 
-                model=rpart::rpart(formula(paste(colnames(data)[i],"~.")), 
+                model=rpart(formula(paste(colnames(data)[i],"~.")), 
                             data=as.data.frame(data[idx,]),
                             method="class")
                 x2 = predict(model,newdata=as.data.frame(data[-idx,]),
                              type="class")
             } else {
-                model=rpart::rpart(formula(paste(colnames(data)[i],"~.")), 
+                model=rpart(formula(paste(colnames(data)[i],"~.")), 
                             data=as.data.frame(data[idx,]))
                 x2 = predict(model,newdata=as.data.frame(data[-idx,]))
             }
@@ -275,7 +279,7 @@ athi$impute <- function (x,method="rpart",k=5,cor.method="spearman")  {
 #' \description{
 #'   Introduces NA's into the given data frame or matrix with a specified proportion.
 #' }
-#' \usage{ athi$introNAs(x,prop=0.05) }
+#' \usage{ athi_introNAs(x,prop=0.05) }
 #' \arguments{
 #'   \item{x}{
 #'     either a matrix or data frame
@@ -322,3 +326,139 @@ athi$introNAs <- function (x,prop=0.05) {
     }
     return(x)
 }    
+#' \name{athi$norm}
+#' \alias{athi$norm}
+#' \alias{athi_norm}
+#' \title{Normalizes given data frame or matrix using the choosen method}
+#' \description{
+#'   Introduces NA's into the given data frame or matrix with a specified proportion.
+#' }
+#' \usage{ athi_norm(x,method="z",ties.method="average") }
+#' \arguments{
+#'   \item{x}{
+#'     either a matrix or data frame
+#'   }
+#'   \item{method}{the method used for normalization, either 'z' for z-score, 
+#'      'uv' for unit variance, 'fs' for feature scaling within 0 and 1 and 
+#'      'q' for quantile normalization, 'mp' for median polish, default: 'z'
+#'   }
+#'   \item{ties.method}{if normalization is `(q)antile` how ties should be handled, 
+#'      default `average` which leads to slightly different scales (default in preprocessCore::normalize.quantile, whereas `random` gives 
+#'      the same scales for all columns, this leads as well to different values for samples which had 
+#'      originally the same values, default: 'average'
+#'   }
+#' }
+#' \value{depending on the input either a data frame or matrix with normalized values}
+#' \examples{
+#'   data(iris)
+#'   ir=athi$norm(iris[,1:4],method="uv")
+#'   apply(ir,2,sd)
+#'   summary(ir)
+#'   ir2=athi$norm(iris[,1:4],method="fs")
+#'   boxplot(ir2)
+#'   summary(athi$norm(iris[,1:4],method="q"))
+#'   # NA's are handled as well
+#'   ir=iris[,1:4]
+#'   ir[2,3]=NA
+#'   ir[1,4]=NA
+#'   ir[3,2]=NA
+#'   head(ir)
+#'   head(athi$norm(ir,method="q"))
+#'   summary(athi$norm(ir,method="q"))
+#'   sdata=read.table(text="4 3 6 4 7
+#' 8 1 10 5 11
+#' 6 2 7 8 8
+#' 9 4 12 9 12
+#' 7 5 9 6 10
+#' ")
+#' athi$norm(sdata,method="mp")
+#' }
+#' \seealso{
+#'    \link[athi:athi-class]{athi-class} 
+#' }
+
+
+athi$norm <- function (x,method="z",ties.method="average")  {
+    this=athi
+    if (method %in% c("z","fs","uv")) {
+        for (i in 1:ncol(x)) {
+            if (is.numeric(x[,i])) {
+                if (method == "z") {
+                    x[,i]=(x[,i]-mean(x[,i],na.rm=TRUE))/sd(x[,i],na.rm=TRUE)
+                } else if (method == "uv") {
+                    x[,i]=x[,i]/sd(x[,i])
+                } else if (method == "fs") {
+                    x[,i]=(x[,i]-min(x[,i],na.rm=TRUE))/(max(x[,i],
+                                                             na.rm=TRUE)-min(x[,i],na.rm=TRUE)) 
+                } 
+            } 
+        } 
+    } else if (method %in% c("mp")) { 
+        x=x-medpolish(x,trace.iter=FALSE)$residuals
+    } else if (method %in% c("q", "qn","quantiles")) {
+        # TODO: handling of NA's
+        if (any(is.na(x))) {
+            # replace NA's with mean
+            x2=this$impute(x,method="knn")
+            svals=apply(apply(x2,2,sort),1,mean) # vector
+            rmtx=apply(x2,2,rank,ties.method=ties.method) # matrix
+            for (i in 1:ncol(x2)) {
+                x2[,i]=svals[rmtx[,i]]
+                # at the end only change non-NA's
+                x[!is.na(x[,i]),i]=x2[!is.na(x[,i]),i]
+            }
+        } else {
+            # no NA's handling
+            # 4-5 lines of cod, 
+            # Should we really need to install a Bioconductor package 
+            # for this functionality?? Yes, the Bioconductor package is in C, so faster!
+            # But ... 
+            svals=apply(apply(x,2,sort),1,mean) # vector
+            rmtx=apply(x,2,rank,ties.method=ties.method) # matrix
+            for (i in 1:ncol(x)) {
+                x[,i]=svals[rmtx[,i]]
+            }
+        }
+    }  else  {
+        stop("Unknown method, choose one of: z, uv, fs, mp  or q")
+    }
+    return(x)    
+}
+
+#' \name{athi$randomize}
+#' \alias{athi$randomize}
+#' \alias{athi_randomize}
+#' \title{Randomize data frame or matrix columns}
+#' \description{
+#'   This function can be used to randomize the data within the same column.
+#' }
+#' \usage{ athi_randomize(x) }
+#' \arguments{
+#'   \item{x}{
+#'     either a matrix or data frame
+#'   }
+#' }
+#' \value{depending on the input either a data frame or matrix with randomized values}
+#' \examples{
+#' data(iris)
+#' round(cor(iris[,1:4]),2)
+#' round(cor(athi$randomize(iris[,1:4])),2)
+#' }
+#' \seealso{
+#'    \link[athi:athi-class]{athi-class} 
+#' }
+#'
+
+athi$randomize <- function (x) {
+    for (i in 1:ncol(x)) {
+        x[,i]=sample(x[,i])
+    }
+    return(x)
+}
+
+athi_impute = athi$impute
+athi_introNAs = athi$introNAs
+athi_ref_score = athi$ref_score
+athi_ref_table = athi$ref_table
+athi_norm = athi$norm
+athi_randomize = athi$randomize
