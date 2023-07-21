@@ -10,7 +10,7 @@
 #' \details{
 #' \describe{
 #'   \item{\link[athi:athi_cdist]{athi$cdist(x,method="spearman",type="abs")}}{Calculate correlation distances.}
-#'   \item{\link[athi:athi_df2md]{athi_df2md(x,rownames=TRUE,caption='')}{Print a matrix or data frame as a Markdown table}
+#'   \item{\link[athi:athi_df2md]{athi_df2md(x,caption='',rownames=TRUE)}}{Print a matrix or data frame as a Markdown table}
 #'   \item{\link[athi:athi_impute]{athi$impute(x,method="rpart",k=5,cor.method="spearman")}}{impute missing values.}
 #'   \item{\link[athi:athi_introNAs]{athi$introNAs(x,prop="0.05")}}{introduce missing values.}
 #'   \item{\link[athi:athi_lm_plot]{athi$lm_plot(x,y=NULL,data=NULL,...)}}{plot a linear model with confidence intervals.}
@@ -158,11 +158,11 @@ athi$mds_plot = function (x,method="euclidean",p=0.5,row.labels=TRUE,grid=TRUE,.
 #'   a simple Markdown table. For more advanced use cases you should other commands
 #'   such as the kable method from the knitr package.
 #' }
-#' \usage{ athi_df2md(x,rownames=TRUE,caption='') }
+#' \usage{ athi_df2md(x,caption='',rownames=TRUE) }
 #' \arguments{
 #'    \item{x}{matrix or data frame}
-#'    \item{rownames}{should  the rownames be displayed, default: TRUE}
 #'    \item{caption}{the caption for the table, it is just displayed below of the table, default: ''}
+#'    \item{rownames}{should  the rownames be displayed, default: TRUE}
 #' }
 #' \value{prints to stdout}
 #' \examples{
@@ -768,6 +768,7 @@ athi$randomize <- function (x) {
 }
 
 athi_cdist = athi$cdist
+athi_df2md = athi$df2md
 athi_impute = athi$impute
 athi_introNAs = athi$introNAs
 athi_lm_plot = athi$lm_plot

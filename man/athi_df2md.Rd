@@ -7,11 +7,11 @@
   a simple Markdown table. For more advanced use cases you should other commands 
   such as the kable method from the knitr package. 
 } 
-\usage{ athi_df2md(x,rownames=TRUE,caption='') } 
+\usage{ athi_df2md(x,caption='',rownames=TRUE) } 
 \arguments{ 
    \item{x}{matrix or data frame} 
-   \item{rownames}{should  the rownames be displayed, default: TRUE} 
    \item{caption}{the caption for the table, it is just displayed below of the table, default: ''} 
+   \item{rownames}{should  the rownames be displayed, default: TRUE} 
 } 
 \value{prints to stdout} 
 \examples{ 
