@@ -22,9 +22,8 @@
 #' }
 #' }
 #' \examples{
-#' attach(athi)
-#' ref_score(100,age=4,sex="M",type="height")
-#' head(ref_table(sex="F",type="height"))
+#' athi$ref_score(100,age=4,sex="M",type="height")
+#' head(athi$ref_table(sex="F",type="height"))
 #' }
 #' \author{Detlef Groth <email: dgroth@uni-potsdam.de>}
 
@@ -472,6 +471,59 @@ athi$ref_score <- function (x,age,sex,type) {
     return(res)
 }
 
+#' \name{athi$report_pvalue}
+#' \alias{athi$report_pvalue}
+#' \alias{athi_report_pvalue}
+#' \title{ p-value reporting for papers }
+#' \description{
+#'     Function for reporting a p-value either giving the three alpha thresholds, 
+#'   <0.05, <0.01, or <0.001 or using the star syntax. 
+#' }
+#' \usage{ athi_report_pvalue(x,star=FALSE) }
+#' \arguments{
+#'   \item{x}{numerical p-value, vectors are as well possible}
+#'   \item{star}{boolean, should the one-three star syntax be used, default: FALSE}
+#' }
+#' \details{
+#'     This function can be used to report p-values in papers.
+#' }
+#' \value{scalar or vector of character strings}
+#' \examples{
+#'   athi$report_pvalue(1/10000)
+#'   athi$report_pvalue(1/10000,star=TRUE)
+#'   athi$report_pvalue(0.02,star=TRUE)
+#'   athi$report_pvalue(0.12,star=TRUE)
+#'   athi$report_pvalue(c(0.001,0.01,0.3,0.02))
+#' }
+#' \seealso{
+#'    \link[athi:athi-class]{athi-class} 
+#' }
+#'
+
+athi$report_pvalue <- function (x,star=FALSE) {
+    p.val=x
+    if (length(p.val) > 1) {
+        return(as.character(lapply(p.val,athi$report_pvalue)))
+    }
+    if (p.val <0.001 & star) {
+        return('***')
+    } else if (p.val <0.001) {
+        return('p<0.001')
+    } else if (p.val <0.01 & star) {
+        return('**')
+    } else if (p.val <0.01) {
+        return('p<0.01')
+    } else if (p.val <0.05 & star) {
+        return('*')
+    } else if (p.val <0.05) {
+        return('p<0.05')
+    } else if (star) {
+        return("n.s.")
+    } else {
+        return(sprintf("p=%.2f",p.val))
+    }   
+}   
+
 #' \name{athi$impute}
 #' \alias{athi$impute}
 #' \alias{athi_impute}
@@ -775,5 +827,6 @@ athi_lm_plot = athi$lm_plot
 athi_mds_plot = athi$mds_plot
 athi_ref_score = athi$ref_score
 athi_ref_table = athi$ref_table
+athi_report_pvalue = athi$report_pvalue
 athi_norm = athi$norm
 athi_randomize = athi$randomize
