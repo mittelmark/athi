@@ -1,11 +1,12 @@
 Package: athi
 Type: Package
 Title: calculate age normalized z-scores for childrens height and weight
-Version: 0.1
-Date: 2023-07-18
+Version: 0.3.0
+Date: 2023-07-21
 Author: Detlef Groth, University of Potsdam
 Maintainer: Detlef Groth <dgroth@uni-potsdam.de>
-Description: R package for ...
+Description: R package for Summerschool Guelpe.
+Require: rpart
 Suggests: knitr, rmarkdown
 VignetteBuilder: knitr
 License: MIT + file LICENSE
