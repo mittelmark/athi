@@ -1,5 +1,5 @@
 exportPattern("^[[:lower:]]+")
 importFrom("stats", "dist", "formula", "predict","cor","medpolish",
-    "sd","lm","model.frame")
+    "sd","lm","model.frame","aggregate", "chisq.test", "t.test")
 importFrom("rpart", "rpart")
 importFrom("graphics", "par", "points", "text", "title","lines")

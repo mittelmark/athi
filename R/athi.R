@@ -10,6 +10,8 @@
 #' \details{
 #' \describe{
 #'   \item{\link[athi:athi_cdist]{athi$cdist(x,method="spearman",type="abs")}}{Calculate correlation distances.}
+#'   \item{\link[athi:athi_cohensD]{athi$cohensD(x,g,paired=FALSE)}}{Calculate effect size for difference between two means.}
+#'   \item{\link[athi:athi_cohensW]{athi$cohensW(x,p=NULL)}}{Calculate effect size for categorical data.}
 #'   \item{\link[athi:athi_df2md]{athi_df2md(x,caption='',rownames=TRUE)}}{Print a matrix or data frame as a Markdown table}
 #'   \item{\link[athi:athi_impute]{athi$impute(x,method="rpart",k=5,cor.method="spearman")}}{impute missing values.}
 #'   \item{\link[athi:athi_introNAs]{athi$introNAs(x,prop="0.05")}}{introduce missing values.}
@@ -72,6 +74,149 @@ athi$cdist <- function (x,method="pearson",type="abs") {
     }
     return(D)
 }
+#' \name{athi$cohensD}
+#' \alias{athi$cohensD}
+#' \alias{athi_cohensD}
+#' \title{ Effect sizes measure for difference between two means }
+#' \description{
+#'     Calculate the effect size for the difference between two means, divided by the pooled standard deviation.
+#' }
+#' \usage{ athi_cohensD(x,g,paired=FALSE) }
+#' \arguments{
+#'  \item{x}{vector with numerical values}
+#'  \item{g}{vector with two grouping variables, having the same length as num}
+#'  \item{paired}{are the data paired, default: FALSE}
+#' }
+#' \details{
+#'  The function cohensD calculates the effect size for the difference between two means.
+#'   Due to Cohen's rule of thumb values of around 0.2 are considered to stand 
+#'   for small effects, values of around 0.5 represent medium effects and values of around 0.8 
+#'   and larger represent large effects. 
+#' 
+#' Please note that these rules of thumb are not useful for highly dependent 
+#'  outcome variables (death for instance) these rules might not be useful and as 
+#'  well lower values might be of practical relevance.
+#' }
+#' \value{numerical value}
+#' \examples{
+#' cohensD=athi$cohensD
+#' set.seed(125)
+#' data(sleep)
+#' with(sleep,cohensD(extra,group))
+#' x1=rnorm(100,mean=20,sd=1)
+#' x2=rnorm(100,mean=22,sd=1)
+#' g1=rep('A',100)
+#' g2=rep('B',100)
+#' # difference should be around 2SD
+#' cohensD(c(x1,x2),as.factor(c(g1,g2)))
+#' # biseriell correlation coefficient as alternative
+#' # value is as well large
+#' cor(c(x1,x2),as.numeric(as.factor(c(g1,g2))))
+#' }
+#' \seealso{
+#'    \link[athi:athi-class]{athi-class} 
+#' }
+#'
+
+
+athi$cohensD <- function (x, g,paired=FALSE) {
+    num=x
+    cat=g
+    if (paired) {
+        tt=t.test(num ~ cat,paired=paired)
+        return(tt$statistic[[1]]/sqrt(length(num/2)))
+    }   
+    tt.agg=aggregate(num,by=list(cat),
+        mean,na.rm=TRUE)
+    pooledSD <- function(x, y) {
+        x=x[!is.na(x)]
+        y=y[!is.na(y)]
+        sq.devs <- (c(x - mean(x), y - mean(y)))^2
+         n <- length(sq.devs)
+        return(sqrt(sum(sq.devs)/(n - 2)))
+    }
+    d=abs(tt.agg$x[1]-tt.agg$x[2])/pooledSD(
+        num[cat==levels(cat)[1]],
+        num[cat==levels(cat)[2]])
+    return(d)
+}
+
+#' \name{athi$cohensW}
+#' \alias{athi$cohensW}
+#' \alias{athi_cohensW}
+#' \title{ Effect sizes measure for categorical data }
+#' \description{
+#'     Calculate the effect size for 2x2 and larger contingency tables as well as for single variables.
+#' }
+#' \usage{ athi_cohensW(x,p=NULL) }
+#' \arguments{
+#'  \item{x}{contingency table or vector of count data.}
+#'  \item{p}{expected proportions, required if x is a vector of count data, in case 'x' has length of two a single value, 
+#'    can be given otherwise as many values as the length of x, default: NULL}
+#' }
+#' \details{
+#'  The function `athi$cohensW` (omega) calculates the effect size for contingency tables. 
+#'   Due to Cohen's rule of thumb values of around 0.1 are considered to stand 
+#'   for small effects, values of around 0.3 represent medium effects and values 
+#'   above 0.5 or higher represent large effects. 
+#' 
+#'   Please note that these rules of thumb are not useful for highly dependent outcome 
+#'   variables (death for instance) these rules might not be useful and as well lower
+#'   values might be of practical relevance.
+#' }
+#' \value{numerical value, effect size Cohen's W (omega)}
+#' \examples{
+#' data(Titanic)
+#' Titanic[1,1,,]
+#' athi$cohensW(Titanic[1,1,,])
+#' # Data from New Eng. J. Med. 329:297-303, 1993
+#' azt=as.table(matrix(c(76,399,129,332), byrow=TRUE,ncol=2))
+#' rownames(azt)=c("AZT","Placebo")
+#' colnames(azt)=c("DiseaseProgress", "NoDiseaseProgress")
+#' athi$cohensW(azt)
+#' # number of boys (25) and girls (15) in a hospital which deviates 
+#' # from 50/50 or 51/49 ratios
+#' prop.table(c(25,15))
+#' (prop.table(c(25,15))-0.5)*2
+#' athi$cohensW(c(25,15),p=0.5)
+#' athi$cohensW(c(25,15),p=c(0.51,0.49))
+#' # most extrem case 40 boys and 0 girls
+#' athi$cohensW(c(40,0),p=0.5)
+#' athi$cohensW(c(40,0),p=c(0.51,0.49)) # max value here around 2*0.49
+#' }
+#' \seealso{
+#'    \link[athi:athi-class]{athi-class},\link[athi:athi_cohensD]{athi$cohensD} 
+#' }
+#'
+
+
+athi$cohensW = function (x,p=NULL) {
+    if (is.table(x) | is.matrix(x)) {
+        tab=x
+        pe=prop.table(chisq.test(tab)$expected)
+        po=prop.table(tab)
+        w=sqrt(sum(((po-pe)^2)/pe))
+        return(w[[1]])
+    } else if (is.null(p)) {
+        stop('Error: If x is a vector, p must be given!')
+    } else {
+        if (length(x) == 2 & length(p) == 1) {
+            p=c(p,1-p)
+            po=prop.table(x)
+            pe=p
+        } else if  (length(x) == length(p)) {
+            po=prop.table(x)
+            pe=p
+        } else {
+            stop('Error: for more than 2 categories the
+                 given proportion vector p must have the
+                 same length as the given count vector x')
+        }
+        w = sqrt(sum(((po-pe)^2)/pe))
+        return(w)
+    }
+}
+
 
 #' \name{athi$mds_plot}
 #' \alias{athi$mds_plot}
@@ -820,6 +965,8 @@ athi$randomize <- function (x) {
 }
 
 athi_cdist = athi$cdist
+athi_cohensD = athi$cohensD
+athi_cohensW = athi$cohensW
 athi_df2md = athi$df2md
 athi_impute = athi$impute
 athi_introNAs = athi$introNAs
