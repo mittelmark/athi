@@ -26,12 +26,27 @@ The following  methods are provided within the  athi-environment  from version
 
 ## Install
 
-The package can be directly  installed from the Github  repository start R and
-install the package with this command:
+The package can be directly  installed from the Github  repository like this:
+Start R and install the package with the following command:
+
+```r
+install.packages(
+    "https://github.com/mittelmark/athi/archive/refs/tags/0.3.0.tar.gz",
+    repos=NULL)
+```
+  
+To install the latest  development  version directly from the Github repository
+you need the R package `remotes` to be installed, if you have this package you can
+do the following:
 
 ```{r}
-> install.packages("https://github.com/mittelmark/athi/archive/refs/tags/0.3.0.tar.gz",repos=NULL)
+library(remotes)
+remotes::install_github("https://github.com/mittelmark/athi")
 ```
+
+You should do this if you need  functions  from the  listing  above  which are
+currently only on Github, but not in the latest release.
+
 ## Author and Copyright
 
 Author: Detlef Groth, University of Potsdam, Germany
