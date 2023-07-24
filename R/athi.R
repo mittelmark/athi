@@ -9,6 +9,7 @@
 #' \format{Object of class environment with some functions for statistics}
 #' \details{
 #' \describe{
+#'   \item{\link[athi:athi_box_plot]{athi$box_plot(x,y=NULL)}}{Extended version of the boxplot with main statistic values on top.}
 #'   \item{\link[athi:athi_cdist]{athi$cdist(x,method="spearman",type="abs")}}{Calculate correlation distances.}
 #'   \item{\link[athi:athi_cohensD]{athi$cohensD(x,g,paired=FALSE)}}{Calculate effect size for difference between two means.}
 #'   \item{\link[athi:athi_cohensW]{athi$cohensW(x,p=NULL)}}{Calculate effect size for categorical data.}
@@ -40,6 +41,76 @@
 
 athi=new.env()
 
+#' \name{athi$box_plot}
+#' \alias{athi$box_plot}
+#' \alias{athi_box_plot}
+#' \title{ visualize a mean comparison with boxplot and main statistics }
+#' \description{
+#'     This function is plotting the standard boxplot for a numerical data against a factor variabl and adds on top the 
+#'     the main statistics, like the Cohen's d, or the Eta-squared value, the significance level and for t-tests the  
+#'     confidence interval as well.
+#' }
+#' \usage{ athi_box_plot(x,y=NULL,data=NULL,col='grey80',grid=TRUE,main=NULL,...) }
+#' \arguments{
+#'    \item{x}{vector with numerical values or a formula, missing values are allowed}
+#'    \item{y}{vector with categorical data (factor), required if x is not a formula, default: NULL}
+#'    \item{data}{data frame, required if x is a formula, default: NULL}
+#'    \item{col}{plotting character color, default: 'grey80'}
+#'    \item{grid}{should a grid being plotted, default: TRUE}
+#'    \item{main}{plotting title, if not given the main statistics are shown, to suppress this give an empty string here, default: NULL}
+#'    \item{\ldots}{other arguments delegated to the default boxplot plotting function}
+#' }
+#' \value{NULL}
+#' \examples{
+#' data(iris)
+#' athi$box_plot(Sepal.Length ~ Species, data=iris,col=2:4)
+#' }
+#' \seealso{
+#'    \link[athi:athi-class]{athi-class}, \link[athi:athi_cor_plot]{athi$cor_plot}
+#' }
+#' 
+athi$box_plot = function (x,y=NULL,data=NULL,col='grey80',grid=TRUE,main=NULL,...) {
+    if (class(x)[1]=="formula") {
+        if (!is.data.frame(data)) {
+            df <- model.frame(x)
+            colnames(df)=gsub(".+\\$","",colnames(df))
+        } else {
+            df <- model.frame(x, data = data)
+        }
+        df=df[,c(1,2)]
+        cnames=colnames(df)
+        x=df[,1]
+        y=df[,2]
+    } else {
+        cnames = c("x","y")
+    }
+    if ("xlab" %in% names(list(...))) {
+        cnames[2]=list(...)[["xlab"]]
+    }
+    if ("ylab" %in% names(list(...))) {
+        cnames[1]=list(...)[["ylab"]]
+    }
+    boxplot(x ~ y,col=col,xlab=cnames[2],ylab=cnames[1])
+    if (grid) {
+        grid()
+        boxplot(x ~ y,col=col,add=TRUE,...)
+    }
+    if (length(levels(y)) == 2) {
+        t=t.test(x ~ y)
+        d=athi$cohensD(x,y)
+        
+        r=paste("d = ",round(d,2),athi_report_pvalue(t$p.value,star=TRUE)," CI95%[",round(t$conf.int[1],3),",",round(t$conf.int[2],3),"]",sep="")
+        mtext(r,side=3,adj=1)
+    } else {
+        raov=aov(x ~ y)
+        e=athi$eta_squared(x,y)
+        saov=summary(raov)
+        r=paste("Eta.sq = ",round(e,2),athi_report_pvalue(saov[[1]][1,5],star=TRUE),sep="")
+        mtext(r,side=3,adj=1)
+        
+    }
+    box()
+}
 #' \name{athi$cdist}
 #' \alias{athi$cdist}
 #' \alias{athi_cdist}
@@ -384,7 +455,7 @@ athi$eta_squared <- function (x,y=NULL) {
         return(as.vector((athi$eta_squared(mod))))
 
     } else {
-        stop("Error: wrong call of 'etaSquared'! Call either 'athi$eta_squared(num,factor)' or with 'sbi$etaSquared(lm(num~factor))'!")
+        stop("Error: wrong call of 'eta_squared'! Call either 'athi$eta_squared(num,factor)' or with 'athi$eta_squared(lm(num~factor))'!")
     }
 }
 
@@ -1134,6 +1205,7 @@ athi$randomize <- function (x) {
     return(x)
 }
 
+athi_box_plot = athi$box_plot
 athi_cdist = athi$cdist
 athi_cohensD = athi$cohensD
 athi_cohensW = athi$cohensW

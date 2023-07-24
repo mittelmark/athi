@@ -8,6 +8,7 @@ the Guelpe Summer school Human Biology and Publich Health - Data Analysis and St
 \format{Object of class environment with some functions for statistics} 
 \details{ 
 \describe{ 
+  \item{\link[athi:athi_box_plot]{athi$box_plot(x,y=NULL)}}{Extended version of the boxplot with main statistic values on top.} 
   \item{\link[athi:athi_cdist]{athi$cdist(x,method="spearman",type="abs")}}{Calculate correlation distances.} 
   \item{\link[athi:athi_cohensD]{athi$cohensD(x,g,paired=FALSE)}}{Calculate effect size for difference between two means.} 
   \item{\link[athi:athi_cohensW]{athi$cohensW(x,p=NULL)}}{Calculate effect size for categorical data.} 
