@@ -14,6 +14,7 @@ The following  methods are provided within the  athi-environment  from version
 * `athi$cohensD` - effect size for difference between two means
 * `athi$cohensW` - effect size for categorical data
 * `athi$corr` - pairwise correlations and their statistics
+* `athi$cor_plot` - extended xy-plot with statistics (Github)
 * `athi$df2md` - print a matrix or data frame as a Markdown table
 * `athi$impute` - impute missing values using rpart or knn methods
 * `athi$introNAs` - introduce missing values
@@ -22,7 +23,8 @@ The following  methods are provided within the  athi-environment  from version
 * `athi$norm` - normalize data
 * `athi$randomize` - randomize column data within matrix or data frame
 * `athi$ref_score` - WHO  reference score for the given age, sex and type
-* `athi$ref_table` - reference tables for WHO for the given sex and measure type
+* `athi$ref_table`  - reference  tables for WHO for the given sex and measure type
+* `athi$report_pvalue` - report p-values within documents using default alpha thresholds
 
 ## Install
 
