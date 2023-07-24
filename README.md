@@ -14,7 +14,7 @@ The following  methods are provided within the  athi-environment  from version
 * `athi$cohensD` - effect size for difference between two means
 * `athi$cohensW` - effect size for categorical data
 * `athi$corr` - pairwise correlations and their statistics
-* `athi_df2md` - print a matrix or data frame as a Markdown table
+* `athi$df2md` - print a matrix or data frame as a Markdown table
 * `athi$impute` - impute missing values using rpart or knn methods
 * `athi$introNAs` - introduce missing values
 * `athi$lm_plot`  - plot a linear  model  with  confidence  intervals
