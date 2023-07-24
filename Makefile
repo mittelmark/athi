@@ -1,4 +1,4 @@
-VERSION := 0.3.0
+VERSION := 0.3.1
 PKG     := $(shell basename `pwd`)
 build:
 	R CMD build .

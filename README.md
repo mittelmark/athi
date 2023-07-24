@@ -16,6 +16,7 @@ The following  methods are provided within the  athi-environment  from version
 * `athi$corr` - pairwise correlations and their statistics
 * `athi$cor_plot` - extended xy-plot with statistics (Github)
 * `athi$df2md` - print a matrix or data frame as a Markdown table
+* `athi$eta_squared` - effect size measure for ANOVA (Github)
 * `athi$impute` - impute missing values using rpart or knn methods
 * `athi$introNAs` - introduce missing values
 * `athi$lm_plot`  - plot a linear  model  with  confidence  intervals
