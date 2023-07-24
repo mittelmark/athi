@@ -10,7 +10,8 @@ are not part or only in more basic format in standard R.
 The following  methods are provided within the  athi-environment  from version
 0.3.0:
 
-* `athi$box_plot` - boxplot with statistics values added
+* `athi$assoc_plot` - assocplot with statistics values and Pearson residual shading (Github)
+* `athi$box_plot` - boxplot with statistics values (Github)
 * `athi$cdis` - correlation distances
 * `athi$cohensD` - effect size for difference between two means
 * `athi$cohensW` - effect size for categorical data

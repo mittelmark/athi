@@ -9,6 +9,7 @@
 #' \format{Object of class environment with some functions for statistics}
 #' \details{
 #' \describe{
+#'   \item{\link[athi:athi_assoc_plot]{athi$assoc_plot(x,legend=NULL,shade=TRUE)}}{Extended version of the assocplot with main statistic and Pearson residuals.}
 #'   \item{\link[athi:athi_box_plot]{athi$box_plot(x,y=NULL)}}{Extended version of the boxplot with main statistic values on top.}
 #'   \item{\link[athi:athi_cdist]{athi$cdist(x,method="spearman",type="abs")}}{Calculate correlation distances.}
 #'   \item{\link[athi:athi_cohensD]{athi$cohensD(x,g,paired=FALSE)}}{Calculate effect size for difference between two means.}
@@ -40,6 +41,76 @@
 #' \author{Detlef Groth <email: dgroth@uni-potsdam.de>}
 
 athi=new.env()
+
+#' \name{athi$assoc_plot}
+#' \alias{athi$assoc_plot}
+#' \alias{athi_assoc_plot}
+#' \title{ create an association plot with Pearson residual coloring }
+#' \description{
+#'   This function updates the standard assocplot function from the graphics package 
+#'   with the ability to display residual colors. In blue and red are shown groups with 
+#'   residuals above +4 or below -4 in light colors are shown residuals between 2 and 4 for positive and -4 and -2 for negative residuals.
+#' }
+#' \usage{ athi_assoc_plot(x,legend=TRUE,shade=TRUE,...) }
+#' \arguments{
+#'    \item{x}{contingency table}
+#'    \item{legend}{should the residual table and the statistical values be shown at the bottom, default: TRUE}
+#'    \item{shade}{should residuals being colored, default: ZTUE}
+#'    \item{\ldots}{other arguments delegated to the default assocplot function}
+#' }
+#' \value{NULL}
+#' \examples{
+#'  x <- margin.table(HairEyeColor, c(1, 2))
+#' athi$assoc_plot(x)
+#' }
+#' \seealso{
+#'    \link[athi:athi-class]{athi-class}, \link[athi:athi_cor_plot]{athi$cor_plot}, \link[athi:athi_box_plot]{athi$box_plot}
+#' }
+#' 
+
+athi$assoc_plot <- function (x,legend=TRUE,shade=TRUE,...) {
+    # https://stackoverflow.com/questions/38732663/how-to-insert-expression-into-the-body-of-a-function-in-r
+    funins <- function(f, expr = expression(x<-2*x), after=1) {
+        body(f)<-as.call(append(as.list(body(f)), expr, after=after))
+        f
+    }
+    cols=c('#CF3761','#E18E9E','#E0E0E0','#96A2DF','#4267E0')
+    expr=expression({
+        # DG: changed for shade
+        residuals=chisq.test(x)$residuals
+        cols=c('#CF3761','#E18E9E','#E0E0E0','#96A2DF','#4267E0')
+        resis=c()
+        # R plots from top right to lower left ...
+        # we rearrange the colors
+        for (c in ncol(x):1) {
+            resis=c(resis,residuals[,c])
+        }
+        acols=cols[cut(resis,
+                       breaks=c(-Inf,-4,-2,2,4,Inf),
+                       labels=c(1,2,3,4,5))]
+        rect(z[, 1] - e/2, z[, 2], z[, 1] + e/2, z[, 2] + d, col = acols)
+    })
+    if (shade) {
+       if (legend) {
+           opar=par(mai=c(1.8,0.8,0.8,0.4))
+           ct=chisq.test(x)
+           w=paste("(w = ",round(athi$cohensW(x),2),",",athi$report_pvalue(ct$p.value),")",sep="")
+       }
+       g <- funins(graphics::assocplot, expr,after=length(body(graphics::assocplot)))
+       g(x,...)
+       if (legend) {
+           par(fig = c(0, 1, 0, 1), oma = c(0, 0, 0, 0), mar = c(0, 0, 0, 0), new = TRUE)
+           plot(0, 0, type = "n", bty = "n", xaxt = "n", yaxt = "n")
+           legend(c("> 4 ","4 .. 2","2 .. -2", "-2 .. -4", " < -4"),
+                  x="bottom",cex=1.5,fill=rev(cols),bty='n',title=paste("Pearson Residuals ",w),
+                  xpd=TRUE,horiz=TRUE,box.lwd=0,inset=c(0,0))
+           par(opar)
+       }
+    } else {
+       graphics::assocplot(x,...)
+   }
+    
+}
 
 #' \name{athi$box_plot}
 #' \alias{athi$box_plot}
@@ -1205,6 +1276,7 @@ athi$randomize <- function (x) {
     return(x)
 }
 
+athi_assoc_plot = athi$assoc_plot
 athi_box_plot = athi$box_plot
 athi_cdist = athi$cdist
 athi_cohensD = athi$cohensD
