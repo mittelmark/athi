@@ -12,7 +12,8 @@
 #'   \item{\link[athi:athi_cdist]{athi$cdist(x,method="spearman",type="abs")}}{Calculate correlation distances.}
 #'   \item{\link[athi:athi_cohensD]{athi$cohensD(x,g,paired=FALSE)}}{Calculate effect size for difference between two means.}
 #'   \item{\link[athi:athi_cohensW]{athi$cohensW(x,p=NULL)}}{Calculate effect size for categorical data.}
-#'   \item{\link[athi:athi_corr]{athi$corr(x,method="pearson",use="pairwise.complete.obs")}}{Calculate pairwise correlations and the statistcs.}
+#'   \item{\link[athi:athi_corr]{athi$corr(x,method="pearson",use="pairwise.complete.obs")}}{Calculate pairwise correlations and the statistics.}
+#'   \item{\link[athi:athi_cor_plot]{athi$cor_plot(x,y,method="pearson",...)}}{Extended version of the xy-plot with main statistics in the title.}
 #'   \item{\link[athi:athi_df2md]{athi_df2md(x,caption='',rownames=TRUE)}}{Print a matrix or data frame as a Markdown table}
 #'   \item{\link[athi:athi_impute]{athi$impute(x,method="rpart",k=5,cor.method="spearman")}}{impute missing values.}
 #'   \item{\link[athi:athi_introNAs]{athi$introNAs(x,prop="0.05")}}{introduce missing values.}
@@ -22,6 +23,7 @@
 #'   \item{\link[athi:athi_randomize]{athi$randomize(x)}}{randomize column data within matrix or data frame.}
 #'   \item{\link[athi:athi_ref_score]{athi$ref_score(x,age,sex,type)}}{reference score for the given age, sex and type.}
 #'   \item{\link[athi:athi_ref_table]{athi$ref_table(sex,type)}}{reference table for WHO for the given sex and measure type.}
+#'   \item{\link[athi:athi_report_pvalue]{athi$report_pvalue(p,star=FALSE)}}{report a p-value using the significance thresholds.}
 #' }
 #' All methods are given in to forms: first they are collected in an environment `athi` which allow you to save this object for instance as
 #' a RDS file and then give it away with your analysis to allow other users to redo or extend the analysis without having to install the library. 
@@ -256,7 +258,7 @@ athi$cohensW <- function (x,p=NULL) {
 #' lapply(res[1:2],round,2)
 #' }
 #' \seealso{
-#'    \link[athi:athi-class]{athi-class} 
+#'    \link[athi:athi-class]{athi-class}, \link[athi:athi_cor_plot]{athi$cor_plot} 
 #' }
 
 athi$corr <- function (x,method='pearson',use='pairwise.complete.obs') {
@@ -277,6 +279,46 @@ athi$corr <- function (x,method='pearson',use='pairwise.complete.obs') {
         }
     }
     return(list(estimate=mt,p.value=mt.pval,lower=mt.lower,upper=mt.upper,method=method))
+}
+
+
+#' \name{athi$cor_plot}
+#' \alias{athi$cor_plot}
+#' \alias{athi_cor_plot}
+#' \title{ visualize a correlation with abline and main statistics }
+#' \description{
+#'     This function is plotting the standard xy-plot for two numerical variables and adds on top the 
+#'       the main statistics, like the r-value, the confidence interval and the significance level.
+#' }
+#' \usage{ athi_cor_plot(x,y,method="pearson",col='blue',main=NULL,pch=19,...) }
+#' \arguments{
+#'    \item{x}{vector with numerical values, missing values are allowed}
+#'    \item{y}{vector with numerical values, missing values are allowed}
+#'    \item{method}{type of correlation to be determined, either 'pearson', 'spearman' or 'kendall', default: 'pearson'}
+#'    \item{col}{plotting character color, default: 'blue'}
+#'    \item{main}{plotting title, if not given the main statistics are shown, to suppress this give an empty string here, default: NULL}
+#'    \item{pch}{plotting character, default: 19}
+#'    \item{\ldots}{other arguments delegated to the plotting function}
+#' }
+#' \value{NULL}
+#' \examples{
+#' data(swiss)
+#' athi$cor_plot(swiss$Fertility,swiss$Agriculture,
+#'     xlab="Fertility",ylab="Agriculture")
+#' }
+#' \seealso{
+#'    \link[athi:athi-class]{athi-class}, \link[athi:athi_corr]{athi$corr}
+#' }
+#' 
+athi$cor_plot = function (x,y,method="pearson",col='blue',main=NULL,pch=19,...) {
+    p=cor.test(x,y,method=method,use="complete.obs")
+    star=athi$report_pvalue(p$p.value,star=TRUE)
+    r=paste('r = ',round(cor(x,y,method=method,
+                             use="complete.obs"),2),star,sep="")
+    r=paste(r," CI95%[",round(p$conf.int[1],2),",",round(p$conf.int[2],2),"]",sep="")
+    plot(x~y,main=r,col=col,pch=pch,...);
+    abline(lm(x~y),col=col,lwd=2)
+    box()
 }
 
 #' \name{athi$mds_plot}
@@ -1029,6 +1071,7 @@ athi_cdist = athi$cdist
 athi_cohensD = athi$cohensD
 athi_cohensW = athi$cohensW
 athi_corr = athi$corr
+athi_cor_plot = athi$cor_plot
 athi_df2md = athi$df2md
 athi_impute = athi$impute
 athi_introNAs = athi$introNAs

@@ -2,4 +2,4 @@ exportPattern("^[[:lower:]]+")
 importFrom("stats", "dist", "formula", "predict","cor","medpolish",
     "sd","lm","model.frame","aggregate", "chisq.test", "t.test","cor.test")
 importFrom("rpart", "rpart")
-importFrom("graphics", "par", "points", "text", "title","lines")
+importFrom("graphics", "abline","box","par", "points", "text", "title","lines")

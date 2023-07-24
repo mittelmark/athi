@@ -11,7 +11,7 @@
     data frame or matrix  
   } 
   \item{method}{ 
-    correlation measure, either 'pearson', 'spearman','kendall, default: 'pearson' 
+    correlation measure, either 'pearson', 'spearman','kendall', default: 'pearson' 
   } 
   \item{type}{ 
     either absolute, squared or negative (negativly correlated items are far away, default: 'absolute' 

@@ -31,5 +31,5 @@ ls(res)
 lapply(res[1:2],round,2) 
 } 
 \seealso{ 
-   \link[athi:athi-class]{athi-class}  
+   \link[athi:athi-class]{athi-class}, \link[athi:athi_cor_plot]{athi$cor_plot}  
 } 
