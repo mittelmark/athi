@@ -12,6 +12,7 @@
 #'   \item{\link[athi:athi_cdist]{athi$cdist(x,method="spearman",type="abs")}}{Calculate correlation distances.}
 #'   \item{\link[athi:athi_cohensD]{athi$cohensD(x,g,paired=FALSE)}}{Calculate effect size for difference between two means.}
 #'   \item{\link[athi:athi_cohensW]{athi$cohensW(x,p=NULL)}}{Calculate effect size for categorical data.}
+#'   \item{\link[athi:athi_corr]{athi$corr(x,method="pearson",use="pairwise.complete.obs")}}{Calculate pairwise correlations and the statistcs.}
 #'   \item{\link[athi:athi_df2md]{athi_df2md(x,caption='',rownames=TRUE)}}{Print a matrix or data frame as a Markdown table}
 #'   \item{\link[athi:athi_impute]{athi$impute(x,method="rpart",k=5,cor.method="spearman")}}{impute missing values.}
 #'   \item{\link[athi:athi_introNAs]{athi$introNAs(x,prop="0.05")}}{introduce missing values.}
@@ -22,8 +23,13 @@
 #'   \item{\link[athi:athi_ref_score]{athi$ref_score(x,age,sex,type)}}{reference score for the given age, sex and type.}
 #'   \item{\link[athi:athi_ref_table]{athi$ref_table(sex,type)}}{reference table for WHO for the given sex and measure type.}
 #' }
+#' All methods are given in to forms: first they are collected in an environment `athi` which allow you to save this object for instance as
+#' a RDS file and then give it away with your analysis to allow other users to redo or extend the analysis without having to install the library. 
+#' Secondly the methods have the athi prefix followed by an underline which is compatbible with the default R documentation system.
 #' }
 #' \examples{
+#' # list all methods
+#' ls(athi)
 #' athi$ref_score(100,age=4,sex="M",type="height")
 #' head(athi$ref_table(sex="F",type="height"))
 #' }
@@ -190,7 +196,7 @@ athi$cohensD <- function (x, g,paired=FALSE) {
 #'
 
 
-athi$cohensW = function (x,p=NULL) {
+athi$cohensW <- function (x,p=NULL) {
     if (is.table(x) | is.matrix(x)) {
         tab=x
         pe=prop.table(chisq.test(tab)$expected)
@@ -217,6 +223,61 @@ athi$cohensW = function (x,p=NULL) {
     }
 }
 
+#' \name{athi$corr}
+#' \alias{athi$corr}
+#' \alias{athi_corr}
+#' \title{ Pairwise correlations for a matrix or data frame with estimate, p-values and confidence intervals }
+#' \description{
+#'     Method to determine pairwise correlations and their statistical properties.
+#' }
+#' \usage{ athi_corr(x,method='pearson',use='pairwise.complete.obs') }
+#' \arguments{
+#'    \item{x}{matrix or data frame where the variables are in the columns, NAs are allowed.}
+#'    \item{method}{type of correlation to be determined, either 'pearson', 'spearman' or 'kendall', default: 'pearson'}
+#'    \item{use}{how to deal with NA's, default: 'pairwise.complete.obs'}
+#' }
+#' \value{Returns list with the following components:
+#' \itemize{
+#'    \item estimate - matrix with correlation values
+#'    \item p.value - matrix with p-values
+#'    \item lower - lower range of the 95 percent confidence interval
+#'    \item upper - upper range of the 95 percent confidence interval
+#'    \item method - character string with the used correlation method
+#' }
+#' }
+#' \details{
+#' This function is an extension to the `cor` function as it as well calculates all p-values and the confidence intervals for the
+#' correlation coefficient.
+#' }
+#' \examples{
+#' data(swiss)
+#' res=athi$corr(swiss)
+#' ls(res)
+#' lapply(res[1:2],round,2)
+#' }
+#' \seealso{
+#'    \link[athi:athi-class]{athi-class} 
+#' }
+
+athi$corr <- function (x,method='pearson',use='pairwise.complete.obs') {
+    mt=matrix(0,nrow=ncol(x),ncol=ncol(x))
+    colnames(mt)=rownames(mt)=colnames(x)
+    mt.pval=mt
+    mt.lower=mt
+    mt.upper=mt    
+    diag(mt)=1
+    for (i in 1:(ncol(x)-1)) {
+        for (j in i:ncol(x)) {
+            rt=cor.test(x[,i],x[,j],
+                        method=method,use=use)
+            mt[i,j]=mt[j,i]=rt$estimate
+            mt.pval[i,j]=mt.pval[j,i]=rt$p.value
+            mt.lower[i,j]=mt.lower[j,i]=rt$conf.int[1]
+            mt.upper[i,j]=mt.upper[j,i]=rt$conf.int[2]
+        }
+    }
+    return(list(estimate=mt,p.value=mt.pval,lower=mt.lower,upper=mt.upper,method=method))
+}
 
 #' \name{athi$mds_plot}
 #' \alias{athi$mds_plot}
@@ -967,6 +1028,7 @@ athi$randomize <- function (x) {
 athi_cdist = athi$cdist
 athi_cohensD = athi$cohensD
 athi_cohensW = athi$cohensW
+athi_corr = athi$corr
 athi_df2md = athi$df2md
 athi_impute = athi$impute
 athi_introNAs = athi$introNAs
