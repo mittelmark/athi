@@ -793,6 +793,88 @@ athi$lm_plot = function (x,y=NULL, data=NULL,col="blue",pch=19,col.lm="red",col.
      }
 }
 
+#' \name{athi$qr_plot}
+#' \alias{athi$qr_plot}
+#' \alias{athi_qr_plot}
+#' \title{ Plot quantile regression models }
+#' \description{
+#'     This is a convinience method to plot quantile regression models and giving
+#'     optional percentile intervals for a given range of predictions.
+#'     The slope and the intercept for the different quantiles are returned as well if requested.
+#' }
+#' \usage{ athi_qr_plot(x,data,quantiles=c(0.05,0.1,0.5,0.9,0.95),pred=NULL,plot=TRUE,...)} 
+#' \arguments{
+#'   \item{x}{
+#'     formula for two numerical variables
+#'   }
+#'   \item{data}{
+#'     data frame containing the variables for the formula
+#'   }
+#'   \item{quantiles}{
+#'     the requested quantiles, default: c(0.05,0.1,0.5,0.9,0.95)
+#'   }
+#'   \item{pred}{
+#'     vector for prediction values, default: NULL
+#'   }
+#'   \item{plot}{
+#'     should the data being plotted, default: TRUE
+#'   }
+#'   \item{\ldots}{other arguments which will be forwarded to the plot function}
+#' }
+#' \value{returns list with intercept and coefficients if requested (invisible)}
+#' \examples{
+#' data(iris) 
+#' athi$qr_plot(Sepal.Width ~ Sepal.Length,data=iris[51:151,])
+#' res=athi$qr_plot(Sepal.Width ~ Sepal.Length,data=iris[51:151,],pred=c(5,5.5,6,6.5,7,7.5,8))
+#' res$centiles
+#' res$coef
+#' }
+#' \seealso{
+#'    \link[athi:athi-class]{athi-class}, \link[athi:athi_lm_plot]{athi$lm_plot}
+#' }
+#'
+
+
+athi$qr_plot = function (x,data,quantiles=c(0.05,0.1,0.5,0.9,0.95),
+                         pred=NULL,plot=TRUE,...) {
+    if (!requireNamespace("quantreg")) {
+        stop("Error: quantile regression needs package quantreg!")
+    }
+    seq=quantiles
+    if (!is.null(pred[1])) {
+        df=data.frame(y=pred)
+        for (i in seq) {
+            df=cbind(df,new=rep(0,nrow(df)))
+            colnames(df)[ncol(df)]=paste("Perc",i,sep="_")
+        }
+    }
+    multi_rqfit <- quantreg::rq(x, data = data, tau = seq)
+    colors <- c("#ffe6e6", "#cca6a6", "#993333", "#cca6a6", "#ffe6e6")
+    ltys=c(3,2,1,2,3)
+    if (plot) {
+        plot(x, data = data, pch = 16, ...)
+        #print(multi_rqfit$coefficients)
+        for (j in 1:ncol(multi_rqfit$coefficients)) {
+            abline(coef(multi_rqfit)[, j], col = colors[j],lty=ltys[j],lwd=2)
+        }
+    }
+    if (!is.null(pred[1])) {
+        i = 1
+        for (p in pred) {
+            for (j in 1:ncol(multi_rqfit$coefficients)) {
+                val=coef(multi_rqfit)[1, j]+p*coef(multi_rqfit)[2, j]
+                df[i,j+1]=val
+            }
+            i=i+1
+        }
+    }
+    if (!is.null(pred)[1]) {
+        invisible(list(coef=coef(multi_rqfit),centiles=df))
+    } else {
+        invisible(list(coef=coef(multi_rqfit)))
+    }
+}
+
 #' \name{athi$ref_table}
 #' \alias{athi$ref_table}
 #' \alias{athi_ref_table}
@@ -1289,6 +1371,7 @@ athi_impute = athi$impute
 athi_introNAs = athi$introNAs
 athi_lm_plot = athi$lm_plot
 athi_mds_plot = athi$mds_plot
+athi_qr_plot = athi$qr_plot
 athi_ref_score = athi$ref_score
 athi_ref_table = athi$ref_table
 athi_report_pvalue = athi$report_pvalue
