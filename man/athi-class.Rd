@@ -9,6 +9,7 @@ the Guelpe Summer school Human Biology and Publich Health - Data Analysis and St
 \details{ 
 \describe{ 
   \item{\link[athi:athi_assoc_plot]{athi$assoc_plot(x,legend=NULL,shade=TRUE)}}{Extended version of the assocplot with main statistic and Pearson residuals.} 
+  \item{\link[athi:athi_bootstrap]{athi$bootstrap(x,FUN=NULL,n=1000,...)}}{Perform a resampling for the given data set and function.} 
   \item{\link[athi:athi_box_plot]{athi$box_plot(x,y=NULL)}}{Extended version of the boxplot with main statistic values on top.} 
   \item{\link[athi:athi_cdist]{athi$cdist(x,method="spearman",type="abs")}}{Calculate correlation distances.} 
   \item{\link[athi:athi_cohensD]{athi$cohensD(x,g,paired=FALSE)}}{Calculate effect size for difference between two means.} 
