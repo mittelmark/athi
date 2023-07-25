@@ -111,6 +111,56 @@ athi$assoc_plot <- function (x,legend=TRUE,shade=TRUE,...) {
    }
     
 }
+#' \name{athi$bootstrap}
+#' \alias{athi$bootstrap}
+#' \alias{athi_bootstrap}
+#' \title{ Perform a resampling for the given data set and function. }
+#' \description{
+#'   The function allows you to perform a resampling method without replacement to perform
+#'   a boostrap analysis for instance to cmpute a p-value or a confidence interval.
+#' }
+#' \usage{ athi_bootstrap(x,FUN=NULL,n=1000,...) }
+#' \arguments{
+#'    \item{x}{a vector, a data frame or a matrix}
+#'    \item{FUN}{function handling the given data set type but performing before executing  FUN a sampling with replacement, please note that the function must return a scalar value}
+#'    \item{n}{ number of resamplings to perform, default: 100}
+#'    \item{\ldots}{remaining arguments are delegated to the given function `FUN`}
+#' }
+#' \value{vector with the resampled values from the given function}
+#' \examples{
+#'   rn=rnorm(100,mean=10,sd=2)
+#'   t.test(rn)$conf.int
+#'   vals=athi$bootstrap(rn,FUN=mean)
+#'   summary(vals)
+#'   quantile(vals,c(0.025,0.975)) # 95% CI is very close
+#'   # confidence interval for spearman correlation
+#'   cor.test(swiss[,1],swiss[,2],method="spearman")
+#'   vals=athi$bootstrap(swiss[,c(1,2)],
+#'        FUN=function(x) cor(x[,1],x[,2],method="spearman"))
+#'   summary(vals)
+#'   quantile(vals,c(0.025,0.975)) # 95% CI shows insignifcant
+#' }
+#' \seealso{
+#'    \link[athi:athi-class]{athi-class}
+#' }
+#' 
+#'
+athi$bootstrap <- function (x,FUN=NULL,n=1000,...) {
+    if (class(FUN)!="function") {
+        stop("Error: Argument FUN with a function is missing!")
+    }
+    vals=c()
+    for (i in 1:n) {
+        if (is.matrix(x) | is.data.frame(x))  {
+            idx=sample(1:nrow(x),nrow(x),replace=TRUE)
+            vals=c(vals,FUN(x[idx,],...))
+        } else {
+            idx=sample(1:length(x),length(x),replace=TRUE)
+            vals=c(vals,FUN(x[idx],...))
+        }
+    }
+    return(vals)
+}
 
 #' \name{athi$box_plot}
 #' \alias{athi$box_plot}
@@ -1398,6 +1448,7 @@ athi$randomize <- function (x) {
 }
 
 athi_assoc_plot = athi$assoc_plot
+athi_bootstrap = athi$bootstrap
 athi_box_plot = athi$box_plot
 athi_cdist = athi$cdist
 athi_cohensD = athi$cohensD
@@ -1405,6 +1456,7 @@ athi_cohensW = athi$cohensW
 athi_corr = athi$corr
 athi_cor_plot = athi$cor_plot
 athi_df2md = athi$df2md
+athi_drop_na = athi$drop_na
 athi_eta_squared = athi$eta_squared
 athi_impute = athi$impute
 athi_introNAs = athi$introNAs
