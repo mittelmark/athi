@@ -133,7 +133,7 @@ round(athi$cdist(t(iris[,1:4])),2)
 round(athi$cdist(t(iris[,1:4]),method="spearman",type="square"),2)
 ```
 
-## athi$chr2ord
+### athi$chr2ord
 
 Map characters or factors to numbers.
 
@@ -230,7 +230,10 @@ confidence intervals.
 
 Method to determine pairwise correlations and their statistical properties.
 This function is an extension to the `cor` function as it as well calculates all p-values and the confidence intervals for the
-correlation coefficient.
+correlation coefficient. 
+
+The confidence  interval for the Spearman  correlation is calculated using the
+Fisher transformation, see [https://en.wikipedia.org/wiki/Fisher_transformation](https://en.wikipedia.org/wiki/Fisher_transformation).
 
 Usage: *athi_corr(x,method='pearson',use='pairwise.complete.obs')*
 
@@ -276,6 +279,45 @@ cr=athi$corr(sw,method='spearman')
 athi$corr_plot(cr$estimate,cex.sym=8,text.lower=TRUE,
    cex.r=1.5,p.mat=cr$p.value)
 options(warn=0)
+```
+
+### athi$cv
+
+Calculate the coefficient of variation.
+
+Usage: *athi_cv(x,na.rm=FALSE)*
+
+```{r}
+cv=athi$cv
+cv(rnorm(20,mean=100,sd=4))
+cv(c(1,2,3,4))
+cv(c(1,2,3,4,NA))
+cv(c(1,2,3,4,NA),na.rm=TRUE)
+```
+
+### athi$epsilon_squared
+
+Effect sizes measure for Kruskal test.
+
+Calculate the effect size epsilon-squared for variables of a kruskal.test
+The function `athi$epsilon_squared` calculates the effect size for a Kruskal test.
+Cohen's rule of thumb for interpretation is: around 0.01 small, around 0.09 medium and around 0.25 or higher we have a large effect.
+You can convert Epsilon-squared to a Pearson r coefficient by using the sqrt of The Epsilon-square value.
+
+Please note that these rules of thumb are not useful for highly dependent outcome 
+variables (death for instance) these rules might not be useful and as well lower
+values might be of practical relevance.
+
+Usage: *athi_epsilon_squared(x,y)*
+
+```{r}
+data(iris)
+athi$epsilon_squared(iris$Sepal.Length,iris$Species)
+# two factor example as well for wilcox.test possible
+data(ToothGrowth)
+athi$epsilon_squared(ToothGrowth$len,as.factor(ToothGrowth$dose))
+# close to r-square of spearman!
+cor(ToothGrowth$len,ToothGrowth$dose,method="spearman")^2
 ```
 
 ### athi$eta_squared

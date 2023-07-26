@@ -11,7 +11,7 @@ Calculate the effect size for an ANOVA or a linear model with two variables.
 \item{y}{either a factor variable or NULL if x is given as model,default: NULL} 
 } 
 \details{ 
- The function `athi$eta_squared` (omega) calculates the effect size for an ANOVA. 
+ The function `athi$eta_squared` calculates the effect size for an ANOVA. 
  Cohen's rule of thumb for interpretation is: around 0.01 small, around 0.09 medium and around 0.25 or higher we have a large effect. 
  You can convert Eta-squared to a Pearson r coefficient by using the sqrt of eta-square. 
  
@@ -29,6 +29,7 @@ etaSquared(aov(iris$Sepal.Length ~ iris$Species))
 etaSquared(aov(Sepal.Length ~ Species+Sepal.Width+Petal.Length,data=iris)) 
 } 
 \seealso{ 
-   \link[athi:athi-class]{athi-class},\link[athi:athi_cohensD]{athi$cohensD}, \link[athi:athi_cohensW]{athi$cohensW}  
+   \link[athi:athi-class]{athi-class},\link[athi:athi_cohensD]{athi$cohensD}, 
+   \link[athi:athi_cohensW]{athi$cohensW}, \link[athi:athi_epsilon_squared]{athi$epsilon_squared}    
 } 
  
