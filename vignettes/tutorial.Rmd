@@ -224,6 +224,47 @@ ls(res)
 lapply(res[1:4],round,2)
 ```
 
+### athi$cor_plot
+
+visualize a correlation with abline and main statistics.
+
+This function is plotting the standard xy-plot for two numerical variables and adds on top the 
+the main statistics, like the r-value, the confidence interval and the significance level.
+
+Usage: *athi_cor_plot(x,y,method="pearson",col='blue',grid=TRUE,main=NULL,pch=19,...)*
+
+```{r fig.width=6,fig.height=4}
+data(swiss)
+athi$cor_plot(swiss$Fertility,swiss$Agriculture,
+     xlab="Fertility",ylab="Agriculture")
+```
+
+### athi$eta_squared
+
+Effect sizes measure for ANOVA.
+
+Calculate the effect size for an ANOVA or a linear model with two variables.
+
+The function `athi$eta_squared` (omega) calculates the effect size for an ANOVA.
+Cohen's rule of thumb for interpretation is: around 0.01 small, around 0.09 medium and around 0.25 or higher we have a large effect.
+You can convert Eta-squared to a Pearson r coefficient by using the sqrt of eta-square.
+
+Please note that these rules of thumb are not useful for highly dependent outcome 
+variables (death for instance) these rules might not be useful and as well lower
+values might be of practical relevance.
+
+Usage: *athi_eta_squared(x,y=NULL)*
+ 
+```{r}
+data(iris)
+etaSquared=athi$eta_squared
+etaSquared(iris$Sepal.Length,iris$Species)
+etaSquared(lm(iris$Sepal.Length ~ iris$Species))
+summary(lm(iris$Sepal.Length ~ iris$Species))
+etaSquared(aov(iris$Sepal.Length ~ iris$Species))
+etaSquared(aov(Sepal.Length ~ Species+Sepal.Width+Petal.Length,data=iris))
+```
+
 ## Table Example
 
 ```{r results="asis"}
