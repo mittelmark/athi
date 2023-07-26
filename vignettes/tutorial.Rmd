@@ -1,7 +1,7 @@
 ---
-title: "Vignette for the package ..."
-author: Max Musterman
-date: 2023-02-05
+title: "Vignette for the functions of the athi package"
+author: Detlef Groth, University of Potsdam, Germany
+date: 2023-07-26
 output: 
     rmarkdown::html_vignette:
         toc: true
@@ -17,23 +17,151 @@ library(knitr)
 
 ## Introduction
 
-Below you find example code for the package...
+Below you find example code for the package for most of the  functions  which
+should illustrate on how to use them.
+
+You first should load the package using the standard  `library`  function. All
+functions are provided  within an  environment  `athi` to see what methods are
+available you can use the `ls` command:
 
 ```{r}
-x=1
-print(x)
+library(athi)
+ls(athi)
 ```
 
-## Plot example
+Alternatively all functions have copies using the athi-underline  prefix which
+you can as well view like this:
 
-```{r fig=TRUE,fig.width=9,fig.height=6}
+```{r}
+ls(pattern="athi_")
+```
+
+The  advantage of the  environment  athi is, that you can easily extend it by
+adding  your own data and  functions  to it. It is then  possible to save this
+file  as RDS and to give it to  someone  else or as a  supplement  for a paper
+without the need to create a full package.
+
+Here an example:
+
+```{r}
+athi$hello = function () { print("Hello World") }
 data(iris)
-par(mfrow=c(1,2),mai=rep(0.8,4))
-plot(iris$Sepal.Width~iris$Sepal.Length,
-    col=as.numeric(iris$Species)+1,pch=15)
-plot(iris$Petal.Width~iris$Petal.Length,
-    col=as.numeric(iris$Species)+1,pch=15)
+athi$data_iris = iris
+ls(athi)
 ```
+
+You      can       save       this       extended       environment       with
+`saveRDS(athi,file="athi-extended.RDS")`  and you can  load  this  environment
+then on other computer using the command `athi=readRDS("athi-extened.RDS")`
+
+
+## Functions 
+
+### athi$assoc_plot
+
+Create an association plot with Pearson residual coloring and legend.
+
+This function updates the standard assocplot function from the graphics package 
+with the ability to display residual colors. In blue and red are shown groups with 
+residuals  above +4 or below -4 in light colors are shown residuals  between 2
+and 4 for positive and -4 and -2 for negative  residuals.  At the bottom there
+is the residual legend shown as well as the P-value for the Chisq-test and the
+effect size measure Cohen's d.
+
+Usage: *athi_assoc_plot(x,legend=TRUE,shade=TRUE,...)*
+
+```{r fig=TRUE,fig.width=8,fig.height=4}
+x <- margin.table(HairEyeColor, c(1, 2))
+athi$assoc_plot(x)
+```
+
+### athi$bootstrap
+
+Perform a resampling for the given data set and function. 
+
+The function allows you to perform a resampling method without replacement to perform
+a boostrap analysis for instance to cmpute a p-value or a confidence interval.
+
+Usage: *athi_bootstrap(x,FUN=NULL,n=1000,...)*
+
+```{r}
+rn=rnorm(100,mean=10,sd=2)
+t.test(rn)$conf.int
+vals=athi$bootstrap(rn,FUN=mean)
+summary(vals)
+quantile(vals,c(0.025,0.975)) # 95% CI is very close
+### confidence interval for spearman correlation
+cor.test(swiss[,1],swiss[,2],method="spearman")
+vals=athi$bootstrap(swiss[,c(1,2)],
+      FUN=function(x) cor(x[,1],x[,2],method="spearman"))
+summary(vals)
+### insignificant as it crosses zero
+quantile(vals,c(0.025,0.975)) # 95% CI shows insignifcant
+```
+
+### athi$box_plot
+
+Visualize a mean comparison with boxplot and main statistics.
+
+This function is plotting the standard boxplot for a numerical data against a factor variabl and adds on top the 
+the main statistics, like the Cohen's d, or the Eta-squared value, the significance level and for t-tests the  
+confidence interval as well.
+
+Usage: *athi_box_plot(x,y=NULL,data=NULL,col='grey80',grid=TRUE,main=NULL,...)*
+
+```{r fig.width=6,fig.height=4}
+data(iris)
+athi$box_plot(Sepal.Length ~ Species, data=iris,col=2:4)
+```
+
+### athi$cdist
+
+Correlation  distances  between  two  vectors or for all  variable  pairs in a
+matrix.
+
+Usage: *athi_cdist(x,method="pearson",type="abs")*
+
+```{r}
+### Euclidean distance
+round(dist(t(scale(iris[,1:4]))),2)
+### Correlation distance
+round(athi$cdist(t(iris[,1:4])),2)
+round(athi$cdist(t(iris[,1:4]),method="spearman",type="square"),2)
+```
+
+### athi$cohensD
+
+Effect sizes measure for difference between two means.
+
+Calculate the effect size for the difference between two means, divided by the pooled standard deviation.
+
+The function cohensD calculates the effect size for the difference between two means.
+Due to Cohen's rule of thumb values of around 0.2 are considered to stand 
+for small effects, values of around 0.5 represent medium effects and values of around 0.8 
+and larger represent large effects. 
+
+Please note that these rules of thumb are not useful for highly dependent 
+outcome variables (death for instance) these rules might not be useful and as 
+well lower values might be of practical relevance.
+
+Usage: *athi_cohensD(x,g,paired=FALSE)*
+ 
+```{r}
+cohensD=athi$cohensD
+set.seed(125)
+data(sleep)
+with(sleep,cohensD(extra,group))
+x1=rnorm(100,mean=20,sd=1)
+x2=rnorm(100,mean=22,sd=1)
+g1=rep('A',100)
+g2=rep('B',100)
+### difference should be around 2SD
+cohensD(c(x1,x2),as.factor(c(g1,g2)))
+### biseriell correlation coefficient as alternative
+### value is as well large
+cor(c(x1,x2),as.numeric(as.factor(c(g1,g2))))
+```
+
 
 ## Table Example
 
