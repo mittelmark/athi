@@ -21,6 +21,7 @@
 #'   \item{\link[athi:athi_corr_plot]{athi$corr_plot(x,...)}}{Plot matrices with pairwise correlations.}
 #'   \item{\link[athi:athi_df2md]{athi$df2md(x,caption='',rownames=TRUE)}}{Print a matrix or data frame as a Markdown table}
 #'   \item{\link[athi:athi_drop_na]{athi$drop_na(x,cols=NULL)}}{Dro rows if the given columns contain NA's in this row.}
+#'   \item{\link[athi:athi_epsilon_squared]{athi$epsilon_squared(x,y)}}{Calculate effect size for Kruskal test.}
 #'   \item{\link[athi:athi_eta_squared]{athi$eta_squared(x,y=NULL)}}{Calculate effect size for ANOVA.}
 #'   \item{\link[athi:athi_impute]{athi$impute(x,method="rpart",k=5,cor.method="spearman")}}{impute missing values.}
 #'   \item{\link[athi:athi_introNAs]{athi$introNAs(x,prop="0.05")}}{introduce missing values.}
@@ -652,6 +653,85 @@ athi$corr_plot <- function (mt,text.lower=TRUE, text.upper=FALSE,
     }
 }
 
+#' \name{athi$cv}
+#' \alias{athi$cv}
+#' \alias{athi_cv}
+#' \title{ coefficient of variation}
+#' \description{
+#' Calculate the coefficient of variation.
+#' }
+#' \usage{ athi_cv(x,na.rm=FALSE) }
+#' \arguments{
+#' \item{x}{vector with positive numerical values}
+#' \item{na.rm}{should NA's be removed, default: FALSE}
+#' }
+#' \value{numerical value for the coefficient of variation}
+#' \examples{
+#' cv=athi$cv
+#' cv(rnorm(20,mean=100,sd=4))
+#' cv(c(1,2,3,4))
+#' cv(c(1,2,3,4,NA))
+#' cv(c(1,2,3,4,NA),na.rm=TRUE)
+#' }
+#' \seealso{
+#'    \link[athi:athi-class]{athi-class}
+#' }
+#'
+
+athi$cv <- function (x,na.rm=FALSE) {
+    cv=100*sd(x,na.rm=na.rm)/mean(x,na.rm=na.rm)
+    return(cv)
+}
+#' \name{athi$epsilon_squared}
+#' \alias{athi$epsilon_squared}
+#' \alias{athi_epsilon_squared}
+#' \title{ Effect sizes measure for Kruskal test }
+#' \description{
+#' Calculate the effect size epsilon-squared for variables of a kruskal.test
+#' }
+#' \usage{ athi_epsilon_squared(x,y) }
+#' \arguments{
+#' \item{x}{vector with numerical values}
+#' \item{y}{vector with factor values}
+#' }
+#' \details{
+#'  The function `athi$epsilon_squared` calculates the effect size for a Kruskal test.
+#'  Cohen's rule of thumb for interpretation is: around 0.01 small, around 0.09 medium and around 0.25 or higher we have a large effect.
+#'  You can convert Epsilon-squared to a Pearson r coefficient by using the sqrt of The Epsilon-square value.
+#' 
+#' Please note that these rules of thumb are not useful for highly dependent outcome 
+#' variables (death for instance) these rules might not be useful and as well lower
+#' values might be of practical relevance.
+#' }
+#' \value{numerical value, effect size Epsilon-squared}
+#' \examples{
+#' data(iris)
+#' athi$epsilon_squared(iris$Sepal.Length,iris$Species)
+#' # two factor example as well for wilcox.test possible
+#' data(ToothGrowth)
+#' athi$epsilon_squared(ToothGrowth$len,as.factor(ToothGrowth$dose))
+#' # close to r-square of spearman!
+#' cor(ToothGrowth$len,ToothGrowth$dose,method="spearman")^2
+#' }
+#' 
+#' \seealso{
+#'    \link[athi:athi-class]{athi-class},\link[athi:athi_cohensD]{athi$cohensD}, 
+#'     \link[athi:athi_cohensW]{athi$cohensW}, \link[athi:athi_eta_squared]{athi$eta_squared}  
+#' }
+#' 
+
+athi$epsilon_squared <- function (x,y) {
+    if (class(y) %in% c("numeric","integer")) {
+        H=unname(kruskal.test(list(x,y))$statistic)
+        n=length(x[which(!is.na(x) & !is.na(y))])
+    }  else {
+        H=unname(kruskal.test(x ~ y)$statistic)
+        n=sum(table(x,y)) # get rid of NAs
+    }    
+    es=H/((n^2-1)/(n+1))
+    return(unlist(es))
+}
+
 #' \name{athi$eta_squared}
 #' \alias{athi$eta_squared}
 #' \alias{athi_eta_squared}
@@ -665,7 +745,7 @@ athi$corr_plot <- function (mt,text.lower=TRUE, text.upper=FALSE,
 #' \item{y}{either a factor variable or NULL if x is given as model,default: NULL}
 #' }
 #' \details{
-#'  The function `athi$eta_squared` (omega) calculates the effect size for an ANOVA.
+#'  The function `athi$eta_squared` calculates the effect size for an ANOVA.
 #'  Cohen's rule of thumb for interpretation is: around 0.01 small, around 0.09 medium and around 0.25 or higher we have a large effect.
 #'  You can convert Eta-squared to a Pearson r coefficient by using the sqrt of eta-square.
 #' 
@@ -683,7 +763,8 @@ athi$corr_plot <- function (mt,text.lower=TRUE, text.upper=FALSE,
 #' etaSquared(aov(Sepal.Length ~ Species+Sepal.Width+Petal.Length,data=iris))
 #' }
 #' \seealso{
-#'    \link[athi:athi-class]{athi-class},\link[athi:athi_cohensD]{athi$cohensD}, \link[athi:athi_cohensW]{athi$cohensW} 
+#'    \link[athi:athi-class]{athi-class},\link[athi:athi_cohensD]{athi$cohensD},
+#'    \link[athi:athi_cohensW]{athi$cohensW}, \link[athi:athi_epsilon_squared]{athi$epsilon_squared}   
 #' }
 #'
 
@@ -1590,8 +1671,10 @@ athi_cohensW = athi$cohensW
 athi_corr = athi$corr
 athi_cor_plot = athi$cor_plot
 athi_corr_plot = athi$corr_plot
+athi_cv = athi$cv
 athi_df2md = athi$df2md
 athi_drop_na = athi$drop_na
+athi_epsilon_squared = athi$epsilon_squared
 athi_eta_squared = athi$eta_squared
 athi_impute = athi$impute
 athi_introNAs = athi$introNAs
