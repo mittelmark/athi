@@ -12,6 +12,7 @@
 #'   \item{\link[athi:athi_assoc_plot]{athi$assoc_plot(x,legend=NULL,shade=TRUE)}}{Extended version of the assocplot with main statistic and Pearson residuals.}
 #'   \item{\link[athi:athi_bootstrap]{athi$bootstrap(x,FUN=NULL,n=1000,...)}}{Perform a resampling for the given data set and function.}
 #'   \item{\link[athi:athi_box_plot]{athi$box_plot(x,y=NULL)}}{Extended version of the boxplot with main statistic values on top.}
+#'   \item{\link[athi:athi_chr2ord]{athi$chr2ord(x,map)}}{Map characters or factors to numbers with comfort.}
 #'   \item{\link[athi:athi_cdist]{athi$cdist(x,method="spearman",type="abs")}}{Calculate correlation distances.}
 #'   \item{\link[athi:athi_cohensD]{athi$cohensD(x,g,paired=FALSE)}}{Calculate effect size for difference between two means.}
 #'   \item{\link[athi:athi_cohensW]{athi$cohensW(x,p=NULL)}}{Calculate effect size for categorical data.}
@@ -277,6 +278,38 @@ athi$cdist <- function (x,method="pearson",type="abs") {
     }
     return(D)
 }
+
+#' \name{athi$chr2ord}
+#' \alias{athi$chr2ord}
+#' \alias{athi_chr2ord}
+#' \title{ Map characters or factors to numbers }
+#' \description{
+#'     Create ordinal numerical variables out of character or factor variables based on a given mapping.
+#' }
+#' \usage{ athi_chr2ord(x,map) }
+#' \arguments{
+#'  \item{x}{character or factor vector}
+#'  \item{map}{list with keys for the given x vector and numbers for the matching values}
+#' }
+#' \value{numerical values for the mapping}
+#' \examples{
+#' status=c("never","rare","often","always")
+#' x=sample(status,100,replace=TRUE)
+#' x=c(NA,x,NA)
+#' table(x,useNA='ifany')
+#' map=c(never=0, rare=1, often=2,always=3)
+#' table(athi$chr2ord(x,map),useNA='ifany')
+#' }
+
+athi$chr2ord = function (x,map) {
+   return(unlist(lapply(as.character(x),function(x) {
+        if (is.na(x)) { return(NA) }
+          return(map[[x]])
+    }
+   )))
+}
+    
+
 #' \name{athi$cohensD}
 #' \alias{athi$cohensD}
 #' \alias{athi_cohensD}
@@ -1550,6 +1583,7 @@ athi_assoc_plot = athi$assoc_plot
 athi_bootstrap = athi$bootstrap
 athi_box_plot = athi$box_plot
 athi_cdist = athi$cdist
+athi_chr2ord = athi$chr2ord
 athi_cohensD = athi$cohensD
 athi_cohensW = athi$cohensW
 athi_corr = athi$corr
