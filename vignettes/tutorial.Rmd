@@ -239,6 +239,26 @@ athi$cor_plot(swiss$Fertility,swiss$Agriculture,
      xlab="Fertility",ylab="Agriculture")
 ```
 
+### athi$corr_plot
+
+Visualize a correlation matrix
+
+This function is plotting the pairwise correlations for the given
+symmetric correlation matrix.
+
+Usage: *athi_corr_plot(mt,text.lower=TRUE, text.upper=FALSE, pch=19,p.mat=NULL,alpha=0.05, cex.sym=5,cex.r=1,cex.lab=1.4,...)*
+
+```{r fig=TRUE,fig.width=6,fig.height=4}
+data(swiss)
+sw=swiss
+colnames(sw)=abbreviate(colnames(swiss),6)
+options(warn=-1) # avoid spearman warnings
+cr=athi$corr(sw,method='spearman')
+athi$corr_plot(cr$estimate,cex.sym=8,text.lower=TRUE,
+   cex.r=1.5,p.mat=cr$p.value)
+options(warn=0)
+```
+
 ### athi$eta_squared
 
 Effect sizes measure for ANOVA.

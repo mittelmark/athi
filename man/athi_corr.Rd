@@ -15,8 +15,8 @@
 \itemize{ 
    \item estimate - matrix with correlation values 
    \item p.value - matrix with p-values 
-   \item lower - lower range of the 95 percent confidence interval 
-   \item upper - upper range of the 95 percent confidence interval 
+   \item lower - lower range of the 95 percent confidence interval (for method Pearson and Spearman) 
+   \item upper - upper range of the 95 percent confidence interval (for methods Pearson and Spearman) 
    \item method - character string with the used correlation method 
 } 
 } 

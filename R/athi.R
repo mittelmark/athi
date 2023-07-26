@@ -437,8 +437,8 @@ athi$cohensW <- function (x,p=NULL) {
 #' \itemize{
 #'    \item estimate - matrix with correlation values
 #'    \item p.value - matrix with p-values
-#'    \item lower - lower range of the 95 percent confidence interval
-#'    \item upper - upper range of the 95 percent confidence interval
+#'    \item lower - lower range of the 95 percent confidence interval (for method Pearson and Spearman)
+#'    \item upper - upper range of the 95 percent confidence interval (for methods Pearson and Spearman)
 #'    \item method - character string with the used correlation method
 #' }
 #' }
@@ -469,8 +469,16 @@ athi$corr <- function (x,method='pearson',use='pairwise.complete.obs') {
                         method=method,use=use)
             mt[i,j]=mt[j,i]=rt$estimate
             mt.pval[i,j]=mt.pval[j,i]=rt$p.value
-            mt.lower[i,j]=mt.lower[j,i]=rt$conf.int[1]
-            mt.upper[i,j]=mt.upper[j,i]=rt$conf.int[2]
+            if (method == "spearman") {
+                stderr = 1/sqrt(nrow(stats::na.omit(x[,c(i,j)]))-3)
+                delta = 1.96*stderr
+                mt.lower[i,j]=mt.lower[j,i]=tanh(atanh(rt$estimate) - delta)
+                mt.upper[i,j]=mt.upper[j,i]=tanh(atanh(rt$estimate) + delta)
+            } else if (method == "pearson") {
+                mt.lower[i,j]=mt.lower[j,i]=rt$conf.int[1]
+                mt.upper[i,j]=mt.upper[j,i]=rt$conf.int[2]
+            }
+            # TODO: Kendall ...
         }
     }
     return(list(estimate=mt,p.value=mt.pval,lower=mt.lower,upper=mt.upper,method=method))
@@ -512,13 +520,102 @@ athi$cor_plot = function (x,y,method="pearson",col='blue',grid=TRUE,main=NULL,pc
     r=paste('r = ',round(cor(x,y,method=method,
                              use="complete.obs"),2),star,sep="")
     r=paste(r," CI95%[",round(p$conf.int[1],2),",",round(p$conf.int[2],2),"]",sep="")
-    plot(x~y,main=r,col=col,pch=pch,...);
+    plot(x~y,col=col,pch=pch,...);
+    mtext(side=3,adj=1,r)
     if (grid) {
         grid()
         points(x~y,col=col,pch=pch,...)
     }
     abline(lm(x~y),col=col,lwd=2)
     box()
+}
+#' \name{athi$corr_plot}
+#' \alias{athi$corr_plot}
+#' \alias{athi_corr_plot}
+#' \title{ visualize a correlation matrix }
+#' \description{
+#'     This function is plotting the pairwise correlations for the given
+#'     symmetric correlation matrix.
+#' }
+#' \usage{ athi_corr_plot(mt,text.lower=TRUE, text.upper=FALSE,
+#'                      pch=19,p.mat=NULL,alpha=0.05,
+#'                     cex.sym=5,cex.r=1,cex.lab=1.4,...)}
+#' \arguments{
+#' \item{mt}{matrix with pairwise correlations}
+#' \item{text.lower}{should in the lower diagonal the correlation coefficient be shown, default: TRUE}
+#' \item{text.upper}{should in the upper diagonal the correlation coefficient be shown, default: FALSE}
+#' \item{pch}{the plotting symbol for the correlations, default: 19}
+#' \item{p.mat}{matrix with p-values to strike out insignificant p-values, default: NULL (not used)}
+#' \item{alpha}{significance threshold for `p.mat`, default: 0.05}
+#' \item{cex.sym}{character expansion for the correlation symbols, default: 5}
+#' \item{cex.r}{character expansion for the r-values if _text.lower_ or _text.upper_ are set to TRUE, default: 1}
+#' \item{cex.lab}{character expansion for the variable text labels, default: 1.4}
+#' \item{\ldots}{other arguments delegated to the plot function}
+#' }
+#' \value{NULL}
+#' \examples{
+#' data(swiss)
+#' sw=swiss
+#' colnames(sw)=abbreviate(colnames(swiss),6)
+#' options(warn=-1) # avoid spearman warnings
+#' cr=athi$corr(sw,method='spearman')
+#' athi$corr_plot(cr$estimate,cex.sym=8,text.lower=TRUE,
+#'    cex.r=1.5,p.mat=cr$p.value)
+#' options(warn=0)
+#' }
+#' \seealso{
+#'    \link[athi:athi-class]{athi-class}, \link[athi:athi_corr]{athi$corr}
+#' }
+#' 
+
+athi$corr_plot <- function (mt,text.lower=TRUE, text.upper=FALSE,
+                      pch=19,p.mat=NULL,alpha=0.05,
+                      cex.sym=5,cex.r=1,cex.lab=1.4,...) {
+    if (class(p.mat)[1] == 'NULL') {
+        p.mat=mt
+        p.mat[]=0
+    }
+    yend=nrow(mt)+1
+    xend=ncol(mt)+1
+    plot(1,type="n",xlab="",ylab="",axes=FALSE,
+         xlim=c(0,xend),ylim=c(nrow(mt),0),...)
+    text(1:(ncol(mt)),0.25,colnames(mt),cex=cex.lab)
+    text(0,1:nrow(mt),rownames(mt),cex=cex.lab,pos=4)
+    cols=paste("#DD3333",rev(c(15,30, 45, 60, 75, 90, "AA","BB","CC","DD")),sep="")
+    cols=c(cols,paste("#3333DD",c(15,30, 45, 60, 75, 90, "AA","BB","CC","DD"),sep=""))
+    breaks=seq(-1,1,by=0.1)                  
+    sym=identical(rownames(mt),colnames(mt))
+    for (i in 1:nrow(mt)) {
+        for (j in 1:nrow(mt)) {
+            if (sym & i == j) {
+                next
+            }   
+            coli=cut(mt[i,j],breaks=breaks,labels=1:20)
+            if (i == j & !sym & text.lower) {
+                text(i,j,round(mt[i,j],2),cex=cex.r)
+                if (p.mat[i,j]>alpha) {
+                    text(i,j,"x",cex=cex.r*2)
+                }
+
+            } else if (i < j & text.lower) {
+                text(i,j,round(mt[i,j],2),cex=cex.r)
+                if (p.mat[i,j]>alpha) {
+                    text(i,j,"x",cex=cex.r*2)
+                }
+
+            } else if (i > j & text.upper) {
+                text(i,j,round(mt[i,j],2),cex=cex.r)
+                if (p.mat[i,j]>alpha) {
+                    text(i,j,"x",cex=cex.r*2)
+                }
+            } else {
+                points(i,j,pch=pch,cex=cex.sym,col=cols[coli])
+                if (p.mat[i,j]>alpha) {
+                    text(i,j,"x",cex=cex.sym*0.3)
+                }
+            }
+        }
+    }
 }
 
 #' \name{athi$eta_squared}
@@ -1457,6 +1554,7 @@ athi_cohensD = athi$cohensD
 athi_cohensW = athi$cohensW
 athi_corr = athi$corr
 athi_cor_plot = athi$cor_plot
+athi_corr_plot = athi$corr_plot
 athi_df2md = athi$df2md
 athi_drop_na = athi$drop_na
 athi_eta_squared = athi$eta_squared
