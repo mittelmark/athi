@@ -25,6 +25,7 @@
 #'   \item{\link[athi:athi_eta_squared]{athi$eta_squared(x,y=NULL)}}{Calculate effect size for ANOVA.}
 #'   \item{\link[athi:athi_fmt]{athi$fmt(x,...)}}{Formtted string output.}
 #'   \item{\link[athi:athi_impute]{athi$impute(x,method="rpart",k=5,cor.method="spearman")}}{impute missing values.}
+#'   \item{\link[athi:athi_input]{athi$input(prompt)}}{Readline replacement for scripts.}
 #'   \item{\link[athi:athi_introNAs]{athi$introNAs(x,prop="0.05")}}{introduce missing values.}
 #'   \item{\link[athi:athi_lm_plot]{athi$lm_plot(x,y=NULL,data=NULL,...)}}{plot a linear model with confidence intervals.}
 #'   \item{\link[athi:athi_mds_plot]{athi$mds_plot(x,method="euclidean",...)}}{plot a multidimensional scaling.}
@@ -1015,6 +1016,40 @@ athi$fmt = function (x,...) {
     return(x)
 }
 
+#' 
+#' \name{athi$input}
+#' \alias{athi$input}
+#' \alias{athi_input}
+#' \title{ Readline line but working as well in Rscripts non-interactivly.}
+#' \description{
+#'  Replacement for the readline function in non-interactive scripts. 
+#'   As the readline function does only works in interactive mode we need an alternative.
+#' }
+#' \usage{ athi_input(prompt) }
+#' \arguments{
+#'    \item{prompt}{text displayed to ask for input of the user.character string, usually with curly braces as place holders for the variables}
+#' }
+#' \value{returns the entered string}
+#' \examples{
+#'   \dontrun{
+#'    x = as.numeric(athi$input("Enter a number: "))
+#'   }
+#' }
+#' \seealso{
+#'    \link[athi:athi-class]{athi-class} 
+#' }
+#' 
+ 
+
+athi$input = function (prompt="Enter: ") {
+    if (interactive() ){ 
+        return(readline(prompt))
+    } else {
+        cat(prompt);
+        return(readLines("stdin",n=1))
+    }
+}
+
 #' \name{athi$lm_plot}
 #' \alias{athi$lm_plot}
 #' \alias{athi_lm_plot}
@@ -1717,6 +1752,7 @@ athi_epsilon_squared = athi$epsilon_squared
 athi_eta_squared = athi$eta_squared
 athi_fmt = athi$fmt
 athi_impute = athi$impute
+athi_input = athi$input
 athi_introNAs = athi$introNAs
 athi_lm_plot = athi$lm_plot
 athi_mds_plot = athi$mds_plot

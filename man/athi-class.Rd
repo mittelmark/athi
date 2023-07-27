@@ -24,6 +24,7 @@ the Guelpe Summer school Human Biology and Publich Health - Data Analysis and St
   \item{\link[athi:athi_eta_squared]{athi$eta_squared(x,y=NULL)}}{Calculate effect size for ANOVA.} 
   \item{\link[athi:athi_fmt]{athi$fmt(x,...)}}{Formtted string output.} 
   \item{\link[athi:athi_impute]{athi$impute(x,method="rpart",k=5,cor.method="spearman")}}{impute missing values.} 
+  \item{\link[athi:athi_input]{athi$input(prompt)}}{Readline replacement for scripts.} 
   \item{\link[athi:athi_introNAs]{athi$introNAs(x,prop="0.05")}}{introduce missing values.} 
   \item{\link[athi:athi_lm_plot]{athi$lm_plot(x,y=NULL,data=NULL,...)}}{plot a linear model with confidence intervals.} 
   \item{\link[athi:athi_mds_plot]{athi$mds_plot(x,method="euclidean",...)}}{plot a multidimensional scaling.} 

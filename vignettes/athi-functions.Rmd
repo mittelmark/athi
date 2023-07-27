@@ -384,6 +384,155 @@ athi$fmt('I can say {2} {1}!',"World", "Hello")
 athi$fmt("pi is '{}'!",sprintf("%3.5f",pi))
 ```
 
+### athi$impute - impute missing values
+
+Replaces missing values with a reasonable guess by different imputation methods.
+
+This method aids in replacing missing values with a reasonable guess by different imputation methods such as 
+the simple and not recommended methods mean and median, where NA's are replaced with the 
+mean or median for this variable or the more recommended methods using rpart decision trees
+or knn using a correlation distance based k-nearest neighbor approach. 
+The rpart method can be as well used to replace missing values for categorical variables.
+In case of median and mean imputations for categorical variables the modus is used, 
+so missing values are replaced with the most often category. This is rarely reasonable.
+
+Usage: *athi_impute(x,method="rpart",k=5,cor.method="spearman")*
+
+```{r}
+data(iris)
+ir=athi$introNAs(iris[,1:4],prop=0.1)
+summary(ir)
+ir=athi$impute(ir)
+summary(ir)
+ir=iris
+ir[1,3]=NA; ir[2,4]=NA; ir[c(1,3),5]=NA
+head(ir)
+head(athi$impute(ir,method="rpart"))
+```
+
+
+### athi$input - read input from user in scripts
+
+Reads input strings from the user, even in non-interactive mode.
+
+This  function  should be used  instead of  readline in files which  should be
+started with Rscript to get inout from the user.
+
+Usage: *athi$input(prompt)*
+
+```{r eval=FALSE}
+### the code below is not evaluated
+x = athi$input("Enter a number: ")
+x = as.numeric(x)
+print(x*x)
+```
+
+### athi$introNAs - introduce some NAs into data
+
+Introduce missing values into data frames or matrices.
+
+Introduces  NA's  into  the  given  data  frame  or  matrix  with a  specified
+proportion for evaluation of imputing methods.
+
+Usage: *athi_introNAs(x,prop=0.05)*
+
+```{r}
+data(iris)
+ir=athi$introNAs(iris[,1:4],prop=0.1)
+summary(ir)
+dim(ir)
+apply(ir,2,function (x) { length(which(is.na(x))) })
+```
+
+### athi$norm - data normalization
+
+Normalizes given data frame or matrix using the choosen method.
+
+Perform data  normalization  on the current data sets such as z-score, feature
+scaling, quantile and so on.
+
+Usage: *athi_norm(x,method="z",ties.method="average")*
+
+```{r fig.width=6,fig.height=4}
+data(iris)
+ir=athi$norm(iris[,1:4],method="uv")
+apply(ir,2,sd)
+summary(ir)
+ir2=athi$norm(iris[,1:4],method="fs")
+boxplot(ir2)
+summary(athi$norm(iris[,1:4],method="q"))
+# NA's are handled as well
+ir=iris[,1:4]
+ir[2,3]=NA
+ir[1,4]=NA
+ir[3,2]=NA
+head(ir)
+head(athi$norm(ir,method="q"))
+summary(athi$norm(ir,method="q"))
+sdata=read.table(text="4 3 6 4 7
+8 1 10 5 11
+6 2 7 8 8
+9 4 12 9 12
+7 5 9 6 10
+")
+athi$norm(sdata,method="mp")
+```
+
+### athi$randomize - randomize data column wise
+
+Randomize data frame or matrix columns
+
+This function can be used to randomize the data within the same column.
+
+Usage: *athi_randomize(x)*
+
+```{r}
+data(iris)
+round(cor(iris[,1:4]),2)
+round(cor(athi$randomize(iris[,1:4])),2)
+```
+
+### athi$ref_score - age independent WHO reference scores
+
+Age corrected z-scores based on WHO references.
+
+Function to retrieve age corrected z-scores based on WHO references
+
+Usage: *athi_ref_score(x,age,sex,type)*
+
+```{r}
+athi$ref_score(100,age=4,sex="M",type="height")
+athi$ref_score(100,age=4,sex="F",type="height")
+athi$ref_score(c(100,100,100),age=c(4,4.2,4),sex=c("F","F","M"),type="height")
+head(athi$ref_table(sex="F",type="height"))
+```
+
+### athi$ref_table - WHO reference tables for childrens growth
+
+Function to retrieve WHO reference tables.
+
+Usage: *athi_ref_table(sex,type)*
+
+```{r}
+athi$ref_table(sex="M",type="height")
+head(athi$ref_table(sex="F",type="height"))
+```
+
+### athi$report_pvalue - report p-values consistently
+
+Function for reporting a p-value either giving the three alpha thresholds, 
+<0.05, <0.01, or <0.001 or using the star syntax. 
+
+Usage: *athi_report_pvalue(x,star=FALSE)*
+
+```{r}
+athi$report_pvalue(1/10000)
+athi$report_pvalue(1/10000,star=TRUE)
+athi$report_pvalue(0.02,star=TRUE)
+athi$report_pvalue(0.12,star=TRUE)
+athi$report_pvalue(c(0.001,0.01,0.3,0.02))
+```
+
 ## EOF
 
 
