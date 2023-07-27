@@ -22,6 +22,7 @@ the Guelpe Summer school Human Biology and Publich Health - Data Analysis and St
   \item{\link[athi:athi_drop_na]{athi$drop_na(x,cols=NULL)}}{Dro rows if the given columns contain NA's in this row.} 
   \item{\link[athi:athi_epsilon_squared]{athi$epsilon_squared(x,y)}}{Calculate effect size for Kruskal test.} 
   \item{\link[athi:athi_eta_squared]{athi$eta_squared(x,y=NULL)}}{Calculate effect size for ANOVA.} 
+  \item{\link[athi:athi_fmt]{athi$fmt(x,...)}}{Formtted string output.} 
   \item{\link[athi:athi_impute]{athi$impute(x,method="rpart",k=5,cor.method="spearman")}}{impute missing values.} 
   \item{\link[athi:athi_introNAs]{athi$introNAs(x,prop="0.05")}}{introduce missing values.} 
   \item{\link[athi:athi_lm_plot]{athi$lm_plot(x,y=NULL,data=NULL,...)}}{plot a linear model with confidence intervals.} 

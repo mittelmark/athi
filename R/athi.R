@@ -23,6 +23,7 @@
 #'   \item{\link[athi:athi_drop_na]{athi$drop_na(x,cols=NULL)}}{Dro rows if the given columns contain NA's in this row.}
 #'   \item{\link[athi:athi_epsilon_squared]{athi$epsilon_squared(x,y)}}{Calculate effect size for Kruskal test.}
 #'   \item{\link[athi:athi_eta_squared]{athi$eta_squared(x,y=NULL)}}{Calculate effect size for ANOVA.}
+#'   \item{\link[athi:athi_fmt]{athi$fmt(x,...)}}{Formtted string output.}
 #'   \item{\link[athi:athi_impute]{athi$impute(x,method="rpart",k=5,cor.method="spearman")}}{impute missing values.}
 #'   \item{\link[athi:athi_introNAs]{athi$introNAs(x,prop="0.05")}}{introduce missing values.}
 #'   \item{\link[athi:athi_lm_plot]{athi$lm_plot(x,y=NULL,data=NULL,...)}}{plot a linear model with confidence intervals.}
@@ -976,6 +977,44 @@ athi$drop_na = function (x,cols=NULL) {
     return(x[idx,]) 
 } 
 
+#' 
+#' \name{athi$fmt}
+#' \alias{athi$fmt}
+#' \alias{athi_fmt}
+#' \title{ Python like formatting of strings using curly braces }
+#' \description{
+#'  This is a function for formatted output avoiding a lot of quotes
+#'  during creation of strings based on variables. It mimics the Python format command.
+#' }
+#' \usage{ athi_fmt(x,...) }
+#' \arguments{
+#'    \item{x}{character string, usually with curly braces as place holders for the variables}
+#'    \item{\ldots}{variable number of arguments used to replace the curly braces within x}
+#' }
+#' \value{returns the formatted string}
+#' \examples{
+#'   athi$fmt('I can say {} {}!',"Hello", "World")
+#'   athi$fmt('I can say {2} {1}!',"World", "Hello")
+#'   athi$fmt("pi is '{}'!",sprintf("\%3.5f",pi))
+#' }
+#' \seealso{
+#'    \link[athi:athi-class]{athi-class} 
+#' }
+#' 
+
+athi$fmt = function (x,...) {
+    args=list(...);
+    if (class(args[[1]]) == 'list') {
+        args=args[[1]]
+    }
+    for (i in 1:length(args)) {
+        x=sub("\\{\\}",args[[i]],x)
+        x=sub(paste("\\{",i,"\\}",sep=''),
+                args[[i]],x)
+    }
+    return(x)
+}
+
 #' \name{athi$lm_plot}
 #' \alias{athi$lm_plot}
 #' \alias{athi_lm_plot}
@@ -1676,6 +1715,7 @@ athi_df2md = athi$df2md
 athi_drop_na = athi$drop_na
 athi_epsilon_squared = athi$epsilon_squared
 athi_eta_squared = athi$eta_squared
+athi_fmt = athi$fmt
 athi_impute = athi$impute
 athi_introNAs = athi$introNAs
 athi_lm_plot = athi$lm_plot
