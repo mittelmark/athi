@@ -9,31 +9,33 @@
 #' \format{Object of class environment with some functions for statistics}
 #' \details{
 #' \describe{
-#'   \item{\link[athi:athi_assoc_plot]{athi$assoc_plot(x,legend=NULL,shade=TRUE)}}{Extended version of the assocplot with main statistic and Pearson residuals.}
-#'   \item{\link[athi:athi_bootstrap]{athi$bootstrap(x,FUN=NULL,n=1000,...)}}{Perform a resampling for the given data set and function.}
-#'   \item{\link[athi:athi_box_plot]{athi$box_plot(x,y=NULL)}}{Extended version of the boxplot with main statistic values on top.}
-#'   \item{\link[athi:athi_chr2ord]{athi$chr2ord(x,map)}}{Map characters or factors to numbers with comfort.}
-#'   \item{\link[athi:athi_cdist]{athi$cdist(x,method="spearman",type="abs")}}{Calculate correlation distances.}
-#'   \item{\link[athi:athi_cohensD]{athi$cohensD(x,g,paired=FALSE)}}{Calculate effect size for difference between two means.}
-#'   \item{\link[athi:athi_cohensW]{athi$cohensW(x,p=NULL)}}{Calculate effect size for categorical data.}
-#'   \item{\link[athi:athi_corr]{athi$corr(x,method="pearson",use="pairwise.complete.obs")}}{Calculate pairwise correlations and the statistics.}
-#'   \item{\link[athi:athi_cor_plot]{athi$cor_plot(x,y,method="pearson",...)}}{Extended version of the xy-plot with main statistics in the title.}
-#'   \item{\link[athi:athi_corr_plot]{athi$corr_plot(x,...)}}{Plot matrices with pairwise correlations.}
-#'   \item{\link[athi:athi_df2md]{athi$df2md(x,caption='',rownames=TRUE)}}{Print a matrix or data frame as a Markdown table}
-#'   \item{\link[athi:athi_drop_na]{athi$drop_na(x,cols=NULL)}}{Dro rows if the given columns contain NA's in this row.}
-#'   \item{\link[athi:athi_epsilon_squared]{athi$epsilon_squared(x,y)}}{Calculate effect size for Kruskal test.}
-#'   \item{\link[athi:athi_eta_squared]{athi$eta_squared(x,y=NULL)}}{Calculate effect size for ANOVA.}
-#'   \item{\link[athi:athi_fmt]{athi$fmt(x,...)}}{Formtted string output.}
-#'   \item{\link[athi:athi_impute]{athi$impute(x,method="rpart",k=5,cor.method="spearman")}}{impute missing values.}
-#'   \item{\link[athi:athi_input]{athi$input(prompt)}}{Readline replacement for scripts.}
-#'   \item{\link[athi:athi_introNAs]{athi$introNAs(x,prop="0.05")}}{introduce missing values.}
-#'   \item{\link[athi:athi_lm_plot]{athi$lm_plot(x,y=NULL,data=NULL,...)}}{plot a linear model with confidence intervals.}
-#'   \item{\link[athi:athi_mds_plot]{athi$mds_plot(x,method="euclidean",...)}}{plot a multidimensional scaling.}
-#'   \item{\link[athi:athi_norm]{athi$norm(x,method="z",ties.method="average")}}{normalize data.}
-#'   \item{\link[athi:athi_randomize]{athi$randomize(x)}}{randomize column data within matrix or data frame.}
-#'   \item{\link[athi:athi_ref_score]{athi$ref_score(x,age,sex,type)}}{reference score for the given age, sex and type.}
-#'   \item{\link[athi:athi_ref_table]{athi$ref_table(sex,type)}}{reference table for WHO for the given sex and measure type.}
-#'   \item{\link[athi:athi_report_pvalue]{athi$report_pvalue(p,star=FALSE)}}{report a p-value using the significance thresholds.}
+#'   \item{\link[athi:athi_assoc_plot]{athi$assoc_plot(x,legend=NULL,shade=TRUE)}}{extended version of the assocplot with main statistic and Pearson residuals}
+#'   \item{\link[athi:athi_bootstrap]{athi$bootstrap(x,FUN=NULL,n=1000,...)}}{resampling for the given data set and function}
+#'   \item{\link[athi:athi_box_plot]{athi$box_plot(x,y=NULL)}}{extended version of the boxplot with main statistic values on top}
+#'   \item{\link[athi:athi_chr2ord]{athi$chr2ord(x,map)}}{map characters or factors to numbers with comfort}
+#'   \item{\link[athi:athi_cdist]{athi$cdist(x,method="spearman",type="abs")}}{calculate correlation distances}
+#'   \item{\link[athi:athi_cohensD]{athi$cohensD(x,g,paired=FALSE)}}{effect size for difference between two means}
+#'   \item{\link[athi:athi_cohensW]{athi$cohensW(x,p=NULL)}}{effect size for categorical data.}
+#'   \item{\link[athi:athi_corr]{athi$corr(x,method="pearson",use="pairwise.complete.obs")}}{pairwise correlations and their statistics}
+#'   \item{\link[athi:athi_cor_plot]{athi$cor_plot(x,y,method="pearson",...)}}{extended version of xy-plot with main statistics}
+#'   \item{\link[athi:athi_corr_plot]{athi$corr_plot(x,...)}}{plot matrices with pairwise correlations}
+#'   \item{\link[athi:athi_df2md]{athi$df2md(x,caption='',rownames=TRUE)}}{print a matrix or data frame as a Markdown table}
+#'   \item{\link[athi:athi_drop_na]{athi$drop_na(x,cols=NULL)}}{drop rows if the given columns contain NA's in this row for certain columns}
+#'   \item{\link[athi:athi_epsilon_squared]{athi$epsilon_squared(x,y)}}{effect size for Kruskal test}
+#'   \item{\link[athi:athi_eta_squared]{athi$eta_squared(x,y=NULL)}}{effect size for ANOVA}
+#'   \item{\link[athi:athi_fmt]{athi$fmt(x,...)}}{formatted string output}
+#'   \item{\link[athi:athi_impute]{athi$impute(x,method="rpart",k=5,cor.method="spearman")}}{impute missing values}
+#'   \item{\link[athi:athi_input]{athi$input(prompt)}}{readline replacement for scripts}
+#'   \item{\link[athi:athi_introNAs]{athi$introNAs(x,prop="0.05")}}{introduce missing values}
+#'   \item{\link[athi:athi_kroki]{athi$kroki(text,mode="ditaa",...)}}{draw diagrams and flowcharts using kroki webservice}
+#'   \item{\link[athi:athi_lm_plot]{athi$lm_plot(x,y=NULL,data=NULL,...)}}{plot a linear model with confidence intervals}
+#'   \item{\link[athi:athi_mi]{athi$mi(x,y=NULL,norm=FALSE)}}{mutual information.}
+#'   \item{\link[athi:athi_mds_plot]{athi$mds_plot(x,method="euclidean",...)}}{plot a multidimensional scaling}
+#'   \item{\link[athi:athi_norm]{athi$norm(x,method="z",ties.method="average")}}{normalize data}
+#'   \item{\link[athi:athi_randomize]{athi$randomize(x)}}{randomize column data within matrix or data frame}
+#'   \item{\link[athi:athi_ref_score]{athi$ref_score(x,age,sex,type)}}{reference score for the given age, sex and type}
+#'   \item{\link[athi:athi_ref_table]{athi$ref_table(sex,type)}}{reference table for WHO for the given sex and measure type}
+#'   \item{\link[athi:athi_report_pvalue]{athi$report_pvalue(p,star=FALSE)}}{report a p-value using the significance thresholds}
 #' }
 #' All methods are given in to forms: first they are collected in an environment `athi` which allow you to save this object for instance as
 #' a RDS file and then give it away with your analysis to allow other users to redo or extend the analysis without having to install the library. 
@@ -1050,6 +1052,100 @@ athi$input = function (prompt="Enter: ") {
     }
 }
 
+#' \name{athi$kroki}
+#' \alias{athi$kroki}
+#' \alias{athi_kroki}
+#' \title{ Create diagrams using the kroki online service. }
+#' \description{
+#'  This function creates an URL which can be easily embedded into Markdown code for displaying
+#'   diagrams supported by the online tool at https://kroki.io
+#'   There is as well an online diagram editor, see here https://niolesk.top/
+#' }
+#' \usage{ athi_lm_plot(x,y=NULL, data=NULL,col="blue",pch=19,col.lm="red",col.plm="red",col.pi="blue",
+#'                       grid=TRUE,polygon=TRUE,col.polygon="#cccccc33",xlab=NULL,ylab=NULL,...)}
+#' \arguments{
+#' \item{text}{some diagram code,default: "A --> B" }
+#' \item{filename}{some input file, either 'text' or 'file' must be given, default: NULL}
+#' \item{mode}{diagram type, supported is 'ditaa', 'graphviz', 'plantuml' and many others, see the kroki website, default: 'ditaa'}
+#' \item{ext}{file extension, usally 'png', 'svg' or 'pdf', not all extensions support 'svg' or 'pdf', default: 'png'}
+#' \item{cache}{should the image be cached locally using crc32 digest files in an 'img' folder, default: TRUE}
+#' \item{plot}{should the image directly plotted, default: FALSE}
+#' }
+#' \examples{
+#' url1=sbi$kroki('
+#'   digraph g { 
+#'   rankdir="LR";
+#'   node[style=filled,fillcolor=beige];
+#'   A -> B -> C ; 
+#' }',
+#' type="graphviz")
+#' url2=sbi$kroki("
+#'   +---------+    +--------+
+#'   |    AcEEF+--->+   BcFEE+
+#'   +---------+    +--------+
+#'   ")
+#' url1
+#' url2
+#' }
+#' 
+#' 
+
+athi$kroki <- function (text,filename=NULL,type="ditaa",ext="png",cache=TRUE,plot=FALSE) {
+    # memCompress and openssl::base64_encode in R 
+    # did not work always as expected
+    # using good old Tcl
+    if (!require("tcltk",quietly=TRUE)) {
+        stop("Error: package tcltk is required to run athi$kroki")
+    }
+    .Tcl("
+    proc dia2kroki {text} {
+        return [string map {+ - / _ = \"\"}  [binary encode base64 [zlib compress $text]]]
+    }
+    ")
+    if(plot & !require("png",quietly=TRUE)) {
+        stop("Error: Plotting kroki images requires library png!")
+    }
+    if (!is.null(filename)) {
+        if (!file.exists(filename)) {
+            stop(paste("Error: File",filename,"does not exists!"))
+        } else {
+            fin=file(filename,'r')
+            text=readLines(fin,n=-1L)
+            close(fin)
+            text=paste(text,collapse="\n")
+        }
+    }
+    url = tclvalue(tcl("dia2kroki",text))
+    url= paste("https://kroki.io",type,ext,url,sep="/")
+    if (cache) {
+        if (!require("digest",quietly=TRUE)) {
+            stop("You need to install the digest library to cache images!")
+        } 
+        if (!dir.exists("img")) {
+            dir.create("img")
+        }
+        filename=paste(digest(url,"crc32"),".",ext,sep="")
+        imgname=file.path("img",filename)
+        if (!file.exists(imgname)) {
+            print("downloading ...")
+            utils::download.file(url,imgname,mode="wb")
+        }
+        if (plot) {
+            img=readPNG(imgname)
+            grid::grid.raster(img)
+        } else {
+            return(imgname)
+        }
+    } else {
+        if (plot) {
+            img=readPNG(url)
+            grid::grid.raster(img)
+        } else {
+            return(url)
+        }
+    }
+}
+
 #' \name{athi$lm_plot}
 #' \alias{athi$lm_plot}
 #' \alias{athi_lm_plot}
@@ -1168,6 +1264,76 @@ athi$lm_plot = function (x,y=NULL, data=NULL,col="blue",pch=19,col.lm="red",col.
                   col = col.pi ,lty=2,lwd=2)
         }
      }
+}
+
+#' \name{athi$mi}
+#' \alias{athi$mi}
+#' \alias{athi_mi}
+#' \title{ measure mutual information}
+#' \description{
+#'     Return the mutual information for two vectors, a matrix or data frame,  or a binned table.
+#' }
+#' \usage{ athi_mi(x,y=NULL,breaks=4,norm=FALSE) }
+#' \arguments{
+#'   \item{x}{either a binned table, a matrix or data.frame or a numerical vector}
+#'   \item{y}{numerical vector, required only if x is not a binned table or matrix or data.frame}
+#'   \item{breaks}{number of breaks to create a binned table if x and y are numerical vectors, default: 4}
+#'   \item{norm}{if input is given should the matrix be normalized by dividing the off-diagonal values by the mutual information in the diagonals, so the self mutual information, default: FALSE}
+#' }
+#' \value{mutual information value as scalar if input is table or two vectors or as matrix if input is matrix or data.frame}
+#' \examples{
+#' rn1=rnorm(100,mean=10,sd=1);
+#' rn2=rn1+0.5*rnorm(100)
+#' cor(rn1,rn2) # high
+#' cor(rn1,sample(rn2)) #random 
+#' athi$mi(rn1,rn2) # high 
+#' athi$mi(rn1,sample(rn2)) #random
+#' athi$mi(rn1,rn2,breaks=4)
+#' athi$mi(rn1,rn2,breaks=7)
+#' data(swiss)
+#' round(athi$mi(swiss),2)
+#' round(athi$mi(swiss,norm=TRUE),2)
+#'}
+#' \seealso{
+#'    \link[athi:athi-class]{athi-class}, \link[athi:athi_corr]{athi$corr}
+#' }
+#'
+
+athi$mi = function (x,y=NULL,breaks=4,norm=FALSE) {
+    if (is.matrix(x) | is.data.frame(x)) {
+        if (ncol(x)==2) {
+            return(athi$mi(x=x[,1],y=x[,2],breaks=breaks))
+        } else {
+            M=matrix(0,nrow=ncol(x),ncol=ncol(x))
+            rownames(M)=colnames(M)=colnames(x)
+            for (i in 1:(ncol(x)-1)) {
+                for (j in i:ncol(x)) {
+                    M[i,j]=M[j,i]=athi$mi(x[,i],x[,j],breaks=breaks)
+                }   
+            }
+            # last cell
+            M[ncol(x),ncol(x)]=athi$mi(x[,ncol(x)],x[,ncol(x)])
+            if (norm) {
+                M=M/diag(M)
+            }
+            return(M)
+        }
+    }
+    if (!is.table(x)) {
+        if (class(y)[1] != "NULL") {
+            x=table(cut(x,breaks=breaks),cut(y,breaks=breaks))        
+        } else {
+            stop("if x is vector, y must be given as well")
+        }
+    }
+    f1=x/sum(x)
+    fx=rowSums(f1)
+    fy=colSums(f1)
+    fn=fx %o% fy
+    f2=fn/sum(fn)
+    LR = ifelse(f1>0,log(f1/f2),0)
+    MI = sum(f1*LR)
+    return(MI)
 }
 
 #' \name{athi$qr_plot}
@@ -1610,7 +1776,7 @@ athi$introNAs <- function (x,prop=0.05) {
 #' \alias{athi_norm}
 #' \title{Normalizes given data frame or matrix using the choosen method}
 #' \description{
-#'   Introduces NA's into the given data frame or matrix with a specified proportion.
+#'   Perform data normalization on the current data sets such as z-score, feature scaling and so on.
 #' }
 #' \usage{ athi_norm(x,method="z",ties.method="average") }
 #' \arguments{
@@ -1754,7 +1920,9 @@ athi_fmt = athi$fmt
 athi_impute = athi$impute
 athi_input = athi$input
 athi_introNAs = athi$introNAs
+athi_kroki = athi$kroki
 athi_lm_plot = athi$lm_plot
+athi_mi = athi$mi
 athi_mds_plot = athi$mds_plot
 athi_qr_plot = athi$qr_plot
 athi_ref_score = athi$ref_score
