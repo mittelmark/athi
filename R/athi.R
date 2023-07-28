@@ -1061,48 +1061,63 @@ athi$input = function (prompt="Enter: ") {
 #'   diagrams supported by the online tool at https://kroki.io
 #'   There is as well an online diagram editor, see here https://niolesk.top/
 #' }
-#' \usage{ athi_lm_plot(x,y=NULL, data=NULL,col="blue",pch=19,col.lm="red",col.plm="red",col.pi="blue",
-#'                       grid=TRUE,polygon=TRUE,col.polygon="#cccccc33",xlab=NULL,ylab=NULL,...)}
+#' \usage{ athi_kroki(text,filename=NULL,type="ditaa",ext="png",cache=TRUE,plot=FALSE,server="plantuml") }
 #' \arguments{
 #' \item{text}{some diagram code,default: "A --> B" }
 #' \item{filename}{some input file, either 'text' or 'file' must be given, default: NULL}
-#' \item{mode}{diagram type, supported is 'ditaa', 'graphviz', 'plantuml' and many others, see the kroki website, default: 'ditaa'}
+#' \item{type}{diagram type, supported is 'ditaa', 'graphviz', 'plantuml' and many others, see the kroki website, default: 'ditaa'}
 #' \item{ext}{file extension, usally 'png', 'svg' or 'pdf', not all extensions support 'svg' or 'pdf', default: 'png'}
 #' \item{cache}{should the image be cached locally using crc32 digest files in an 'img' folder, default: TRUE}
 #' \item{plot}{should the image directly plotted, default: FALSE}
+#' \item{server}{Which server to use, 'kroki' or 'plantuml', default: 'plantuml'}
 #' }
 #' \examples{
-#' url1=sbi$kroki('
+#' url1=athi$kroki('
 #'   digraph g { 
 #'   rankdir="LR";
 #'   node[style=filled,fillcolor=beige];
 #'   A -> B -> C ; 
 #' }',
-#' type="graphviz")
-#' url2=sbi$kroki("
+#' type="graphviz",server="kroki")
+#' url2=athi$kroki("
 #'   +---------+    +--------+
 #'   |    AcEEF+--->+   BcFEE+
 #'   +---------+    +--------+
-#'   ")
+#'   ",server="kroki")
 #' url1
 #' url2
 #' }
 #' 
 #' 
 
-athi$kroki <- function (text,filename=NULL,type="ditaa",ext="png",cache=TRUE,plot=FALSE) {
+athi$kroki <- function (text,filename=NULL,type="ditaa",ext="png",cache=TRUE,plot=FALSE,server="plantuml") {
+    if (!requireNamespace("tcltk")) {
+        stop("For athi$kroki the package tcltk is required!")
+    }
     # memCompress and openssl::base64_encode in R 
     # did not work always as expected
     # using good old Tcl
-    if (!require("tcltk",quietly=TRUE)) {
-        stop("Error: package tcltk is required to run athi$kroki")
-    }
-    .Tcl("
+    tcltk::.Tcl("
     proc dia2kroki {text} {
         return [string map {+ - / _ = \"\"}  [binary encode base64 [zlib compress $text]]]
     }
+    proc dia2puml {text {ext svg}} {
+        set b64 ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/
+        set pml 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_
+
+        set lmapper [list]
+        set i 0
+        foreach char [split $b64 \"\"] {
+            lappend lmapper $char
+            lappend lmapper [string range $pml $i $i]
+            incr i
+        }
+        set b64 [string map $lmapper [binary encode base64 [string range [zlib compress $text] 2 end-4]]]
+        set uri https://www.plantuml.com/plantuml/$ext/$b64
+        return $uri
+    }
     ")
-    if(plot & !require("png",quietly=TRUE)) {
+    if(plot & !requireNamespace("png",quietly=TRUE)) {
         stop("Error: Plotting kroki images requires library png!")
     }
     if (!is.null(filename)) {
@@ -1115,30 +1130,36 @@ athi$kroki <- function (text,filename=NULL,type="ditaa",ext="png",cache=TRUE,plo
             text=paste(text,collapse="\n")
         }
     }
-    url = tclvalue(tcl("dia2kroki",text))
-    url= paste("https://kroki.io",type,ext,url,sep="/")
+    if (server == "plantuml") {
+        if (type == "ditaa") {
+            text = paste("@startditaa\n",text,"\n@endditaa\n",sep="")
+        } 
+        url = tcltk::tclvalue(tcltk::tcl("dia2puml",text))
+    } else {
+        url = tcltk::tclvalue(tcltk::tcl("dia2kroki",text))
+        url= paste("https://kroki.io",type,ext,url,sep="/")
+    }
     if (cache) {
-        if (!require("digest",quietly=TRUE)) {
+        if (!requireNamespace("digest",quietly=TRUE)) {
             stop("You need to install the digest library to cache images!")
         } 
         if (!dir.exists("img")) {
             dir.create("img")
         }
-        filename=paste(digest(url,"crc32"),".",ext,sep="")
+        filename=paste(digest::digest(url,"crc32"),".",ext,sep="")
         imgname=file.path("img",filename)
         if (!file.exists(imgname)) {
-            print("downloading ...")
             utils::download.file(url,imgname,mode="wb")
         }
         if (plot) {
-            img=readPNG(imgname)
+            img=png::readPNG(imgname)
             grid::grid.raster(img)
         } else {
             return(imgname)
         }
     } else {
         if (plot) {
-            img=readPNG(url)
+            img=png::readPNG(url)
             grid::grid.raster(img)
         } else {
             return(url)

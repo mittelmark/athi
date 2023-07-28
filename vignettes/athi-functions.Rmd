@@ -460,12 +460,12 @@ There is as well an online diagram editor, see here [niolesk](https://niolesk.to
     node[style=filled,fillcolor=beige];
     A -> B -> C ; 
  }',
- type="graphviz")
+ type="graphviz",server="kroki")
  url2=athi$kroki("
  +---------+    +--------+
  |    AcEEF+--->+   BcFEE+
  +---------+    +--------+
- ")
+ ",server="kroki")
 ```
 
  To embed the image you can use Markdown code like here:
@@ -491,9 +491,9 @@ The diagram code can be read as well from a file here a Ditaa file:
 |  Hello  +->| World! +-->|   DB   |
 |         |  | cDDF   |   |  cFFD  |  
 \\---------/  +--------+   +--------+
-  ',file="hw.ditaa")
-cat(athi$file.head("hw.ditaa"),sep="\n")
-url3=athi$kroki(filename="hw.ditaa")
+
+',file="hw.ditaa")
+url3=athi$kroki(filename="hw.ditaa",server="kroki")
 nchar(url3)
 ```
 
@@ -502,13 +502,13 @@ nchar(url3)
 For images stored in files it can be even easier without intermediate variables like this:
 
 ```
-  ![ ](`r athi$kroki(filename="hw.ditaa")`)
+  ![ ](`r athi$kroki(filename="hw.ditaa",server="kroki")`)
 ```
 
 Images can be however as well directly plotted if the png library is available:
  
 ```{r fig=TRUE,fig.width=4,fig.height=4,out.width=200,fig.cap=""}
-athi$kroki("digraph { plot -> kroki; }",type="graphviz",plot=TRUE)
+athi$kroki("digraph { plot -> kroki; }",type="graphviz",plot=TRUE,server="kroki")
 ```
  
 

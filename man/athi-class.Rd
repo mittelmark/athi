@@ -26,6 +26,7 @@ the Guelpe Summer school Human Biology and Publich Health - Data Analysis and St
   \item{\link[athi:athi_impute]{athi$impute(x,method="rpart",k=5,cor.method="spearman")}}{impute missing values} 
   \item{\link[athi:athi_input]{athi$input(prompt)}}{readline replacement for scripts} 
   \item{\link[athi:athi_introNAs]{athi$introNAs(x,prop="0.05")}}{introduce missing values} 
+  \item{\link[athi:athi_kroki]{athi$kroki(text,mode="ditaa",...)}}{draw diagrams and flowcharts using kroki webservice} 
   \item{\link[athi:athi_lm_plot]{athi$lm_plot(x,y=NULL,data=NULL,...)}}{plot a linear model with confidence intervals} 
   \item{\link[athi:athi_mi]{athi$mi(x,y=NULL,norm=FALSE)}}{mutual information.} 
   \item{\link[athi:athi_mds_plot]{athi$mds_plot(x,method="euclidean",...)}}{plot a multidimensional scaling} 
