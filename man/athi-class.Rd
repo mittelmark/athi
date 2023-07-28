@@ -8,31 +8,32 @@ the Guelpe Summer school Human Biology and Publich Health - Data Analysis and St
 \format{Object of class environment with some functions for statistics} 
 \details{ 
 \describe{ 
-  \item{\link[athi:athi_assoc_plot]{athi$assoc_plot(x,legend=NULL,shade=TRUE)}}{Extended version of the assocplot with main statistic and Pearson residuals.} 
-  \item{\link[athi:athi_bootstrap]{athi$bootstrap(x,FUN=NULL,n=1000,...)}}{Perform a resampling for the given data set and function.} 
-  \item{\link[athi:athi_box_plot]{athi$box_plot(x,y=NULL)}}{Extended version of the boxplot with main statistic values on top.} 
-  \item{\link[athi:athi_chr2ord]{athi$chr2ord(x,map)}}{Map characters or factors to numbers with comfort.} 
-  \item{\link[athi:athi_cdist]{athi$cdist(x,method="spearman",type="abs")}}{Calculate correlation distances.} 
-  \item{\link[athi:athi_cohensD]{athi$cohensD(x,g,paired=FALSE)}}{Calculate effect size for difference between two means.} 
-  \item{\link[athi:athi_cohensW]{athi$cohensW(x,p=NULL)}}{Calculate effect size for categorical data.} 
-  \item{\link[athi:athi_corr]{athi$corr(x,method="pearson",use="pairwise.complete.obs")}}{Calculate pairwise correlations and the statistics.} 
-  \item{\link[athi:athi_cor_plot]{athi$cor_plot(x,y,method="pearson",...)}}{Extended version of the xy-plot with main statistics in the title.} 
-  \item{\link[athi:athi_corr_plot]{athi$corr_plot(x,...)}}{Plot matrices with pairwise correlations.} 
-  \item{\link[athi:athi_df2md]{athi$df2md(x,caption='',rownames=TRUE)}}{Print a matrix or data frame as a Markdown table} 
-  \item{\link[athi:athi_drop_na]{athi$drop_na(x,cols=NULL)}}{Dro rows if the given columns contain NA's in this row.} 
-  \item{\link[athi:athi_epsilon_squared]{athi$epsilon_squared(x,y)}}{Calculate effect size for Kruskal test.} 
-  \item{\link[athi:athi_eta_squared]{athi$eta_squared(x,y=NULL)}}{Calculate effect size for ANOVA.} 
-  \item{\link[athi:athi_fmt]{athi$fmt(x,...)}}{Formtted string output.} 
-  \item{\link[athi:athi_impute]{athi$impute(x,method="rpart",k=5,cor.method="spearman")}}{impute missing values.} 
-  \item{\link[athi:athi_input]{athi$input(prompt)}}{Readline replacement for scripts.} 
-  \item{\link[athi:athi_introNAs]{athi$introNAs(x,prop="0.05")}}{introduce missing values.} 
-  \item{\link[athi:athi_lm_plot]{athi$lm_plot(x,y=NULL,data=NULL,...)}}{plot a linear model with confidence intervals.} 
-  \item{\link[athi:athi_mds_plot]{athi$mds_plot(x,method="euclidean",...)}}{plot a multidimensional scaling.} 
-  \item{\link[athi:athi_norm]{athi$norm(x,method="z",ties.method="average")}}{normalize data.} 
-  \item{\link[athi:athi_randomize]{athi$randomize(x)}}{randomize column data within matrix or data frame.} 
-  \item{\link[athi:athi_ref_score]{athi$ref_score(x,age,sex,type)}}{reference score for the given age, sex and type.} 
-  \item{\link[athi:athi_ref_table]{athi$ref_table(sex,type)}}{reference table for WHO for the given sex and measure type.} 
-  \item{\link[athi:athi_report_pvalue]{athi$report_pvalue(p,star=FALSE)}}{report a p-value using the significance thresholds.} 
+  \item{\link[athi:athi_assoc_plot]{athi$assoc_plot(x,legend=NULL,shade=TRUE)}}{extended version of the assocplot with main statistic and Pearson residuals} 
+  \item{\link[athi:athi_bootstrap]{athi$bootstrap(x,FUN=NULL,n=1000,...)}}{resampling for the given data set and function} 
+  \item{\link[athi:athi_box_plot]{athi$box_plot(x,y=NULL)}}{extended version of the boxplot with main statistic values on top} 
+  \item{\link[athi:athi_chr2ord]{athi$chr2ord(x,map)}}{map characters or factors to numbers with comfort} 
+  \item{\link[athi:athi_cdist]{athi$cdist(x,method="spearman",type="abs")}}{calculate correlation distances} 
+  \item{\link[athi:athi_cohensD]{athi$cohensD(x,g,paired=FALSE)}}{effect size for difference between two means} 
+  \item{\link[athi:athi_cohensW]{athi$cohensW(x,p=NULL)}}{effect size for categorical data.} 
+  \item{\link[athi:athi_corr]{athi$corr(x,method="pearson",use="pairwise.complete.obs")}}{pairwise correlations and their statistics} 
+  \item{\link[athi:athi_cor_plot]{athi$cor_plot(x,y,method="pearson",...)}}{extended version of xy-plot with main statistics} 
+  \item{\link[athi:athi_corr_plot]{athi$corr_plot(x,...)}}{plot matrices with pairwise correlations} 
+  \item{\link[athi:athi_df2md]{athi$df2md(x,caption='',rownames=TRUE)}}{print a matrix or data frame as a Markdown table} 
+  \item{\link[athi:athi_drop_na]{athi$drop_na(x,cols=NULL)}}{drop rows if the given columns contain NA's in this row for certain columns} 
+  \item{\link[athi:athi_epsilon_squared]{athi$epsilon_squared(x,y)}}{effect size for Kruskal test} 
+  \item{\link[athi:athi_eta_squared]{athi$eta_squared(x,y=NULL)}}{effect size for ANOVA} 
+  \item{\link[athi:athi_fmt]{athi$fmt(x,...)}}{formatted string output} 
+  \item{\link[athi:athi_impute]{athi$impute(x,method="rpart",k=5,cor.method="spearman")}}{impute missing values} 
+  \item{\link[athi:athi_input]{athi$input(prompt)}}{readline replacement for scripts} 
+  \item{\link[athi:athi_introNAs]{athi$introNAs(x,prop="0.05")}}{introduce missing values} 
+  \item{\link[athi:athi_lm_plot]{athi$lm_plot(x,y=NULL,data=NULL,...)}}{plot a linear model with confidence intervals} 
+  \item{\link[athi:athi_mi]{athi$mi(x,y=NULL,norm=FALSE)}}{mutual information.} 
+  \item{\link[athi:athi_mds_plot]{athi$mds_plot(x,method="euclidean",...)}}{plot a multidimensional scaling} 
+  \item{\link[athi:athi_norm]{athi$norm(x,method="z",ties.method="average")}}{normalize data} 
+  \item{\link[athi:athi_randomize]{athi$randomize(x)}}{randomize column data within matrix or data frame} 
+  \item{\link[athi:athi_ref_score]{athi$ref_score(x,age,sex,type)}}{reference score for the given age, sex and type} 
+  \item{\link[athi:athi_ref_table]{athi$ref_table(sex,type)}}{reference table for WHO for the given sex and measure type} 
+  \item{\link[athi:athi_report_pvalue]{athi$report_pvalue(p,star=FALSE)}}{report a p-value using the significance thresholds} 
 } 
 All methods are given in to forms: first they are collected in an environment `athi` which allow you to save this object for instance as 
 a RDS file and then give it away with your analysis to allow other users to redo or extend the analysis without having to install the library.  

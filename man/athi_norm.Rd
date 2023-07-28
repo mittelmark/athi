@@ -3,7 +3,7 @@
 \alias{athi_norm} 
 \title{Normalizes given data frame or matrix using the choosen method} 
 \description{ 
-  Introduces NA's into the given data frame or matrix with a specified proportion. 
+  Perform data normalization on the current data sets such as z-score, feature scaling and so on. 
 } 
 \usage{ athi_norm(x,method="z",ties.method="average") } 
 \arguments{ 
