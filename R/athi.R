@@ -111,7 +111,7 @@ athi$assoc_plot <- function (x,legend=TRUE,shade=TRUE,...) {
            par(fig = c(0, 1, 0, 1), oma = c(0, 0, 0, 0), mar = c(0, 0, 0, 0), new = TRUE)
            plot(0, 0, type = "n", bty = "n", xaxt = "n", yaxt = "n")
            legend(c("> 4 ","4 .. 2","2 .. -2", "-2 .. -4", " < -4"),
-                  x="bottom",cex=1.5,fill=rev(cols),bty='n',title=paste("Pearson Residuals ",w),
+                  x="bottom",cex=1.2,fill=rev(cols),bty='n',title=paste("Pearson Residuals ",w),
                   xpd=TRUE,horiz=TRUE,box.lwd=0,inset=c(0,0))
            par(opar)
        }
@@ -617,9 +617,9 @@ athi$corr_plot <- function (mt,text.lower=TRUE, text.upper=FALSE,
     yend=nrow(mt)+1
     xend=ncol(mt)+1
     plot(1,type="n",xlab="",ylab="",axes=FALSE,
-         xlim=c(0,xend),ylim=c(nrow(mt),0),...)
+         xlim=c(-0.2,xend),ylim=c(nrow(mt),0),...)
     text(1:(ncol(mt)),0.25,colnames(mt),cex=cex.lab)
-    text(0,1:nrow(mt),rownames(mt),cex=cex.lab,pos=4)
+    text(-0.2,1:nrow(mt),rownames(mt),cex=cex.lab,pos=4)
     cols=paste("#DD3333",rev(c(15,30, 45, 60, 75, 90, "AA","BB","CC","DD")),sep="")
     cols=c(cols,paste("#3333DD",c(15,30, 45, 60, 75, 90, "AA","BB","CC","DD"),sep=""))
     breaks=seq(-1,1,by=0.1)                  
@@ -1061,7 +1061,7 @@ athi$input = function (prompt="Enter: ") {
 #'   diagrams supported by the online tool at https://kroki.io
 #'   There is as well an online diagram editor, see here https://niolesk.top/
 #' }
-#' \usage{ athi_kroki(text,filename=NULL,type="ditaa",ext="png",cache=TRUE,plot=FALSE,server="plantuml") }
+#' \usage{ athi_kroki(text,filename=NULL,type="ditaa",ext="png",cache=TRUE,plot=FALSE,server="kroki") }
 #' \arguments{
 #' \item{text}{some diagram code,default: "A --> B" }
 #' \item{filename}{some input file, either 'text' or 'file' must be given, default: NULL}
@@ -1069,9 +1069,10 @@ athi$input = function (prompt="Enter: ") {
 #' \item{ext}{file extension, usally 'png', 'svg' or 'pdf', not all extensions support 'svg' or 'pdf', default: 'png'}
 #' \item{cache}{should the image be cached locally using crc32 digest files in an 'img' folder, default: TRUE}
 #' \item{plot}{should the image directly plotted, default: FALSE}
-#' \item{server}{Which server to use, 'kroki' or 'plantuml', default: 'plantuml'}
+#' \item{server}{Which server to use, 'kroki' or 'plantuml', default: 'kroki'}
 #' }
 #' \examples{
+#' \dontrun{
 #' url1=athi$kroki('
 #'   digraph g { 
 #'   rankdir="LR";
@@ -1087,10 +1088,11 @@ athi$input = function (prompt="Enter: ") {
 #' url1
 #' url2
 #' }
+#' }
 #' 
 #' 
 
-athi$kroki <- function (text,filename=NULL,type="ditaa",ext="png",cache=TRUE,plot=FALSE,server="plantuml") {
+athi$kroki <- function (text,filename=NULL,type="ditaa",ext="png",cache=TRUE,plot=FALSE,server="kroki") {
     if (!requireNamespace("tcltk")) {
         stop("For athi$kroki the package tcltk is required!")
     }
@@ -1104,7 +1106,7 @@ athi$kroki <- function (text,filename=NULL,type="ditaa",ext="png",cache=TRUE,plo
     proc dia2puml {text {ext svg}} {
         set b64 ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/
         set pml 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_
-
+        
         set lmapper [list]
         set i 0
         foreach char [split $b64 \"\"] {
@@ -1112,8 +1114,9 @@ athi$kroki <- function (text,filename=NULL,type="ditaa",ext="png",cache=TRUE,plo
             lappend lmapper [string range $pml $i $i]
             incr i
         }
-        set b64 [string map $lmapper [binary encode base64 [string range [zlib compress $text] 2 end-4]]]
-        set uri https://www.plantuml.com/plantuml/$ext/$b64
+        # unclear while string range 2 end-4
+        set b64 [string map $lmapper [binary encode base64 [string range [zlib compress [encoding convertto utf-8 $text]] 0 end]]]
+        set uri https://www.plantuml.com/plantuml/$ext/~1$b64
         return $uri
     }
     ")
@@ -1130,11 +1133,14 @@ athi$kroki <- function (text,filename=NULL,type="ditaa",ext="png",cache=TRUE,plo
             text=paste(text,collapse="\n")
         }
     }
+    if (grepl("\\s*@start",text)) {
+        type="plantuml"
+    }
     if (server == "plantuml") {
         if (type == "ditaa") {
             text = paste("@startditaa\n",text,"\n@endditaa\n",sep="")
         } 
-        url = tcltk::tclvalue(tcltk::tcl("dia2puml",text))
+        url = tcltk::tclvalue(tcltk::tcl("dia2puml",text,ext))
     } else {
         url = tcltk::tclvalue(tcltk::tcl("dia2kroki",text))
         url= paste("https://kroki.io",type,ext,url,sep="/")

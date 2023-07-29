@@ -74,7 +74,8 @@ effect size measure Cohen's d.
 
 Usage: *athi_assoc_plot(x,legend=TRUE,shade=TRUE,...)*
 
-```{r fig=TRUE,fig.width=8,fig.height=6}
+```{r fig=TRUE,fig.width=5,fig.height=5}
+par(mai=c(0.7,0.7,0.3,0.1))
 x <- margin.table(HairEyeColor, c(1, 2))
 athi$assoc_plot(x)
 ```
@@ -113,7 +114,7 @@ confidence interval as well.
 
 Usage: *athi_box_plot(x,y=NULL,data=NULL,col='grey80',grid=TRUE,main=NULL,...)*
 
-```{r fig.width=6,fig.height=4}
+```{r fig.width=5,fig.height=4}
 data(iris)
 athi$box_plot(Sepal.Length ~ Species, data=iris,col=2:4)
 ```
@@ -269,15 +270,15 @@ symmetric correlation matrix.
 
 Usage: *athi_corr_plot(mt,text.lower=TRUE, text.upper=FALSE, pch=19,p.mat=NULL,alpha=0.05, cex.sym=5,cex.r=1,cex.lab=1.4,...)*
 
-```{r fig=TRUE,fig.width=9,fig.height=6}
-par(mai=rep(0.3,4))
+```{r fig=TRUE,fig.width=6,fig.height=4}
+par(mai=rep(0.2,4))
 data(swiss)
 sw=swiss
 colnames(sw)=abbreviate(colnames(swiss),6)
 options(warn=-1) # avoid spearman warnings
 cr=athi$corr(sw,method='spearman')
-athi$corr_plot(cr$estimate,cex.sym=8,text.lower=TRUE,
-   cex.r=1.5,p.mat=cr$p.value)
+athi$corr_plot(cr$estimate,cex.sym=4,text.lower=TRUE,
+   cex.r=0.9,cex.lab=0.8,p.mat=cr$p.value)
 options(warn=0)
 ```
 
@@ -460,12 +461,12 @@ There is as well an online diagram editor, see here [niolesk](https://niolesk.to
     node[style=filled,fillcolor=beige];
     A -> B -> C ; 
  }',
- type="graphviz",server="kroki")
+ type="graphviz")
  url2=athi$kroki("
  +---------+    +--------+
  |    AcEEF+--->+   BcFEE+
  +---------+    +--------+
- ",server="kroki")
+ ")
 ```
 
  To embed the image you can use Markdown code like here:
@@ -493,7 +494,7 @@ The diagram code can be read as well from a file here a Ditaa file:
 \\---------/  +--------+   +--------+
 
 ',file="hw.ditaa")
-url3=athi$kroki(filename="hw.ditaa",server="kroki")
+url3=athi$kroki(filename="hw.ditaa")
 nchar(url3)
 ```
 
@@ -502,15 +503,33 @@ nchar(url3)
 For images stored in files it can be even easier without intermediate variables like this:
 
 ```
-  ![ ](`r athi$kroki(filename="hw.ditaa",server="kroki")`)
+  ![ ](`r athi$kroki(filename="hw.ditaa")`)
 ```
 
 Images can be however as well directly plotted if the png library is available:
  
 ```{r fig=TRUE,fig.width=4,fig.height=4,out.width=200,fig.cap=""}
-athi$kroki("digraph { plot -> kroki; }",type="graphviz",plot=TRUE,server="kroki")
+athi$kroki("digraph { plot -> kroki; }",type="graphviz",plot=TRUE)
 ```
  
+You can as well use the PlantUML server, here an example:
+
+```{r}
+nocache.url=athi$kroki("
+@startuml
+Bob -> Alice : hello
+@enduml
+",server='plantuml',cache=FALSE,ext='svg')
+print(nocache.url)
+url=athi$kroki("
+@startuml
+Bob -> Alice : hello
+@enduml
+",server='plantuml',ext='svg')
+url
+```
+
+![](`r url`)
 
 See also:
 
@@ -531,8 +550,8 @@ the slope and for the predictions based on the model.
 Usage: *athi_lm_plot(x,y=NULL, data=NULL,col="blue",pch=19,col.lm="red",col.plm="red",col.pi="blue",
                        grid=TRUE,polygon=TRUE,col.polygon="#cccccc33",xlab=NULL,ylab=NULL,...)*
 
-```{r label=lmplot,fig.width=9,fig.height=6}
-par(mfrow=c(1,2))
+```{r label=lmplot,fig.width=6,fig.height=3}
+par(mfrow=c(1,2),mai=c(0.8,0.8,0.2,0.1))
 data(iris) 
 athi$lm_plot(iris$Sepal.Width, iris$Sepal.Length,
    col=as.numeric(iris$Species)+1,col.pi="bisque4",
@@ -574,7 +593,8 @@ scaling, quantile and so on.
 
 Usage: *athi_norm(x,method="z",ties.method="average")*
 
-```{r fig.width=6,fig.height=4}
+```{r fig.width=6,fig.height=3}
+par(mai=c(0.7,0.7,0.2,0.1))
 data(iris)
 ir=athi$norm(iris[,1:4],method="uv")
 apply(ir,2,sd)
@@ -609,7 +629,8 @@ the slope and the intercept for the different quantiles are returned as well if 
 
 Usage: `athi_qr_plot(x,data,quantiles=c(0.05,0.1,0.5,0.9,0.95),pred=NULL,plot=TRUE,...)`
 
-```{r label=qr-plot,fig.width=9,fig.height=6}
+```{r label=qr-plot,fig.width=5,fig.height=3}
+par(mai=c(0.8,0.8,0.3,0.1))
 data(iris) 
 athi$qr_plot(Sepal.Width ~ Sepal.Length,data=iris[51:151,])
 res=athi$qr_plot(Sepal.Width ~ Sepal.Length,data=iris[51:151,],pred=c(5,5.5,6,6.5,7,7.5,8))

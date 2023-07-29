@@ -7,7 +7,7 @@
   diagrams supported by the online tool at https://kroki.io 
   There is as well an online diagram editor, see here https://niolesk.top/ 
 } 
-\usage{ athi_kroki(text,filename=NULL,type="ditaa",ext="png",cache=TRUE,plot=FALSE,server="plantuml") } 
+\usage{ athi_kroki(text,filename=NULL,type="ditaa",ext="png",cache=TRUE,plot=FALSE,server="kroki") } 
 \arguments{ 
 \item{text}{some diagram code,default: "A --> B" } 
 \item{filename}{some input file, either 'text' or 'file' must be given, default: NULL} 
@@ -15,9 +15,10 @@
 \item{ext}{file extension, usally 'png', 'svg' or 'pdf', not all extensions support 'svg' or 'pdf', default: 'png'} 
 \item{cache}{should the image be cached locally using crc32 digest files in an 'img' folder, default: TRUE} 
 \item{plot}{should the image directly plotted, default: FALSE} 
-\item{server}{Which server to use, 'kroki' or 'plantuml', default: 'plantuml'} 
+\item{server}{Which server to use, 'kroki' or 'plantuml', default: 'kroki'} 
 } 
 \examples{ 
+\dontrun{ 
 url1=athi$kroki(' 
   digraph g {  
   rankdir="LR"; 
@@ -32,6 +33,7 @@ url2=athi$kroki("
   ",server="kroki") 
 url1 
 url2 
+} 
 } 
  
  
