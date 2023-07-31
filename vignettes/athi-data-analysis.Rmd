@@ -1,0 +1,50 @@
+---
+title: Guelpe Summerschool Data Analysis Tutorial
+author: Detlef Groth, University of Potsdam
+date: 2023-07-31 09:35
+output: 
+    rmarkdown::html_vignette:
+        toc: true
+vignette: >
+  %\VignetteIndexEntry{Guelpe Summerschool Data Analysis Tutorial}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+include-before: |
+    <style> body { max-width: 1000px; font-family: Candara, sans-serif;} </style>
+    <center>[athi functions](athi-functions.html) - [athi analysis](athi-analysis.html) </center>
+---
+
+## Introduction
+
+This is a  tutorial  about  basic  data  analysis  based on  experiences  with
+students analyzing their data at the Summerschool Childrens Groth and Data Analyis
+
+## Data Preparation
+
+* loading data
+* column renaming, shortening
+* dealing with missing values, outliers
+* data checking
+
+## Overview statistics
+
+* PCA
+* MDS
+* SNHA
+
+## Pairwise analysis
+
+* n ~ n
+* n ~ c
+* c ~ c
+
+### Descriptive statistics
+
+### Inferential statistics
+
+### Effect sizes
+
+## Modeling, Prediction
+
+## EOF
+
