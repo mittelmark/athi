@@ -9,33 +9,39 @@
 #' \format{Object of class environment with some functions for statistics}
 #' \details{
 #' \describe{
-#'   \item{\link[athi:athi_assoc_plot]{athi$assoc_plot(x,legend=NULL,shade=TRUE)}}{extended version of the assocplot with main statistic and Pearson residuals}
-#'   \item{\link[athi:athi_bootstrap]{athi$bootstrap(x,FUN=NULL,n=1000,...)}}{resampling for the given data set and function}
-#'   \item{\link[athi:athi_box_plot]{athi$box_plot(x,y=NULL)}}{extended version of the boxplot with main statistic values on top}
-#'   \item{\link[athi:athi_chr2ord]{athi$chr2ord(x,map)}}{map characters or factors to numbers with comfort}
-#'   \item{\link[athi:athi_cdist]{athi$cdist(x,method="spearman",type="abs")}}{calculate correlation distances}
-#'   \item{\link[athi:athi_cohensD]{athi$cohensD(x,g,paired=FALSE)}}{effect size for difference between two means}
-#'   \item{\link[athi:athi_cohensW]{athi$cohensW(x,p=NULL)}}{effect size for categorical data.}
-#'   \item{\link[athi:athi_corr]{athi$corr(x,method="pearson",use="pairwise.complete.obs")}}{pairwise correlations and their statistics}
-#'   \item{\link[athi:athi_cor_plot]{athi$cor_plot(x,y,method="pearson",...)}}{extended version of xy-plot with main statistics}
-#'   \item{\link[athi:athi_corr_plot]{athi$corr_plot(x,...)}}{plot matrices with pairwise correlations}
-#'   \item{\link[athi:athi_df2md]{athi$df2md(x,caption='',rownames=TRUE)}}{print a matrix or data frame as a Markdown table}
-#'   \item{\link[athi:athi_drop_na]{athi$drop_na(x,cols=NULL)}}{drop rows if the given columns contain NA's in this row for certain columns}
-#'   \item{\link[athi:athi_epsilon_squared]{athi$epsilon_squared(x,y)}}{effect size for Kruskal test}
-#'   \item{\link[athi:athi_eta_squared]{athi$eta_squared(x,y=NULL)}}{effect size for ANOVA}
-#'   \item{\link[athi:athi_fmt]{athi$fmt(x,...)}}{formatted string output}
-#'   \item{\link[athi:athi_impute]{athi$impute(x,method="rpart",k=5,cor.method="spearman")}}{impute missing values}
-#'   \item{\link[athi:athi_input]{athi$input(prompt)}}{readline replacement for scripts}
-#'   \item{\link[athi:athi_introNAs]{athi$introNAs(x,prop="0.05")}}{introduce missing values}
-#'   \item{\link[athi:athi_kroki]{athi$kroki(text,mode="ditaa",...)}}{draw diagrams and flowcharts using kroki webservice}
-#'   \item{\link[athi:athi_lm_plot]{athi$lm_plot(x,y=NULL,data=NULL,...)}}{plot a linear model with confidence intervals}
-#'   \item{\link[athi:athi_mi]{athi$mi(x,y=NULL,norm=FALSE)}}{mutual information.}
-#'   \item{\link[athi:athi_mds_plot]{athi$mds_plot(x,method="euclidean",...)}}{plot a multidimensional scaling}
-#'   \item{\link[athi:athi_norm]{athi$norm(x,method="z",ties.method="average")}}{normalize data}
-#'   \item{\link[athi:athi_randomize]{athi$randomize(x)}}{randomize column data within matrix or data frame}
-#'   \item{\link[athi:athi_ref_score]{athi$ref_score(x,age,sex,type)}}{reference score for the given age, sex and type}
-#'   \item{\link[athi:athi_ref_table]{athi$ref_table(sex,type)}}{reference table for WHO for the given sex and measure type}
-#'   \item{\link[athi:athi_report_pvalue]{athi$report_pvalue(p,star=FALSE)}}{report a p-value using the significance thresholds}
+#'   \item{\link[athi:athi_assoc_plot]{athi$assoc_plot(x,legend=NULL,shade=TRUE)}}{extended version of the assocplot with main statistic and Pearson residuals (plot)}
+#'   \item{\link[athi:athi_bootstrap]{athi$bootstrap(x,FUN=NULL,n=1000,...)}}{resampling for the given data set and function (stats)}
+#'   \item{\link[athi:athi_box_plot]{athi$box_plot(x,y=NULL)}}{extended version of the boxplot with main statistic values on top (plot)}
+#'   \item{\link[athi:athi_chr2ord]{athi$chr2ord(x,map)}}{map characters or factors to numbers with comfort (data)}
+#'   \item{\link[athi:athi_cdist]{athi$cdist(x,method="spearman",type="abs")}}{calculate correlation distances (data)}
+#'   \item{\link[athi:athi_cohensD]{athi$cohensD(x,g,paired=FALSE)}}{effect size for difference between two means (stats)}
+#'   \item{\link[athi:athi_cohensW]{athi$cohensW(x,p=NULL)}}{effect size for categorical data (stats)}
+#'   \item{\link[athi:athi_corr]{athi$corr(x,method="pearson",use="pairwise.complete.obs")}}{pairwise correlations and their statistics (stats)}
+#'   \item{\link[athi:athi_cor_plot]{athi$cor_plot(x,y,method="pearson",...)}}{extended version of xy-plot with main statistics (plot)}
+#'   \item{\link[athi:athi_corr_plot]{athi$corr_plot(x,...)}}{plot matrices with pairwise correlations (plot)}
+#'   \item{\link[athi:athi_df2md]{athi$df2md(x,caption='',rownames=TRUE)}}{print a matrix or data frame as a Markdown table (data)}
+#'   \item{\link[athi:athi_drop_na]{athi$drop_na(x,cols=NULL)}}{drop rows if the given columns contain NAs in this row for certain columns (data)}
+#'   \item{\link[athi:athi_epsilon_squared]{athi$epsilon_squared(x,y)}}{effect size for Kruskal test (stats)}
+#'   \item{\link[athi:athi_eta_squared]{athi$eta_squared(x,y=NULL)}}{effect size for ANOVA (stats)}
+#'   \item{\link[athi:athi_fmt]{athi$fmt(x,...)}}{formatted string output (data)}
+#'   \item{\link[athi:athi_impute]{athi$impute(x,method="rpart",k=5,cor.method="spearman")}}{impute missing values (data)}
+#'   \item{\link[athi:athi_input]{athi$input(prompt)}}{readline replacement for scripts (programming)}
+#'   \item{\link[athi:athi_introNAs]{athi$introNAs(x,prop="0.05")}}{introduce missing values (data)}
+#'   \item{\link[athi:athi_kroki]{athi$kroki(text,mode="ditaa",...)}}{draw diagrams and flowcharts using kroki webservice (plot)}
+#'   \item{\link[athi:athi_lm_plot]{athi$lm_plot(x,y=NULL,data=NULL,...)}}{plot a linear model with confidence intervals (plot)}
+#'   \item{\link[athi:athi_mi]{athi$mi(x,y=NULL,norm=FALSE)}}{mutual information (stats)}
+#'   \item{\link[athi:athi_mds_plot]{athi$mds_plot(x,method="euclidean",...)}}{plot a multidimensional scaling (plot)}
+#'   \item{\link[athi:athi_norm]{athi$norm(x,method="z",ties.method="average")}}{normalize data (data)}
+#'   \item{\link[athi:athi_randomize]{athi$randomize(x)}}{randomize column data within matrix or data frame (data)}
+#'   \item{\link[athi:athi_ref_score]{athi$ref_score(x,age,sex,type)}}{reference score for the given age, sex and type (data)}
+#'   \item{\link[athi:athi_ref_table]{athi$ref_table(sex,type)}}{reference table for WHO for the given sex and measure type (daa)}
+#'   \item{\link[athi:athi_report_pvalue]{athi$report_pvalue(p,star=FALSE)}}{report a p-value using the significance thresholds (stats)}
+#'   \item{\link[athi:athi_sem]{athi$sem(x,na.rm=TRUE)}}{standard error of the mean (stats)}
+#'   \item{\link[athi:athi_smartbind]{athi$smartbind(x,y)}}{combine two data frame even if the have different column names (data)}
+#'   \item{\link[athi:athi_textplot]{athi$textplot(x)}}{write the data for a data frame or matrix into a plot (plot)}
+#'   \item{\link[athi:athi_untab]{athi$untab(x)}}{expand a contingency table to a data frame one item per row (data)}
+#'   \item{\link[athi:athi_venn]{athi$venn(x)}}{Venn diagram for logical relations between two and three sets (plot)}
+#'   \item{\link[athi:athi_wilcoxR]{athi$wilcoxR(x,y)}}{effect size r, for a wilcox test object (stats)}
 #' }
 #' All methods are given in to forms: first they are collected in an environment `athi` which allow you to save this object for instance as
 #' a RDS file and then give it away with your analysis to allow other users to redo or extend the analysis without having to install the library. 
@@ -1173,6 +1179,7 @@ athi$kroki <- function (text,filename=NULL,type="ditaa",ext="png",cache=TRUE,plo
     }
 }
 
+
 #' \name{athi$lm_plot}
 #' \alias{athi$lm_plot}
 #' \alias{athi_lm_plot}
@@ -1928,6 +1935,381 @@ athi$randomize <- function (x) {
     return(x)
 }
 
+#' \name{athi$sem}
+#' \alias{athi$sem}
+#' \alias{athi_sem}
+#' \title{Calculate the standard error of the mean for a given numerical vector.}
+#' \description{This function calculates the standard error of the mean, SEM = sd/sqrt(N).}
+#' \usage{ athi_sem(x,na.rm=FALSE) }
+#' \arguments{
+#' \item{x}{a numerical vector}
+#' \item{na.rm}{logical vecor indicating if missing values should be removed, default: FALSE}
+#' }
+#' \value{computed standard error of the mean}
+#' \examples{
+#' sem=athi$sem
+#' sem(rnorm(50,mean=10,sd=3))
+#' sem(rnorm(1000,mean=10,sd=3))
+#' }
+#' 
+
+athi$sem <- function(x,na.rm=FALSE) {
+    sd(x,na.rm=na.rm)/sqrt(length(x[!is.na(x)])) 
+}
+
+#' \name{athi$smartbind}
+#' \alias{athi$smartbind}
+#' \alias{athi_smartbind}
+#' \title{Combine two data frames via rbind even with different column names.}
+#' \description{This function combines two data frames or matrices even if they have different
+#'   column names. In each data frame or matrix missing columns are first filled up
+#'   with NA's. Thereafter data is fused using rbind. Column order is determined based 
+#'   on the first given data.
+#' }
+#' \usage{ athi_smartbind(x,y) }
+#' \arguments{
+#'   \item{x}{data frame or matrix}
+#'   \item{y}{data frame or matrix}
+#' }
+#' \value{data frame or matrix, depending on the given input where data from *x* and *y* are combined
+#'   using rbind. Missing columns in either of the data frame are filled up with NA's.
+#' }
+#' \examples{
+#' ir1=cbind(rn1=rnorm(nrow(iris)),iris)
+#' ir2=cbind(iris,rn2=rnorm(nrow(iris),mean=10))
+#' head(athi$smartbind(ir1,ir2))
+#' tail(athi$smartbind(ir1,ir2))
+#' }
+#' \seealso{
+#'   \link[athi:athi-class]{athi-class}
+#' }
+#' 
+
+athi$smartbind <- function (x,y) {
+    nxcols=setdiff(colnames(y),colnames(x))
+    nycols=setdiff(colnames(x),colnames(y))
+    for (c in nxcols) {
+        x=cbind(x,ncol=rep(NA,nrow(x)))
+        colnames(x)[ncol(x)]=c
+    }
+    for (c in nycols) {
+        y=cbind(y,ncol=rep(NA,nrow(y)))
+        colnames(y)[ncol(y)]=c
+    }
+    y=y[,colnames(x)]
+    x=rbind(x,y)
+    return(x)
+}
+
+
+#' \name{athi$textplot}
+#' \alias{athi$textplot}
+#' \alias{athi_textplot}
+#' \title{Write the data for a data frame or matrix into a plot.}
+#' \description{This function can be used as a workaround to display data for small
+#'   data frames or matrices with let's say 3-8 rows or columns into a plot. 
+#' }
+#' \usage{ athi_textplot(x,cex=1,caption=NULL,...) }
+#' \arguments{
+#' \item{x}{data frame or matrix}
+#' \item{cex}{character expansion, default: 1}
+#' \item{caption}{optional caption shown below of the table, default: NULL}
+#' \item{\ldots}{remaining arguments delegated to the plot function}
+#' }
+#' \value{NULL}
+#' \examples{
+#' par(mai=rep(0.1,4))
+#' athi$textplot(head(swiss),caption="Table 1: Swiss data first six lines")
+#' }
+#' \seealso{
+#'   \link[athi:athi-class]{athi-class}
+#' }
+#' 
+
+athi$textplot <- function (x,cex=1,caption=NULL,...) {
+    xlim=c(-0.5,ncol(x)+0.5)
+    ylim=c(0,nrow(x)+1.4)
+    if (!is.null(caption)) {
+        ylim[1]=-1
+    }
+    plot(1,type="n",xlim=xlim,ylim=ylim,axes=FALSE,xlab="",ylab="",...)
+    if (!is.null(caption)) {
+        text(mean(xlim),-0.6,caption,cex=cex*1.2)
+    }
+    abline(h=nrow(x)+1.5,lwd=2)
+    abline(h=nrow(x)+0.6,lwd=2)
+    abline(h=0.3,lwd=2)    
+    for (i in 1:nrow(x)) {
+        text(-0.5,nrow(x)+1-i,rownames(x)[i],cex=cex,adj=0)
+        for (j in 1:ncol(x)) {
+            if (i == 1) {
+                text(j,nrow(x)+1,colnames(x)[j],cex=cex)
+            }
+            text(j,nrow(x)+1-i,x[i,j],cex=cex)
+        }
+    }
+}
+
+#' \name{athi$untab}
+#' \alias{athi$untab}
+#' \alias{athi_untab}
+#' \title{Convert a contingency table to a data frame one item per row.}
+#' \description{This function takes a contingency table and expands it two a data frame
+#'   where every level combinations is created according to the number of entries in the
+#'   contingency table. You can reverse the process using the table command. The procedure is useful for
+#'   instance for performing sample bootstrapping.
+#' }
+#' \usage{ athi_untab(x) }
+#' \arguments{
+#' \item{x}{contingency table or a matrix}
+#' }
+#' \value{data frame with two columns, column names are either the dimnames of the given table or
+#'             generic columnames like 'rowvar' and 'colvar'.}
+#' \examples{
+#' M=matrix(c(4,3,1,2),ncol=2,dimnames=list(
+#'         size=c('small','tall'),
+#'         smoking=c('no','yes')))
+#' M
+#' N=athi$untab(M)
+#' head(N)
+#' summary(N)
+#' table(N[,1],N[,2])
+#' }
+#' \seealso{
+#'   \link[athi:athi-class]{athi-class}
+#' }
+#' 
+
+athi$untab <- function (x) {
+    tab=x
+    nms=names(dimnames(tab))
+    if (any(is.null(nms)))
+    nms=c('rowvar','colvar')
+    df=data.frame(a=c(),b=c())
+    for (i in 1:nrow(tab)) {
+        for (j in 1:ncol(tab)) {
+            if (tab[i,j]> 0) {
+                for (k in 1:tab[i,j]) {
+                    if (nrow(df)==0) {
+                        df=data.frame(vrow=rownames(tab)[i],vcol=colnames(tab)[j])
+                    } else {
+                        df=rbind(df,data.frame(vrow=rownames(tab)[i],vcol=colnames(tab)[j]))
+                    }
+                }
+            }
+        }
+    }   
+    df[,1]=as.factor(df[,1])
+    df[,2]=as.factor(df[,2])
+    colnames(df)=nms
+    return(df)
+}
+
+#' \name{athi$venn}
+#' \alias{athi$venn}
+#' \alias{athi_venn}
+#' \title{Plot Venn diagram for logical relations between two or three sets.}
+#' \description{This function combines two data frames or matrices even if they have different
+#'   column names. In each data frame or matrix missing columns are first filled up
+#'   with NA's. Thereafter data is fused using rbind. Column order is determined based 
+#'   on the first given data.
+#' }
+#' \usage{ athi_venn(x,y=NULL,z=NULL,vars=NULL,col=c("#cc888899","#8888cc99","#88cc8899"),cex=1.6,...) }
+#' \arguments{
+#' \item{x}{data frame or matrix or vector, in the latter case y and for 3 sets as well z must be given}
+#' \item{y}{vector if _x_ is vector, default: NULL}
+#' \item{z}{vector if _x_ and _y_ are vectors, default: NULL}
+#' \item{vars}{variable names to display if x, y and z are vectors, default: NULL}
+#' \item{col}{background colors for the circles, default: c("#cc888899","#8888cc99","#88cc8899")}
+#' \item{cex}{character expansion for the text characters, default: 1.6}
+#' \item{\ldots}{argument delegated to the plot function}
+#' }
+#' \value{NULL}
+#' \examples{
+#' X=matrix(rnorm(2700),ncol=3)
+#' colnames(X)=c("A","B","C")
+#' X=X>0.4
+#' Y=X[,1:2]
+#' Y=Y>0.7
+#' par(mfrow=c(2,2),mai=rep(0.1,4),pty='s')
+#' athi$venn(X)
+#' athi$venn(Y)
+#' athi$venn(x=LETTERS[1:9],y=LETTERS[3:6],z=LETTERS[4:12],vars=c('Xvar','Yvar','Zvar'))
+#' athi$venn(x=LETTERS[1:9],y=LETTERS[3:6],vars=c('Xvar','Yvar'))
+#' }
+#' \seealso{
+#'   \link[athi:athi-class]{athi-class}
+#' }
+#'  
+athi$venn = function (x,y=NULL,z=NULL,vars=NULL,col=c("#cc888899","#8888cc99","#88cc8899"),cex=1.6,...) {
+    circle = function (x,y, radius=1,length=100) {
+        theta = seq(0, 2 * pi, length = 100) 
+        return(list(x=radius*cos(theta)+x,
+                    y=radius*sin(theta)+y))
+    }
+    venn2D = function (x,col=c("#cc888899","#8888cc99"),cex=1.6,...) {
+        if (!is.data.frame(x) & !is.matrix(x)) {
+            stop("Error: Not a two column matrix or data frame!")
+        }
+        if (ncol(x) != 2) {
+            stop("Error: Not a two column matrix or data frame!")   
+        }
+        # reset to useful values, slightly smaller than the defaults:
+        # defaults: mai=c(1.02, 0.82, 0.82, 0.42)
+        #opar=par(mai=c(1, 0.8, 0.8, 0.4),pty='s')
+        # compute circle size
+        circ.cex=60*par()$fin[1]/9
+        
+        plot(c(1,2),c(1,1),xlim=c(0.5,2.5),ylim=c(0.5,2.5),
+             pch=19,cex=circ.cex,axes=FALSE,type="n",
+             xlab="",ylab="",
+             col=col,...)
+        polygon(circle(1.2,1.5,radius=0.65),col=col[1],border=col[1])
+        polygon(circle(1.8,1.5,radius=0.65),col=col[2],border=col[2])
+        text(1.1,2.3,colnames(x)[1],cex=cex)
+        text(1.9,2.3,colnames(x)[2],cex=cex)
+        # the changes
+        if (class(x[,1]) == "logical") {
+            is=length(which(x[,1] & x[,2]))
+            ls=length(which(x[,1] & !x[,2]))
+            rs=length(which(!x[,1] & x[,2]))
+            os=length(which(!x[,1] & !x[,2]))
+        } else {
+            xv=x[,1]
+            xv=xv[xv!=""]
+            yv=x[,2]
+            yv=yv[yv!=""]
+            is=length(intersect(xv,yv))
+            ls=length(setdiff(xv,yv))
+            rs=length(setdiff(yv,xv))
+            os=""
+        }   
+        text(1.5,1.5,is,cex=cex)
+        text(0.9,1.5,ls,cex=cex)
+        text(2.1,1.5,rs,cex=cex)
+        text(1.5,0.7,os,cex=cex)
+        #par(opar)
+    }                                                   
+    if (class(y)[1] != "NULL" & class(z)[1]!="NULL") {
+        M=matrix('',ncol=3,nrow=max(c(length(x),length(y),length(z))))
+        M[1:length(x),1]=x
+        M[1:length(y),2]=y
+        M[1:length(z),3]=z        
+        colnames(M)=c('x','y','z')
+        if (class(vars[1])!="NULL") {
+            colnames(M)=vars
+        }
+        athi$venn(M,col=col,cex=cex,...)
+    } else if (class(y)[1] != "NULL") {
+        M=matrix('',ncol=2,nrow=max(c(length(x),length(y))))
+        M[1:length(x),1]=x
+        M[1:length(y),2]=y
+        colnames(M)=c('x','y')
+        if (class(vars[1])!="NULL") {
+            colnames(M)=vars
+        }
+        athi$venn(M,col=col,cex=cex,...)
+    } else if (!is.data.frame(x) & !is.matrix(x)) {
+        stop("Error: Not a matrix or data frame!")
+    } else if (ncol(x) == 2) {
+        venn2D(x,col=col[1:2],cex=cex,...)
+    } else if (ncol(x) != 3) {
+        stop("Error: Only two or three column matrix or data frame is accepted!")  
+    } else if (!class(x[,1]) == "logical") {    
+        rnames=unique(c(x[,1],x[,2],x[,3]))
+        rnames=rnames[which(rnames!="")]
+        M=matrix(FALSE,ncol=3,nrow=length(rnames))
+        rownames(M)=rnames
+        colnames(M)=colnames(x)
+        for (i in 1:3) {
+            idx=which(rnames%in%x[,i])
+            M[idx,i]=TRUE
+        }   
+        athi$venn(M,col=col,cex=cex,...)
+    } else {  
+        #opar=par(mai=c(0.5, 0.4, 0.4, 0.2),pty='s')
+        circ.cex=70*par()$fin[1]/9
+        plot(c(3.5,5.5,4.5),c(5.5,5.5,3.5),xlim=c(0,9),ylim=c(0,9),
+             pch=19,cex=circ.cex,axes=FALSE,asp=1,
+             xlab="",ylab="", col=col,type="n",...)
+        polygon(circle(3.5,5.5,radius=2.3),col=col[1],border=col[1])
+        polygon(circle(5.5,5.5,radius=2.3),col=col[2],border=col[2])
+        polygon(circle(4.5,3.5,radius=2.3),col=col[3],border=col[3])
+        
+        text(0.5,7,colnames(x)[1],cex=cex)
+        text(8.5,7,colnames(x)[2],cex=cex)
+        text(4.5,0.25,colnames(x)[3],cex=cex)
+        is=length(which(x[,1] & x[,2] & x[,3]))
+        ls=length(which(x[,1] & !x[,2] & !x[,3]))
+        rs=length(which(!x[,1] & x[,2] & !x[,3]))
+        bs=length(which(!x[,1] & !x[,2] & x[,3]))        
+        os=length(which(!x[,1] & !x[,2] & !x[,3]))
+        xys=length(which(x[,1] & x[,2] & !x[,3]))
+        xzs=length(which(x[,1] & !x[,2] & x[,3]))        
+        yzs=length(which(!x[,1] & x[,2] & x[,3]))                
+        text(4.5,4.8,is,cex=cex*0.8)
+        if (os>0) {
+            text(4.5,8.5,os,cex=cex*0.8)
+        }
+        text(2.2,6,ls,cex=cex*0.8)
+        text(6.8,6,rs,cex=cex*0.8)
+        text(4.5,2.1,bs,cex=cex*0.8)
+        text(4.5,6.6,xys,cex=cex*0.8)    
+        text(2.9,4,xzs,cex=cex*0.8)        
+        text(6,4,yzs,cex=cex*0.8)            
+        #par(opar)
+    }   
+}
+
+#' \name{athi$wilcoxR}
+#' \alias{athi$wilcoxR}
+#' \alias{athi_wilcoxR}
+#' \title{Calculate the effect size for a wilcox test (Rosenthal 1991).}
+#' \description{This function calculates the effect size for a numerical vector with non-normally distributed variables
+#'  and a categorical vector with two levels.
+#' }
+#' \usage{ athi_wilcoxR(x,y=NULL,n=NULL) }
+#' \arguments{
+#' \item{x}{either a wilcox test object or a vector with numerical values}
+#' \item{y}{if _x_ is numerical vector either a vector with numerical values or a vector with cvategorical data having the same length as x}
+#' \item{n}{numnber of samples, required if _x_ is a wilcox.test object}
+#' }
+#' \value{numerical value for effect size r having the same interpretation rules a Pearson's r}
+#' \examples{
+#' set.seed(123)
+#' rn1=rnorm(100,mean=10,sd=1)
+#' rn2=rnorm(80,mean=11,sd=1)
+#' rn2=c(rn2,rnorm(20,mean=12,sd=2)) # bimodal distribution
+#' mean(rn1)
+#' mean(rn2)
+#' athi$wilcoxR(rn1,rn2) # two numerical vectors
+#' wt=wilcox.test(rn1,rn2,exact=FALSE) 
+#' athi$wilcoxR(wt,n=200) # a test object
+#' cat = as.factor(c(rep('A',100),rep('B',100)))
+#' athi$wilcoxR(x=c(rn1,rn2),y=cat) # num ~ cat
+#' }
+#' 
+#' \seealso{
+#'   \link[athi:athi-class]{athi-class},\link[athi:athi_cohensD]{athi$cohensD}, 
+#'   \link[athi:athi_cohensW]{athi$cohensW}, \link[athi:athi_eta_squared]{athi$eta_squared},
+#'   \link[athi:athi_epsilon_squared]{athi$epsilon_squared}
+#' }
+
+athi$wilcoxR <- function (x,y=NULL,n=NULL) {
+    if (class(y)[1] %in% c("numeric","integer")) {
+        wt=wilcox.test(x,y,exact=FALSE)
+        n=length(x[which(!is.na(x))]) +  length(x[which(!is.na(x))])
+        return(athi$wilcoxR(wt,n=n))
+    }  else if (class(y)[1] %in% c("factor")) {
+        wt=wilcox.test(x~y,exact=FALSE)
+        n=length(x[which(!is.na(x) & !is.na(y))])        
+        return(athi$wilcoxR(wt,n=n))
+    } else {
+        z = qnorm(x$p.value/2)
+        return(abs(z/sqrt(n)))
+    }
+}
+
 athi_assoc_plot = athi$assoc_plot
 athi_bootstrap = athi$bootstrap
 athi_box_plot = athi$box_plot
@@ -1957,3 +2339,9 @@ athi_ref_table = athi$ref_table
 athi_report_pvalue = athi$report_pvalue
 athi_norm = athi$norm
 athi_randomize = athi$randomize
+athi_sem = athi$sem
+athi_smartbind = athi$smartbind
+athi_textplot = athi$textplot
+athi_untab = athi$untab
+athi_venn = athi$venn
+athi_wilcoxR = athi$wilcoxR
