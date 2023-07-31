@@ -683,7 +683,7 @@ head(athi$ref_table(sex="F",type="height"))
 Function for reporting a p-value either giving the three alpha thresholds, 
 <0.05, <0.01, or <0.001 or using the star syntax. 
 
-Usage: *athi_report_pvalue(x,star=FALSE)*
+Usage: *athi$report_pvalue(x,star=FALSE)*
 
 ```{r}
 athi$report_pvalue(1/10000)
@@ -691,6 +691,116 @@ athi$report_pvalue(1/10000,star=TRUE)
 athi$report_pvalue(0.02,star=TRUE)
 athi$report_pvalue(0.12,star=TRUE)
 athi$report_pvalue(c(0.001,0.01,0.3,0.02))
+```
+
+### athi$sem - standard error of the mean
+
+Calculate the standard error of the mean for a given numerical vector.
+
+Usage: *athi$sem(x,na.rm=FALSE)*
+' 
+```{r label=sem}
+sem=athi$sem
+sem(rnorm(50,mean=10,sd=3))
+sem(rnorm(1000,mean=10,sd=3))
+```
+
+### athi$smartbind(x,y) - combine two data frames, matrices
+
+Combine two data frames via rbind even with different column names.
+
+This function combines two data frames or matrices even if they have different
+column names. In each data frame or matrix missing columns are first filled up
+with NA's. Thereafter data is fused using rbind. Column order is determined based 
+on the first given data.
+
+```{r label=smartbind}
+ir1=cbind(rn1=rnorm(nrow(iris)),iris)
+ir2=cbind(iris,rn2=rnorm(nrow(iris),mean=10))
+head(athi$smartbind(ir1,ir2))
+tail(athi$smartbind(ir1,ir2))
+```
+
+### athi$textplot - table plot for data
+
+Write the data for a data frame or matrix into a plot.
+
+This function can be used as a workaround to display data for small
+data frames or matrices with let's say 3-8 rows or columns into a plot. 
+
+Usage:  *athi$textplot(x,cex=1,caption=NULL,...)*
+
+```{r label=textplot,fig=TRUE,fig.width=5,fig.height=3,fig.cap=""}
+par(mai=rep(0.1,4))
+athi$textplot(head(swiss),cex=0.7,caption="Table 1: Swiss data first six lines")
+```
+
+### athi$untab(x) - table to data frame
+
+Convert a contingency table to a data frame one item per row.
+
+This function takes a contingency table and expands it two a data frame
+where every level combinations is created according to the number of entries in the
+contingency table. You can reverse the process using the table command. The procedure is useful for
+instance for performing sample bootstrapping.
+
+Usage: *athi$untab(x)*
+
+```{r label=untab}
+M=matrix(c(4,3,1,2),ncol=2,dimnames=list(
+        size=c('small','tall'),
+        smoking=c('no','yes')))
+M
+N=athi$untab(M)
+head(N)
+summary(N)
+table(N[,1],N[,2])
+```
+
+### athi$venn - Venn diagrams for sets
+
+Plot Venn diagram for logical relations between two or three sets.
+
+This function combines two data frames or matrices even if they have different
+column names. In each data frame or matrix missing columns are first filled up
+with NA's. Thereafter data is fused using rbind. Column order is determined based 
+on the first given data.
+
+Usage: *athi$venn(x,y=NULL,z=NULL,...)*
+
+```{r label=venn,fig=TRUE,fig.width=8,fig.height=8,fig.cap=""}
+par(mfrow=c(2,2),mai=rep(0.1,4))  
+X=matrix(rnorm(2700),ncol=3)
+colnames(X)=c("A","B","C")
+X=X>0.4
+Y=X[,1:2]
+Y=Y>0.7
+par(mfrow=c(2,2),mai=rep(0.1,4),pty='s')
+athi$venn(X)
+athi$venn(Y)
+athi$venn(x=LETTERS[1:9],y=LETTERS[3:6],z=LETTERS[4:12],vars=c('Xvar','Yvar','Zvar'))
+athi$venn(x=LETTERS[1:9],y=LETTERS[3:6],vars=c('Xvar','Yvar'))
+```
+
+###  athi$wilcoxR - effect size for Wilcoxon test
+ 
+Calculate the effect size for a wilcox test (Rosenthal 1991).
+Cohen's rule of thumb for interpretation is: approx 0.1 small, 0.3 medium and 0.5 and above is a large effect. 
+
+Usage: *athi$wilcoxR(x,y=NULL,n=NULL)*
+
+```{r label=wilcoxR}
+set.seed(123)
+rn1=rnorm(100,mean=10,sd=1)
+rn2=rnorm(80,mean=11,sd=1)
+rn2=c(rn2,rnorm(20,mean=12,sd=2)) # bimodal distribution
+mean(rn1)
+mean(rn2)
+athi$wilcoxR(rn1,rn2) # two numerical vectors
+wt=wilcox.test(rn1,rn2,exact=FALSE) 
+athi$wilcoxR(wt,n=200) # a test object
+cat = as.factor(c(rep('A',100),rep('B',100)))
+athi$wilcoxR(x=c(rn1,rn2),y=cat) # num ~ cat
 ```
 
 ## EOF
