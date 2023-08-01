@@ -45,13 +45,14 @@ library and we should do some basic checks:
 ```{r}
 library(MASS)
 library(athi)
-options(width=100)
+options(width=110)
 set.seed(123)
 data(birthwt)
 nrow(birthwt)
 head(birthwt,n=4)
 summary(birthwt)
 ```
+
 
 ### Column renaming
 
@@ -138,6 +139,8 @@ round(bdata.imputed[,1:ncol(birthwt)][idx],2)
 cor(as.matrix(birthwt)[idx],bdata.imputed[,1:ncol(birthwt)][idx])
 ```
 
+You can see that the correlation between the real and the imputed data is quite high.
+
 Imputations  like this works quite well if you have not too many missing data.
 An  alternative  would be to do the PCA only with  samples  where there are no
 missing data:
@@ -161,15 +164,30 @@ correlation network for instance using St. Nicolas House Analysis.
 * MDS
 * SNHA
 
-PCA  has  the  advantage  that  the
-contributions  of the original  variables to the new  variables  are not lost,
-however it requires normally distributed data without missing values and it is
-sensitive  to  outliers.  MDS in  contrast  requires  a distance  methods  for
-instance  created using Spearman  correlations by ignoring NA values and so is
-insensitive  against  outliers  (Spearman  correlation  uses  ranks).  The St.
-Nicolas  House  Analysis  is a network  based  approach  which shows  pairwise
-associations  between  variables  if  they  are  part  of  a  large  chain  of
-interactions between at least three variables.
+PCA has the advantage that the contributions of the original  variables to the
+new  variables  are not lost, however it requires  normally  distributed  data
+without  missing  values and it is  sensitive  to  outliers.  MDS in  contrast
+requires a distance  methods for instance created using Spearman  correlations
+by  ignoring  NA  values  and so is  insensitive  against  outliers  (Spearman
+correlation  uses ranks). The St. Nicolas  House  Analysis is a network  based
+approach which shows pairwise  associations between variables if they are part
+of a large chain of interactions between at least three variables.
+
+Let's use the imputed data for a PCA.
+
+```{r fig.width=7,fig.height=4}
+par(mfrow=c(1,2),mai=c(0.7,0.8,0.3,0.1))
+pca=prcomp(scale(bdata.imputed))
+summary(pca)
+### contributions
+round(pca$rotation,2)
+plot(pca)
+biplot(pca)
+```
+
+These  default  plots  are not the  nicest  ones.  The athi  package  has some
+improved versions of these plots.
+
 
 
 ## Pairwise analysis
