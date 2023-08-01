@@ -31,6 +31,11 @@ the Guelpe Summer school Human Biology and Publich Health - Data Analysis and St
   \item{\link[athi:athi_mi]{athi$mi(x,y=NULL,norm=FALSE)}}{mutual information (stats)} 
   \item{\link[athi:athi_mds_plot]{athi$mds_plot(x,method="euclidean",...)}}{plot a multidimensional scaling (plot)} 
   \item{\link[athi:athi_norm]{athi$norm(x,method="z",ties.method="average")}}{normalize data (data)} 
+  \item{\link[athi:athi_pastel]{athi$pastel(n)}}{create up to 20 pastel colors (plot)} 
+  \item{\link[athi:athi_pca_biplot]{athi$pca_biplot(x)}}{improved biplot for pca objects (plot)} 
+  \item{\link[athi:athi_pca_oncor]{athi$pca_oncor(x)}}{perform a PCA on a square (correlation) matrix (stats)} 
+  \item{\link[athi:athi_pca_pairs]{athi$pca_pairs(x)}}{improved pairs plot for pca objects (plot)} 
+  \item{\link[athi:athi_pca_plot]{athi$pca_plot(x)}}{improved screeplot for pca objects (plot)} 
   \item{\link[athi:athi_randomize]{athi$randomize(x)}}{randomize column data within matrix or data frame (data)} 
   \item{\link[athi:athi_ref_score]{athi$ref_score(x,age,sex,type)}}{reference score for the given age, sex and type (data)} 
   \item{\link[athi:athi_ref_table]{athi$ref_table(sex,type)}}{reference table for WHO for the given sex and measure type (daa)} 

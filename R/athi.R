@@ -32,6 +32,11 @@
 #'   \item{\link[athi:athi_mi]{athi$mi(x,y=NULL,norm=FALSE)}}{mutual information (stats)}
 #'   \item{\link[athi:athi_mds_plot]{athi$mds_plot(x,method="euclidean",...)}}{plot a multidimensional scaling (plot)}
 #'   \item{\link[athi:athi_norm]{athi$norm(x,method="z",ties.method="average")}}{normalize data (data)}
+#'   \item{\link[athi:athi_pastel]{athi$pastel(n)}}{create up to 20 pastel colors (plot)}
+#'   \item{\link[athi:athi_pca_biplot]{athi$pca_biplot(x)}}{improved biplot for pca objects (plot)}
+#'   \item{\link[athi:athi_pca_oncor]{athi$pca_oncor(x)}}{perform a PCA on a square (correlation) matrix (stats)}
+#'   \item{\link[athi:athi_pca_pairs]{athi$pca_pairs(x)}}{improved pairs plot for pca objects (plot)}
+#'   \item{\link[athi:athi_pca_plot]{athi$pca_plot(x)}}{improved screeplot for pca objects (plot)}
 #'   \item{\link[athi:athi_randomize]{athi$randomize(x)}}{randomize column data within matrix or data frame (data)}
 #'   \item{\link[athi:athi_ref_score]{athi$ref_score(x,age,sex,type)}}{reference score for the given age, sex and type (data)}
 #'   \item{\link[athi:athi_ref_table]{athi$ref_table(sex,type)}}{reference table for WHO for the given sex and measure type (daa)}
@@ -1379,6 +1384,312 @@ athi$mi = function (x,y=NULL,breaks=4,norm=FALSE) {
     return(MI)
 }
 
+#' \name{athi$pastel}
+#' \alias{athi$pastel}
+#' \alias{athi_pastel}
+#' \title{Create up to 20 pastel colors.}
+#' \description{
+#' This is an alternative color creation function for R versions before 3.6 where 
+#' the function `hcl.colors` is not available.
+#' }
+#' \usage{ athi_pastel(n) }
+#' \arguments{
+#' \item{n}{number of colors requested, must be within 2 and 20}
+#' }
+#' \value{Vector of colors in RGB codes of requested length 'n'}
+#' \examples{
+#' athi$pastel(4)
+#' par(mai=c(0.2,0.2,0.2,0.1))
+#' plot(1:20,col=athi$pastel(20),cex=3,pch=15)
+#' }
+#' 
+athi$pastel = function (n) {
+    if(n > 20 |  n < 1) {
+        stop("only between 1 and 20 colors can be given" ) 
+    }
+    pcols= c("#FFC5D0","#FDC8C3","#F6CBB7","#EDD0AE","#E2D4A8","#D4D8A7","#C5DCAB","#B6DFB4","#A8E1BF",
+             "#9EE2CB", "#99E2D8","#9BE0E5","#A4DDEF","#B3D9F7","#C4D5FB","#D5D0FC","#E4CBF9","#F0C7F2",
+             "#F9C5E9", "#FEC4DD")
+             idx=seq(1,20,by=floor(20/n))
+             return(pcols[idx])
+}
+
+#' \name{athi$pca_biplot}
+#' \alias{athi$pca_biplot}
+#' \alias{athi_pca_biplot}
+#' \title{ Improved biplot for pca objects. }
+#' \description{
+#' The function `athi$pca_biplot` provides an improved biplot for
+#' visualizing the pairwise scores of individual principal components of 
+#' an object created using the function `prcomp`. In contrast to the default 
+#' biplot function  this plot visualizes the data as points and not row numbers,
+#' it allows to display groups using color codes and distribution ellipses.
+#' }
+#' \usage{ athi_pca_biplot(pca,pcs=c("PC1","PC2"),
+#'                        pch=19,col='black',
+#'                        arrows=TRUE,arrow.fac=1,
+#'                        ellipse=FALSE,ell.fill=FALSE,xlab=NULL,ylab=NULL,...) }
+#' \arguments{
+#' \item{pca}{pca object of class `prcomp`, created using the function `prcomp`}
+#' \item{pcs}{the components to plot, default: c('PC1','PC2')}
+#' \item{pch}{plotting character, default: 19}
+#' \item{col}{plotting color, default: black}
+#' \item{arrows}{should loading arrows be displayed, default: TRUE}
+#' \item{arrow.fac}{scaling factor for arrow length, default: 1}
+#' \item{ellipse}{should 85 and 95 confidence intervals for the chisq distribution be shown. If this is shown colors for each group using the col argument must be given, default: FALSE}
+#' \item{ell.fill}{should a filled 85 percent confidence interval be shown, colors will be used from the plotting color with opacity, default: FALSE}
+#' \item{xlab}{custom xlab, if not given the PC name with variance in percent is shown, default: NULL}
+#' \item{ylab}{custom ylab, if not given the PC name with variance in percent is shown, default: NULL}
+#' \item{\ldots}{additional arguments delegated to the standard plot function}
+#' }
+#' \value{NULL}
+#' \examples{
+#' par(mai=c(0.8,0.8,0.2,0.6),mfrow=c(1,2))
+#' data(iris)
+#' pci=prcomp(iris[,1:4],scale=TRUE)
+#' athi$pca_biplot(pci,col=rep(2:4,each=50),ellipse=TRUE,ell.fill=TRUE,
+#'     arrow.fac=2.3,arrows=TRUE,main="biplot")
+#' legend('topright',pch=19,col=2:4,levels(iris$Species))
+#' # standard score plot
+#' athi$pca_biplot(pci,col=rep(2:4,each=50),ellipse=FALSE,
+#'    arrow.fac=2.3,arrows=FALSE,main="scoreplot")
+#' }
+#' 
+
+athi$pca_biplot = function (pca,pcs=c("PC1","PC2"),
+                       pch=19,col='black',
+                       arrows=TRUE,arrow.fac=1,
+                       ellipse=FALSE,ell.fill=FALSE,xlab=NULL,ylab=NULL,...) {
+    if (missing("xlab")) {
+        xlab=paste(pcs[1]," (", round(summary(pca)$importance[2,pcs[1]]*100,1),"%)",sep="")
+    } 
+    if (missing("ylab")) {
+        ylab=paste(pcs[2]," (", round(summary(pca)$importance[2,pcs[2]]*100,1),"%)",sep="")
+    } 
+    plot(pca$x[,pcs[1]],pca$x[,pcs[2]],pch=pch,col=col,type="n",xlab=xlab,ylab=ylab,...)
+    abline(h=0,lty=2)
+    abline(v=0,lty=2)    
+    if (ellipse) {
+        if (length(col)!= nrow(pca$x)) {
+            stop("colors must have sam elength as data points")
+        }
+        ell.col=col
+        i=1
+        for (cl in names(table(ell.col))) {
+            C=cov(pca$x[ell.col==cl,c(pcs[1],pcs[2])])    # Covarianz-Matrix C bestimmen
+            d85=qchisq(0.85, df = 2)     # 85% - Faktor , um die Ellipse zu skalieren
+            M=colMeans(pca$x[ell.col==cl,c(pcs[1],pcs[2])]) #   Mittelwerte (Zentrum) des Clusters
+            el=cluster::ellipsoidPoints(C, d85, loc=M)  # Ellipsen-Punkte aus C und M berechnen
+            if (ell.fill) {
+                colfill=paste(rgb(t(col2rgb(cl))/255),"33",sep="")
+                polygon(el,col=colfill,border=NA)
+                i=i+1
+                next
+            }
+            lines(el,col=cl,lwd=1.5,lty=2)    #  Ellipse als geschlossene Linies zeichnen
+            d95=qchisq(0.95, df = 2)     # 85% - Faktor , um die Ellipse zu skalieren
+            el=cluster::ellipsoidPoints(C, d95, loc=M)  # Ellipsen-Punkte aus C und M berechnen
+            lines(el,col=cl,lwd=1.5,lty=1)    #  Ellipse als geschlossene Linies zeichnen                        
+
+        }
+    }
+    points(pca$x[,pcs[1]],pca$x[,pcs[2]],pch=pch,col=col,...)
+    if (arrows) {
+        loadings=pca$rotation
+        arrows(0,0,loadings[,pcs[1]]*arrow.fac,loadings[,pcs[2]]*arrow.fac,
+               length=0.1,angle=20,col='black')
+        text(loadings[,pcs[1]]*arrow.fac*1.2,loadings[,pcs[2]]*arrow.fac*1.2,
+             rownames(loadings),col='black',font=2)
+    }
+
+}
+
+#' \name{athi$pca_oncor}
+#' \alias{athi$pca_oncor}
+#' \alias{athi_pca_oncor}
+#' \title{Perform a PCA on a correlation matrix.}
+#' \description{
+#' The function `athi$pca_oncor` does a PCA using eigenvector eigenvalue decomposition
+#'   on a correlation matrix. PCA usually performs Pearson correlation internally what
+#'   leads to a highly outlier sensitive analysis. If the user decides
+#'   to use a method like Spearman or even bi-seriell, polychoric or for nominal data
+#'   effect size measures like Cohen's W this method here can be used. Note that this
+#'   does not return new coordinates for the sample as the sample contribution is lost in the
+#'   correlation matrix. The method might however be used to check if the results between
+#'   Pearson and Spearman PCA are similar or does  outliers lead to a completly different result.
+#' }
+#' \usage{ athi_pca_oncor(x) }
+#' \arguments{
+#' \item{x}{a symmetric matrix usually with pairwise correlations}
+#' }
+#' \value{PCA like list object with components sd and rotation}
+#' \examples{
+#' data(USArrests)
+#' C=cor(USArrests)
+#' athi$pca_oncor(C)
+#' D=cor(USArrests,method="spearman") 
+#' athi$pca_oncor(D)
+#' }
+#' 
+athi$pca_oncor <- function (x) {
+    ev=eigen(x)
+    res=list(rotation=ev$vectors,sdev=sqrt(ev$values))
+    colnames(res$rotation)=paste("PC",1:ncol(x),sep="")
+    rownames(res$rotation)=rownames(x)
+    return(res)
+             
+}
+#' \name{athi$pca_pairs}
+#' \alias{athi$pca_pairs}
+#' \alias{athi_pca_pairs}
+#' \title{Improved pairs plot for pca objects.}
+#' \description{
+#'   The function `athi$pca_pairs` provides an improved pairs plot for
+#'   visualizing the pairwise scores of the individual components of an analyses 
+#'   using the function `prcomp`. In contrast to the default `pairs` function 
+#'   this plot visualizes in the diagonal as well the variances and 
+#'   a density line for the component scores.
+#' }
+#' \usage{ athi_pca_pairs(pca,n=10,groups=NULL, col='black',pch=19,legend=FALSE,...) }
+#' \arguments{
+#' \item{pca}{pca object which was created using the function `prcomp`.}
+#' \item{n}{maximal number of components to visualize, default: 10}
+#' \item{groups}{vector with classes having the same length than the inout matrix for prcomp has rows, default: NULL}
+#' \item{col}{colors for the plotting, character, default: 'black'}
+#' \item{pch}{plotting, symbol, default: 19}
+#' \item{legend}{should the legend be displayed on top, default: FALSE}
+#' \item{\ldots}{additional arguments delegated to the standard `pairs` function}
+#' }
+#' \value{NULL}
+#' \examples{
+#' data(iris)
+#' pci=prcomp(iris[,1:4],scale=TRUE)
+#' athi$pca_pairs(pci,pch=15,groups=iris[,5],
+#'    legend=TRUE,oma=c(5,4,4,4),col=as.numeric(iris[,5])+1)
+#' }
+#' 
+
+athi$pca_pairs = function (pca,n=10,groups=NULL, col='black',pch=19,legend=FALSE,...) {
+    athi$N = 1
+    if (n>ncol(pca$x)) {
+        n=ncol(pca$x)
+    }
+    pst=FALSE
+    if (class(groups) != "NULL" & length(col) != length(groups)) {
+        coln=length(levels(as.factor(groups)))
+        cols=athi$pastel(coln)
+        col=cols[as.numeric(as.factor(as.character(groups)))]
+        pst=TRUE
+    }
+    panel.text = function (x,...) {
+        usr <- par("usr"); on.exit(par(usr))
+        par(usr = c(0, 1, 0, 1))
+        text(0.5,0.5,
+             paste(sprintf("%.1f",summary(pca)$importance[2,athi$NN]*100),"%",
+                   sep=""),cex=1.5)
+        ds=density(pca$x[,athi$N],na.rm=TRUE)
+        ds$x=ds$x-min(ds$x)
+        ds$x=ds$x/max(ds$x)
+        ds$y=(ds$y/max(ds$y)*0.3)
+        polygon(ds,col='grey80')
+        athi$N = athi$N + 1
+    }
+    pairs(pca$x[,1:n],diag.panel=panel.text,col=col,pch=pch,...)
+    if (legend && class(groups) != "NULL") {
+        opar=par()
+        options(warn=-1)
+        par(fig = c(0, 1, 0, 1), oma = c(0, 0, 0, 0), mar = c(0, 0, 0, 0), new = TRUE)
+        plot(0, 0, type = "n", bty = "n", xaxt = "n", yaxt = "n")
+        if (pst) {
+            leg.cols=athi$pastel(coln)[as.numeric(as.factor((levels(as.factor(groups)))))]
+        } else {
+            cols=col
+            names(cols)=as.character(groups)
+            lcol=cols[unique(names(cols))]
+            leg.cols=as.numeric(lcol)
+        }
+        legend('bottom', levels(as.factor(groups)), xpd = TRUE, 
+               horiz = TRUE, inset = c(0,0), 
+               bty = "n", pch = pch, col = leg.cols, cex = 1.2)
+        
+        par(opar)
+    }
+}
+#' \name{athi$pca_plot}
+#' \alias{athi$pca_plot}
+#' \alias{athi_pca_plot}
+#' \title{Improved bar or screeplot for pca objects.}
+#' \description{
+#' The function `athi$pca_plot` provides an improved bar- or screeplot for
+#' visualizing the variances of the individual components of an analyses 
+#' using the function _prcomp_. In contrast to the default plot function 
+#' this plot visualize cumulative and individual variances in percent.
+#' }
+#' \usage{ athi_pca_plot(pca,n=10,type="bar", cex=1.5, 
+#'                      legend=TRUE,xlab="Components",ylab="Variance (\%)",
+#'                      pc.col=c("light blue","grey"),...)}
+#' \arguments{
+#' \item{pca}{pca object which was created using the function `prcomp`}
+#' \item{n}{maximal number of components to visualize, default: 10}
+#' \item{type}{plotting type either "bar" or "scree", default: "bar"}
+#' \item{cex}{character expansion for the legend and the screeplot plotting characters, default: 1.5}
+#' \item{legend}{should the legend be displayed on top, default: TRUE}
+#' \item{xlab}{label for the x-axis, default "Components"}
+#' \item{ylab}{label for the y-axis, default "Variances(\%)"}
+#' \item{pc.col}{colors for the PC variances, first individual, second color for the cumulative variance, default: c("light blue","grey")}
+#' \item{\ldots}{additional arguments delegated to the standard plot function}
+#' }
+#' \value{NULL}
+#' \examples{
+#' data(iris)
+#' par(mfrow=c(1,2))
+#' pcai=prcomp(iris[,1:4],scale=TRUE)
+#' athi$pca_plot(pcai)
+#' athi$pca_plot(pcai,type="scree",legend=FALSE)
+#' }
+#' 
+
+athi$pca_plot = function (pca,n=10,type="bar", cex=1.5, 
+                     legend=TRUE,xlab="Components",ylab="Variance (%)",
+                     pc.col=c("light blue","grey"),...) {
+    if (n>ncol(pca$x)) {
+        n=ncol(pca$x)
+    }
+    if (legend) {
+        ylim=c(0,120)
+    } else {
+        ylim=c(0,105)
+    }
+    if (type=="bar") {
+        barplot(summary(pca)$importance[3,1:n]*100,
+                ylim=ylim,col='white',
+                xlab=xlab,ylab=ylab,axes=FALSE,...)
+    } else {
+        plot(summary(pca)$importance[3,1:n]*100,type="b",
+                ylim=ylim,cex.axis=1.2,lwd=2,cex=cex,
+                xlab=xlab,ylab=ylab,axes=FALSE,
+                pch=15,col=pc.col[2],...)
+        points(summary(pca)$importance[2,1:n]*100,type="b",cex=cex,
+                lwd=2,xlab="", pch=15,col=pc.col[1],...)
+
+        axis(1,at=1:n,labels=paste("PC",1:n,sep=""))
+    }
+    axis(2,at=c(20,40,60,80,100),labels=c(20,40,60,80,100))
+    if (type == "bar") {
+        barplot(summary(pca)$importance[3,1:n]*100,add=TRUE,col=pc.col[2],axes=FALSE)
+        barplot(summary(pca)$importance[2,1:n]*100,add=TRUE,col=pc.col[1],axes=FALSE)        
+    }
+    abline(h=5,lty=2,lwd=0.5)
+    abline(h=10,lty=2,lwd=0.5)
+    abline(h=90,lty=2,lwd=0.5)
+    abline(h=95,lty=2,lwd=0.5)    
+    abline(h=100,lty=1,lwd=0.5)    
+    if (legend) {
+        legend("topleft",c("Component","Cumulative"),col=pc.col,pch=15,cex=1.5,box.lwd=0,ncol=2)
+    }
+    box()
+}
+
 #' \name{athi$qr_plot}
 #' \alias{athi$qr_plot}
 #' \alias{athi_qr_plot}
@@ -2342,6 +2653,11 @@ athi_kroki = athi$kroki
 athi_lm_plot = athi$lm_plot
 athi_mi = athi$mi
 athi_mds_plot = athi$mds_plot
+athi_pastel = athi$pastel
+athi_pca_biplot = athi$pca_biplot
+athi_pca_oncor = athi$pca_oncor
+athi_pca_pairs = athi$pca_pairs
+athi_pca_plot = athi$pca_plot
 athi_qr_plot = athi$qr_plot
 athi_ref_score = athi$ref_score
 athi_ref_table = athi$ref_table

@@ -1,6 +1,6 @@
 \name{athi$pca_biplot} 
 \alias{athi$pca_biplot} 
-\alias{athi_pca_bplot} 
+\alias{athi_pca_biplot} 
 \title{ Improved biplot for pca objects. } 
 \description{ 
 The function `athi$pca_biplot` provides an improved biplot for 

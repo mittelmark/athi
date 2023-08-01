@@ -9,7 +9,7 @@ using the function _prcomp_. In contrast to the default plot function
 this plot visualize cumulative and individual variances in percent. 
 } 
 \usage{ athi_pca_plot(pca,n=10,type="bar", cex=1.5,  
-                     legend=TRUE,xlab="Components",ylab="Variance (%)", 
+                     legend=TRUE,xlab="Components",ylab="Variance (\%)", 
                      pc.col=c("light blue","grey"),...)} 
 \arguments{ 
 \item{pca}{pca object which was created using the function `prcomp`} 
@@ -17,6 +17,8 @@ this plot visualize cumulative and individual variances in percent.
 \item{type}{plotting type either "bar" or "scree", default: "bar"} 
 \item{cex}{character expansion for the legend and the screeplot plotting characters, default: 1.5} 
 \item{legend}{should the legend be displayed on top, default: TRUE} 
+\item{xlab}{label for the x-axis, default "Components"} 
+\item{ylab}{label for the y-axis, default "Variances(\%)"} 
 \item{pc.col}{colors for the PC variances, first individual, second color for the cumulative variance, default: c("light blue","grey")} 
 \item{\ldots}{additional arguments delegated to the standard plot function} 
 } 

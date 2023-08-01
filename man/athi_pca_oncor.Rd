@@ -1,6 +1,6 @@
 \name{athi$pca_oncor} 
 \alias{athi$pca_oncor} 
-\alias{athi_pc_oncor} 
+\alias{athi_pca_oncor} 
 \title{Perform a PCA on a correlation matrix.} 
 \description{ 
 The function `athi$pca_oncor` does a PCA using eigenvector eigenvalue decomposition 
@@ -22,6 +22,6 @@ data(USArrests)
 C=cor(USArrests) 
 athi$pca_oncor(C) 
 D=cor(USArrests,method="spearman")  
-athi$$pca_oncor(D) 
+athi$pca_oncor(D) 
 } 
  
