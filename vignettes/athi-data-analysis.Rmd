@@ -1,7 +1,7 @@
 ---
 title: Guelpe Summerschool Data Analysis Tutorial
 author: Detlef Groth, University of Potsdam
-date: 2023-07-31 09:35
+date: 2023-08-01 09:35
 output: 
     rmarkdown::html_vignette:
         toc: true
@@ -11,7 +11,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 include-before: |
     <style> body { max-width: 1000px; font-family: Candara, sans-serif;} </style>
-    <center>[athi functions](athi-functions.html) - [athi analysis](athi-analysis.html) </center>
+    <center>[athi functions](athi-functions.html) - [athi analysis](athi-data-analysis.html) </center>
 ---
 
 ## Introduction
@@ -21,16 +21,156 @@ students analyzing their data at the Summerschool Childrens Groth and Data Analy
 
 ## Data Preparation
 
+The first  challenge  usually in analyzing data is to load the data into the R
+system. This sound simple but is often  challenging.  Here are the basic steps
+
 * loading data
 * column renaming, shortening
 * dealing with missing values, outliers
 * data checking
+* optional: add some random data
 
-## Overview statistics
+### Data loading
 
-* PCA
+The data are often  stored in a more or less  structured  way, for instance in
+XLSX files or in flat files. XLSX  spreadsheet data can be loaded quite nicely
+using the library  'openxlsx'.  After we have loaded the data we should  check
+them using commands like dim, head and summary. If there are missing values we
+should  decide if we impute  (guess) them or we might remove  samples with too
+many missing values completely. 
+
+We start now a simple sample project using the birth weight data from the MASS
+library and we should do some basic checks:
+
+```{r}
+library(MASS)
+library(athi)
+options(width=100)
+set.seed(123)
+data(birthwt)
+nrow(birthwt)
+head(birthwt,n=4)
+summary(birthwt)
+```
+
+### Column renaming
+
+It is advisable to use short and concise  column names from the  beginning. If
+you do this at later  time. If you do it at a later  time you have to do a lot
+of  renaming in your report  which is not  recommended.  You should  provide a
+table  where  you  translate  your  short  name. A good  place  for this is as
+separate sheet in your XLSX file where you then load the table from. 
+
+Usually  it is not  recommended  to do the  renaming  in your data file as you
+might get later some update of this file and you then have to do the  renaming
+in the data file  again. It is better to do this in R and as well then  create
+the table in R. Here an example:
+
+```{r}
+colnames(birthwt)[4]="ethn"
+birthwt$ethn[birthwt$ethn>2]=2
+cnames=list(
+    'low'   = "indicator of birth weight less than 2.5 kg ('0' = no, 1 = 'yes')",
+    'age'   = "mother's age in years",
+    'lwt'   = "mother's weight in pounds at last menstrual period",
+    'ethn'  = "mother's ethnicity ('1' = white, '2' = non-white",
+    'smoke' = "smoking status during pregnancy ('0' = no, 1 = 'yes')",
+    'ptl'   = "number of previous premature labours",
+    'ht'    = "history of hypertension ('0' = no, 1 = 'yes')",
+    'ui'    = "presence of uterine irritability ('0' = no, 1 = 'yes')",
+    'ftv'   = "number of physician visits during the first trimester",
+    'bwt'   = "birth weight in grams",
+    'rnd'   = "some random data with mean of 10 and sd of 1")
+```
+
+We can now display this list as a table:
+
+```{r results="asis"}
+athi$df2md(data.frame(explanation=unlist(cnames)), 
+    caption="**Table 1:** Variable abbreviations")
+```
+
+For illustrative  purposes it is often recommended to add some random data, to
+see how  unrelated  data behave in the analysis, we add them to a new variable
+to not change our intial data.
+
+```{r}
+bdata=as.matrix(birthwt)
+rnd=rnorm(nrow(bdata),mean=10,sd=1)
+bdata=cbind(bdata,rnd=rnd)
+head(round(bdata,2))
+```
+
+### Imputation
+
+To illustrate the imputation of missing value  imputation we first introduce a
+few missing  values. To do so we create a copy of the  original  data and save
+this copy in a variable *bdata*.
+
+```{r}
+bdata=athi$introNAs(bdata)
+summary(bdata)
+```
+
+Methods like PCA require full data matrices, 
+we can impute missing values using the `athi$impute` function.
+
+```{r}
+args(athi$impute)
+bdata.imputed=athi$impute(bdata,method="knn")
+summary(bdata.imputed)
+```
+
+The knn method  looks for samples  which are very close to the sample where we
+have the  missing  value. It then  uses then mean of the k  (default:  5) most
+similar samples  (neighbors) and then adds this value instead of the NA. Let's
+just short  determine  the  correlation  between  the  removed and the imputed
+values to convince you that this is quite reliable.
+
+```{r}
+### we skip the random data column
+### as these data can't be reliable imputed
+
+idx=which(is.na(bdata[,1:ncol(birthwt)]))
+print(length(idx))
+round(as.matrix(birthwt)[idx],2)
+round(bdata.imputed[,1:ncol(birthwt)][idx],2)
+cor(as.matrix(birthwt)[idx],bdata.imputed[,1:ncol(birthwt)][idx])
+```
+
+Imputations  like this works quite well if you have not too many missing data.
+An  alternative  would be to do the PCA only with  samples  where there are no
+missing data:
+
+```{r}
+nrow(bdata)
+nrow(na.omit(bdata))
+```
+
+As you see in this case with around 5 percent of missing values you would skip
+almost 50 percent of your data.
+
+### Ordination techniques
+
+
+After  data  preparation  we should  start  with a look on the data using some
+ordination  techniques  like  PCA  or  MDS  and  display  the  variables  in a
+correlation network for instance using St. Nicolas House Analysis. 
+
+* PCA 
 * MDS
 * SNHA
+
+PCA  has  the  advantage  that  the
+contributions  of the original  variables to the new  variables  are not lost,
+however it requires normally distributed data without missing values and it is
+sensitive  to  outliers.  MDS in  contrast  requires  a distance  methods  for
+instance  created using Spearman  correlations by ignoring NA values and so is
+insensitive  against  outliers  (Spearman  correlation  uses  ranks).  The St.
+Nicolas  House  Analysis  is a network  based  approach  which shows  pairwise
+associations  between  variables  if  they  are  part  of  a  large  chain  of
+interactions between at least three variables.
+
 
 ## Pairwise analysis
 

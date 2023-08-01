@@ -7,7 +7,7 @@ Author: Detlef Groth, University of Potsdam
 Maintainer: Detlef Groth <dgroth@uni-potsdam.de>
 Description: R package for Summerschool Guelpe.
 Imports: rpart
-Suggests: knitr, rmarkdown, quantreg, tcltk, png, digest
+Suggests: knitr, rmarkdown, quantreg, tcltk, png, digest, MASS
 VignetteBuilder: knitr
 License: MIT + file LICENSE
 NeedsCompilation: no

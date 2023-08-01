@@ -1,17 +1,17 @@
 ---
 title: "Vignette for the functions of the athi package"
 author: Detlef Groth, University of Potsdam, Germany
-date: 2023-07-26
+date: 2023-08-01
 output: 
     rmarkdown::html_vignette:
         toc: true
 vignette: >
-  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteIndexEntry{Vignette for the functions of the athi package}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 include-before: |
     <style> body { max-width: 1000px; font-family: Candara, sans-serif;} </style>
-    <center>[athi functions](athi-functions.html) - [athi analysis](athi-analysis.html) </center>
+    <center>[athi functions](athi-functions.html) - [athi analysis](athi-data-analysis.html) </center>
     
 ---
 
