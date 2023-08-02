@@ -6,3 +6,4 @@ importFrom("rpart", "rpart")
 importFrom("graphics", "abline", "axis", "barplot", "pairs", "box","boxplot","mtext","par", "points", 
   "polygon","text", "title","lines")
 importFrom("grDevices", "col2rgb", "rgb")  
+importFrom("cluster","ellipsoidPoints")

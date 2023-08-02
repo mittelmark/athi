@@ -2,11 +2,11 @@ Package: athi
 Type: Package
 Title: R functions for analysing data at the Summerschool Human Biology and Public Health of University of Potsdam
 Version: 0.3.1
-Date: 2023-07-24
+Date: 2023-08-02
 Author: Detlef Groth, University of Potsdam
 Maintainer: Detlef Groth <dgroth@uni-potsdam.de>
 Description: R package for Summerschool Guelpe.
-Imports: rpart
+Imports: rpart, cluster
 Suggests: knitr, rmarkdown, quantreg, tcltk, png, digest, MASS
 VignetteBuilder: knitr
 License: MIT + file LICENSE

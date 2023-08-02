@@ -619,6 +619,114 @@ sdata=read.table(text="4 3 6 4 7
 athi$norm(sdata,method="mp")
 ```
 
+### athi$pca_biplot - PCA biplot
+ 
+Improved biplot for pca objects.
+
+The function `athi$pca_biplot` provides an improved biplot for
+visualizing the pairwise scores of individual principal components of 
+an object created using the function `prcomp`. In contrast to the default 
+biplot function  this plot visualizes the data as points and not row numbers,
+it allows to display groups using color codes and distribution ellipses.
+
+Arguments:
+
+```{r}
+args(athi$pca_biplot)
+```
+
+Examples:
+
+```{r label=biplot,fig=TRUE,fig.height=6,fig.width=12,fig.cap=""}
+par(mai=c(0.8,0.8,0.2,0.6),mfrow=c(1,2))
+data(iris)
+pci=prcomp(iris[,1:4],scale=TRUE)
+athi$pca_biplot(pci,col=rep(2:4,each=50),ellipse=TRUE,ell.fill=TRUE,
+    arrow.fac=2.3,arrows=TRUE,main="biplot")
+legend('topright',pch=19,col=2:4,levels(iris$Species))
+# standard score plot
+athi$pca_biplot(pci,col=rep(2:4,each=50),ellipse=FALSE,
+   arrow.fac=2.3,arrows=FALSE,main="scoreplot")
+```
+
+### athi$pca_oncor - PCA on a correlation matrix 
+ 
+Perform a PCA on a correlation matrix.
+
+The function `athi$pca_oncor` does a PCA using eigenvector eigenvalue decomposition
+on a correlation matrix. PCA is usually performed on Pearson correlation internally what
+leads to a highly outlier sensitive analysis. If the user decides
+to use a method like Spearman correlation or even bi-seriell, polychoric or for nominal data
+effect size measures like Cohen's W this method here can be used. Note that this does not return new coordinates for the sample as the sample contribution is lost in the
+correlation matrix. The method might however be used to check if the results between Pearson and Spearman PCA are similar or does 
+outliers lead to a completly different result.
+
+Arguments:
+```{r}
+args(athi$pca_oncor)
+```
+
+Examples:
+
+```{r label=oncor}
+data(USArrests)
+C=cor(USArrests)
+athi$pca_oncor(C)
+D=cor(USArrests,method="spearman") 
+athi$pca_oncor(D)
+```
+ 
+### athi$pca_pairs - pairs plot for PCA 
+ 
+Improved pairs plot for PCA objects.
+ 
+The function `athi$pca_pairs` provides an improved pairs plot for
+visualizing the pairwise scores of the individual components of an analyses 
+using the function `prcomp`. In contrast to the default pairs function 
+this plot visualizes in the diagonal as well the variances and 
+a density line for the component scores.
+
+
+Arguments:
+
+```{r}
+args(athi$pca_pairs)
+```
+ 
+Examples:
+
+```{r label=pca.pairs,fig=TRUE,fig.cap=""}
+data(iris)
+pci=prcomp(iris[,1:4],scale=TRUE)
+athi$pca_pairs(pci,pch=15,groups=iris[,5],
+   legend=TRUE,oma=c(5,4,4,4),col=as.numeric(iris[,5])+1)
+```
+
+### athi$pca_plot - improved screeplot for PCA
+ 
+Improved bar or screeplot for pca objects.
+
+The function `athi$pca_plot` provides an improved bar- or screeplot for
+visualizing the variances of the individual components of an analyses 
+using the function `prcomp`. In contrast to the default plot function 
+this plot visualize cumulative and individual variances in percent.
+
+Arguments:
+
+```{r}
+args(athi$pca_plot)
+```
+
+Examples:
+
+```{r label=pca.plot,fig=TRUE,fig.width=11,fig.height=6,fig.cap=""}
+data(iris)
+par(mfrow=c(1,2))
+pcai=prcomp(iris[,1:4],scale=TRUE)
+athi$pca_plot(pcai)
+athi$pca_plot(pcai,type="scree",legend=FALSE)
+```
+
 ### athi$qr_plot - quantile regression plot
 
 Plot quantile regression models.

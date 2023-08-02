@@ -1479,7 +1479,7 @@ athi$pca_biplot = function (pca,pcs=c("PC1","PC2"),
             C=cov(pca$x[ell.col==cl,c(pcs[1],pcs[2])])    # Covarianz-Matrix C bestimmen
             d85=qchisq(0.85, df = 2)     # 85% - Faktor , um die Ellipse zu skalieren
             M=colMeans(pca$x[ell.col==cl,c(pcs[1],pcs[2])]) #   Mittelwerte (Zentrum) des Clusters
-            el=cluster::ellipsoidPoints(C, d85, loc=M)  # Ellipsen-Punkte aus C und M berechnen
+            el=ellipsoidPoints(C, d85, loc=M)  # Ellipsen-Punkte aus C und M berechnen
             if (ell.fill) {
                 colfill=paste(rgb(t(col2rgb(cl))/255),"33",sep="")
                 polygon(el,col=colfill,border=NA)
@@ -1488,7 +1488,7 @@ athi$pca_biplot = function (pca,pcs=c("PC1","PC2"),
             }
             lines(el,col=cl,lwd=1.5,lty=2)    #  Ellipse als geschlossene Linies zeichnen
             d95=qchisq(0.95, df = 2)     # 85% - Faktor , um die Ellipse zu skalieren
-            el=cluster::ellipsoidPoints(C, d95, loc=M)  # Ellipsen-Punkte aus C und M berechnen
+            el=ellipsoidPoints(C, d95, loc=M)  # Ellipsen-Punkte aus C und M berechnen
             lines(el,col=cl,lwd=1.5,lty=1)    #  Ellipse als geschlossene Linies zeichnen                        
 
         }
