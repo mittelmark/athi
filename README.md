@@ -40,6 +40,8 @@ The following  methods are provided within the  athi-environment  from version
 * `athi$pca_oncor` - perform a PCA on a square (correlation) matrix (stats)
 * `athi$pca_pairs` - improved pairs plot for pca objects (plot)
 * `athi$pca_plot` - improved screeplot for pca objects (plot)
+* `athi$pcor` - measuring partial correlation (stats)
+* `athi$pcor.test` - test for significance of partial correlation (stats)
 * `athi$randomize` - randomize column data within matrix or data frame (data)
 * `athi$ref_score` - WHO  reference score for the given age, sex and type (data)
 * `athi$ref_table`  - reference  tables for WHO for the given sex and measure
