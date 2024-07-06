@@ -703,7 +703,7 @@ a density line for the component scores.
 
 Arguments:
 
-```{r}
+```{r fig.width=8,fig.height=8}
 args(athi$pca_pairs)
 ```
  
