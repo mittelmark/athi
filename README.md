@@ -60,7 +60,7 @@ Start R and install the package with the following command:
 
 ```r
 install.packages(
-    "https://github.com/mittelmark/athi/archive/refs/tags/0.4.0.tar.gz",
+    "https://github.com/mittelmark/athi/releases/download/0.4.0/athi_0.4.0.tar.gz",
     repos=NULL)
 ```
   
