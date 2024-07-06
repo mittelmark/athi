@@ -8,7 +8,7 @@ The package contains a few functions required for reliable data analysis which
 are not part or only in more basic format in standard R.
 
 The following  methods are provided within the  athi-environment  from version
-0.4.0:
+0.4.1:
 
 *  `athi$assoc_plot`  - assocplot with statistics  values and Pearson residual
   shading (plot)
@@ -62,7 +62,7 @@ Start R and install the package with the following command:
 
 ```r
 install.packages(
-    "https://github.com/mittelmark/athi/releases/download/0.4.0/athi_0.4.0.tar.gz",
+    "https://github.com/mittelmark/athi/releases/download/0.4.0/athi_0.4.1.tar.gz",
     repos=NULL)
 ```
   
