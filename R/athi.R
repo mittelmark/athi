@@ -38,6 +38,8 @@
 #'   \item{\link[athi:athi_pca_oncor]{athi$pca_oncor(x)}}{perform a PCA on a square (correlation) matrix (stats)}
 #'   \item{\link[athi:athi_pca_pairs]{athi$pca_pairs(x)}}{improved pairs plot for pca objects (plot)}
 #'   \item{\link[athi:athi_pca_plot]{athi$pca_plot(x)}}{improved screeplot for pca objects (plot)}
+#'   \item{\link[athi:athi_pcor]{athi$pcor(x,y,z)}}{determine partial correlation}
+#'   \item{\link[athi:athi_pcor.test]{athi$pcor.test(x,y,z)}}{test significance of partial correlations}
 #'   \item{\link[athi:athi_randomize]{athi$randomize(x)}}{randomize column data within matrix or data frame (data)}
 #'   \item{\link[athi:athi_ref_score]{athi$ref_score(x,age,sex,type)}}{reference score for the given age, sex and type (data)}
 #'   \item{\link[athi:athi_ref_table]{athi$ref_table(sex,type)}}{reference table for WHO for the given sex and measure type (daa)}
@@ -2292,6 +2294,135 @@ athi$norm <- function (x,method="z",ties.method="average")  {
     return(x)    
 }
 
+#' \name{athi_pcor}
+#' \alias{athi$pcor}
+#' \alias{athi_pcor}
+#' \title{Partial correlation test for two variables}
+#' \description{
+#'     Calculate partial correlation coefficient of either parametric ("Pearson") 
+#'   or non-parametric ("Spearman") statistics corrected for one or more other variables.
+#' }
+#' \usage{athi_pcor(x,y,z,method='pearson')}
+#' \arguments{
+#'   \item{x}{
+#'     numeric vector, missing values are allowed
+#'   }
+#'   \item{y}{
+#'     numeric vector, missing values are allowed
+#'   }
+#'   \item{z}{
+#'     numeric vector, matrix or data frame,  missing values are allowed
+#'   }
+#'   \item{method}{
+#'     character string indicating which partial correlation coefficient is to be computed, either "pearson" (default), or "spearman"
+#'   }
+#' }
+#' \value{return partial correlation coefficient between x and y given z.}
+#' \examples{
+#'   y.data <- data.frame(
+#'     hl=c(7,15,19,15,21,22,57,15,20,18),
+#'     disp=c(0.000,0.964,0.000,0.000,0.921,0.000,0.000,1.006,0.000,1.011),
+#'     deg=c(9,2,3,4,1,3,1,3,6,1),
+#'      BC=c(1.78e-02,1.05e-06,1.37e-05,7.18e-03,0.00e+00,0.00e+00,0.00e+00,
+#'           4.48e-03,2.10e-06,0.00e+00)
+#'   )
+#'   # partial correlation between "hl" and "disp" given "deg" and "BC"
+#'   athi_pcor(y.data$hl,y.data$disp,y.data[,c("deg","BC")])
+#' }
+#' \seealso{ 
+#' \code{\link[athi:athi-class]{athi-class}},
+#' \code{\link[athi:athi_pcor.test]{athi_pcor.test}}
+#' }
+
+athi$pcor = function (x,y,z,method='pearson') {
+  r=athi$pcor.test(x,y,z,method=method)$estimate
+  return(r)
+}
+
+#' \name{athi_pcor.test}
+#' \alias{athi$pcor.test}
+#' \alias{athi_pcor.test}
+#' \title{Partial correlation test for two variables}
+#' \description{
+#'     Calculate partial correlation coefficient and  parametric 
+#'   ("Pearson") or non-parametric ("Spearman") 
+#'   test statistics for two variables corrected 
+#'   for one or more other variables.
+#' }
+#' \usage{athi_pcor.test(x,y,z,method='pearson')}
+#' \arguments{
+#'   \item{x}{
+#'     numeric vector, missing values are allowed
+#'   }
+#'   \item{y}{
+#'     numeric vector, missing values are allowed
+#'   }
+#'   \item{z}{
+#'     numeric vector, matrix or data frame,  missing values are allowed
+#'   }
+#'   \item{method}{
+#'     character string indicating which partial correlation coefficient is to be computed, either "pearson" (default), or "spearman"
+#'   }
+#' }
+#' \value{return list with the following components: 
+#' 
+#' > - _estimate_ - gives the partial correlation coefficient between x and y given z
+#'   - _p.value_ - gives the p-value of the test
+#'   - _statistics_ - gives the value of the test statistics
+#'   - _n_ - gives the number of samples after deleting all the missing samples
+#'   - _gn_ - gives the number of given variables
+#'   - _method_ - gives the correlation method used}
+#'   
+#' \examples{
+#'   y.data = data.frame(
+#'    hl=c(7,15,19,15,21,22,57,15,20,18),
+#'    disp=c(0.000,0.964,0.000,0.000,0.921,0.000,0.000,1.006,0.000,1.011),
+#'    deg=c(9,2,3,4,1,3,1,3,6,1),
+#'     BC=c(1.78e-02,1.05e-06,1.37e-05,7.18e-03,0.00e+00,0.00e+00,0.00e+00,
+#'          4.48e-03,2.10e-06,0.00e+00)
+#'   )
+#'   # partial correlation between "hl" and "disp" given "deg" and "BC"
+#'   athi$pcor.test(y.data$hl,y.data$disp,y.data[,c("deg","BC")])
+#' }
+#' \seealso{ 
+#' \code{\link[athi:athi-class]{athi-class}},
+#' \code{\link[athi:athi_pcor]{athi_pcor}}
+#' }
+
+athi$pcor.test = function (x,y,z,method='pearson') {
+  if (is.data.frame(z)) {
+    z=as.matrix(z)
+  }
+  if (is.matrix(z)) {
+    df=data.frame(x=x,y=y) 
+    for (col in 1:ncol(z)) {
+      df=cbind(df,z=z[,col])
+      colnames(df)[ncol(df)]=colnames(z)[col]
+    }
+  } else {
+    df=data.frame(x=x,y=y,z=z)
+  }
+  frmx=formula(paste("x~",paste(colnames(df)[3:ncol(df)],collapse="+"),sep=""))
+  frmy=formula(paste("y~",paste(colnames(df)[3:ncol(df)],collapse="+"),sep=""))
+  df=na.omit(df)
+  if (method=='spearman') {
+    df=as.data.frame(apply(df,2,rank))
+  }
+  #xres=residuals(lm(df[,1]~df[,3]))
+  #yres=residuals(lm(df[,2]~df[,3]))
+  xres=residuals(lm(frmx,data=df))
+  yres=residuals(lm(frmy,data=df))
+  
+  pr=cor.test(xres,yres,use="complete.obs")
+  gn=ncol(df)-2 # number of z
+  n=nrow(df)
+  statistic <- pr$estimate*sqrt((n-2-gn)/(1-pr$estimate^2))
+  p.value <- 2*pnorm(-abs(statistic))
+  return(list(estimate=pr$estimate,p.value=pr$p.value,
+              conf.int=pr$conf.int,statistic=pr$statistic,
+              df=pr$parameter,method=method))
+}
+
 #' \name{athi$randomize}
 #' \alias{athi$randomize}
 #' \alias{athi_randomize}
@@ -2727,6 +2858,8 @@ athi_pca_biplot = athi$pca_biplot
 athi_pca_oncor = athi$pca_oncor
 athi_pca_pairs = athi$pca_pairs
 athi_pca_plot = athi$pca_plot
+athi_pcor       = athi$pcor
+athi_pcor.test  = athi$pcor.test
 athi_qr_plot = athi$qr_plot
 athi_ref_score = athi$ref_score
 athi_ref_table = athi$ref_table

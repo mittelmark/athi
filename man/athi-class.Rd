@@ -37,6 +37,8 @@ the Guelpe Summer school Human Biology and Publich Health - Data Analysis and St
   \item{\link[athi:athi_pca_oncor]{athi$pca_oncor(x)}}{perform a PCA on a square (correlation) matrix (stats)} 
   \item{\link[athi:athi_pca_pairs]{athi$pca_pairs(x)}}{improved pairs plot for pca objects (plot)} 
   \item{\link[athi:athi_pca_plot]{athi$pca_plot(x)}}{improved screeplot for pca objects (plot)} 
+  \item{\link[athi:athi_pcor]{athi$pcor(x,y,z)}}{determine partial correlation} 
+  \item{\link[athi:athi_pcor.test]{athi$pcor.test(x,y,z)}}{test significance of partial correlations} 
   \item{\link[athi:athi_randomize]{athi$randomize(x)}}{randomize column data within matrix or data frame (data)} 
   \item{\link[athi:athi_ref_score]{athi$ref_score(x,age,sex,type)}}{reference score for the given age, sex and type (data)} 
   \item{\link[athi:athi_ref_table]{athi$ref_table(sex,type)}}{reference table for WHO for the given sex and measure type (daa)} 

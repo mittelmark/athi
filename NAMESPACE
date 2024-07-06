@@ -1,7 +1,8 @@
 exportPattern("^[[:lower:]]+")
 importFrom("stats", "aov","coef","dist", "formula", "kruskal.test",
     "predict","cor","medpolish","cov", "density", "qchisq",
-    "sd","lm","model.frame","aggregate", "chisq.test", "qnorm","wilcox.test","t.test","cor.test")
+    "sd","lm","model.frame","aggregate", "chisq.test", "qnorm",
+    "wilcox.test","t.test","cor.test", "na.omit", "pnorm", "residuals")
 importFrom("rpart", "rpart")
 importFrom("graphics", "abline", "axis", "barplot", "pairs", "box","boxplot","mtext","par", "points", 
   "polygon","text", "title","lines")
