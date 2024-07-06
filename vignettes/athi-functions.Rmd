@@ -29,6 +29,7 @@ functions are provided  within an  environment  `athi` to see what methods are
 available you can use the `ls` command:
 
 ```{r}
+.libPaths(c("~/R",.libPaths()))
 library(athi)
 ls(athi)
 ```
@@ -149,6 +150,19 @@ x=c(NA,x,NA)
 table(x,useNA='ifany')
 map=c(never=0, rare=1, often=2,always=3)
 table(athi$chr2ord(x,map),useNA='ifany')
+```
+
+### athi$cihist - confidence intervals for density lines
+
+This is a utility function to draw a histogram with density 
+lines and the confidence level for that density line.
+
+Usage: `athi_cihist(x, conf.level=0.95, legend=TRUE, xlab="Value", ylab="Density", ...)`
+
+```{r fig.width=6,fig.height=4}
+set.seed(123)
+data <- rnorm(1000, mean = 0, sd = 1)
+athi$cihist(data,main="Histogram density line with 95% confidence level")
 ```
 
 

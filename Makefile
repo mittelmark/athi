@@ -1,6 +1,6 @@
-VERSION := 0.3.1
+VERSION := $(shell grep -E '^Version' DESCRIPTION | sed 's/Version: //')
 PKG     := $(shell basename `pwd`)
-build:
+build: man/athi.Rd
 	R CMD build .
 
 check: build man/athi.Rd

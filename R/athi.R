@@ -14,6 +14,7 @@
 #'   \item{\link[athi:athi_box_plot]{athi$box_plot(x,y=NULL)}}{extended version of the boxplot with main statistic values on top (plot)}
 #'   \item{\link[athi:athi_chr2ord]{athi$chr2ord(x,map)}}{map characters or factors to numbers with comfort (data)}
 #'   \item{\link[athi:athi_cdist]{athi$cdist(x,method="spearman",type="abs")}}{calculate correlation distances (data)}
+#'   \item{\link[athi:athi_cihist]{athi$cihist(x,conf.level=0.95)}}{ draw a histogram density line with confidence band (plot)}
 #'   \item{\link[athi:athi_cohensD]{athi$cohensD(x,g,paired=FALSE)}}{effect size for difference between two means (stats)}
 #'   \item{\link[athi:athi_cohensW]{athi$cohensW(x,p=NULL)}}{effect size for categorical data (stats)}
 #'   \item{\link[athi:athi_corr]{athi$corr(x,method="pearson",use="pairwise.complete.obs")}}{pairwise correlations and their statistics (stats)}
@@ -325,7 +326,74 @@ athi$chr2ord = function (x,map) {
     }
    )))
 }
-    
+
+#' \name{athi$cihist}
+#' \alias{athi$cihist}
+#' \alias{athi_cihist}
+#' \title{Draw a histogram density line with confidence level}
+#' \description{
+#'    This is a utility function to draw a histogram with density 
+#'   lines and the confidence level for that density line.
+#' }
+#' \usage{ athi_cihist(x, conf.level=0.95, legend=TRUE, xlab="Value", ylab="Density", ...) }
+#' \arguments{
+#'   \item{x}{
+#'     a numerical vector
+#'   }
+#'   \item{conf.level}{
+#'     The confidence level for the histogram, default 0.95
+#'   }
+#'   \item{legend}{
+#'     Should a legend been drawn, default: TRUE
+#'   }
+#'   \item{xlab}{
+#'     Label for the x-axis, default: "Value"   
+#'   }
+#'   \item{ylab}{
+#'     Label for the y-axis, default: "Density"   
+#'   }
+#'   \item{\ldots}{
+#'     Arguments delegated to the plot function
+#'   }
+#' }
+#' \examples{
+#'   set.seed(123)
+#'   data <- rnorm(1000, mean = 0, sd = 1)
+#'   athi$cihist(data,main="Histogram density line with 95\% confidence level")
+#' }
+#' \seealso{
+#'    \link[athi:athi-class]{athi-class} 
+#' }
+#'
+
+
+athi$cihist <- function (x,conf.level=0.95,legend=TRUE,xlab="Value",ylab="Density",...) {
+    dens <- density(x)
+
+    # Calculate confidence interval (assuming normal distribution)
+    ci <- 1.96 * sd(x) / sqrt(length(x))
+    upper <- dens$y + ci
+    lower <- dens$y - ci
+
+    # Create the plot
+    plot(dens, main = "Density Plot with 95% Confidence Interval", 
+     xlab = xlab, ylab = ylab, ylim = c(0, max(upper)))
+
+    # Add confidence interval
+    polygon(c(dens$x, rev(dens$x)), c(lower, rev(upper)), 
+            col = rgb(0.5, 0.5, 0.5, 0.5), border = NA)
+
+    # Redraw the density line on top
+    lines(dens, col = "blue", lwd = 2)
+
+    # Add a legend
+    if (legend) {
+        legend("topright", legend = c("Density", "95% CI"), 
+               col = c("blue", "gray"), lwd = c(2, 10), bty = "n")
+    }
+
+}
+
 
 #' \name{athi$cohensD}
 #' \alias{athi$cohensD}
@@ -2635,6 +2703,7 @@ athi_bootstrap = athi$bootstrap
 athi_box_plot = athi$box_plot
 athi_cdist = athi$cdist
 athi_chr2ord = athi$chr2ord
+athi_cihist  = athi$cihist
 athi_cohensD = athi$cohensD
 athi_cohensW = athi$cohensW
 athi_corr = athi$corr
