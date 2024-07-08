@@ -5,18 +5,25 @@
 \description{ 
     This is a convinience method to plot a data set using MDS. 
 } 
-\usage{ athi_mds_plot(x,method="euclidean",p=0.5,row.labels=TRUE,grid=TRUE,...) } 
+\usage{ athi_mds_plot(x,method="euclidean",p=0.5,row.labels=TRUE,points=FALSE, 
+        col.labels='black',cex.labels=1, pch=19, grid=TRUE,...) } 
 \arguments{ 
   \item{x}{ 
     data frame or matrix  
   } 
   \item{method}{ 
-    distance measure 'euclidean', 'manhattan' or any other method supported by the dist method or 'correlation', default: 'euclidean' 
+    distance measure 'euclidean', 'manhattan' or any other method supported by the dist method 
+    or 'correlation' for Pearson correlation or 'spe' or 'spearman' for Spearman correlation, 
+    default: 'euclidean' 
   } 
   \item{p}{ 
     exponent if distance measure is minkowski, default: 0.5 
   } 
   \item{row.labels}{should be row labels computed, if FALSE or if row.names are not existing, plotting characters are displayed, default: TRUE} 
+  \item{points}{should with row labels as well points be ploted, default: FALSE}  
+  \item{col.labels}{color for text labels, default: 'black'} 
+  \item{cex.labels}{size of labels, default: 1} 
+  \item{pch}{default plotting character, default: 19} 
   \item{grid}{should a grid being show, default: TRUE} 
   \item{\ldots}{delegating all remaining arguments to plot, points and text calls} 
 } 

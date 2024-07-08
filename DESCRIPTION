@@ -1,7 +1,7 @@
 Package: athi
 Type: Package
 Title: R functions for analysing data at the Summerschool Human Biology and Public Health of University of Potsdam
-Version: 0.4.1
+Version: 0.4.2
 Date: 2024-07-06
 Author: Detlef Groth, University of Potsdam
 Maintainer: Detlef Groth <dgroth@uni-potsdam.de>
