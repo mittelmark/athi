@@ -578,6 +578,25 @@ athi$lm_plot(years,props,ylim=c(0,0.3),xlab="Year",ylab="Proportion",
    col.pi=NULL,col.plm='#FFB0B066',col.polygon='#FFB0B066')
 ```
 
+### athi$mds_plot - plot a MDS
+
+This is a convinience method to plot a data set using MDS.
+
+```{r label="mdsplot",fig.width=9,fig.height=6}
+data(iris)
+### single plots
+par(mfrow=c(1,2))
+athi$mds_plot(iris[,1:4],method="manhattan",points=TRUE,col="skyblue",pch=19)
+athi$mds_plot(iris[,1:4],method="manhattan",row.labels=FALSE)
+#### multiplot
+opar=par(mai=c(0.1,0.1,0.5,0.1))
+athi$mds_plot(iris[,1:4],
+   method=c("cor","euclidean","canberra","mink","max","man"),
+   p=0.2,row.labels=FALSE,pch=15,
+   col=as.numeric(as.factor(iris$Species))+1)
+par(opar)
+```
+
 ### athi$mi - mutual information
 
 Return the mutual information for two vectors, a matrix or data frame,  or a binned table.

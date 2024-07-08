@@ -337,7 +337,9 @@ athi$chr2ord = function (x,map) {
 #'    This is a utility function to draw a histogram with density 
 #'   lines and the confidence level for that density line.
 #' }
-#' \usage{ athi_cihist(x, conf.level=0.95, legend=TRUE, xlab="Value", ylab="Density", ...) }
+#' \usage{ athi_cihist(x, conf.level=0.95, legend=TRUE, 
+#'   main = "Density Plot with 95\% Confidence Interval", 
+#'   xlab="Value", ylab="Density", ylim=NULL, density.args=list(), ...) }
 #' \arguments{
 #'   \item{x}{
 #'     a numerical vector
@@ -348,11 +350,20 @@ athi$chr2ord = function (x,map) {
 #'   \item{legend}{
 #'     Should a legend been drawn, default: TRUE
 #'   }
+#'   \item{main}{
+#'     The plotting title, default: "Density Plot with 95\% Confidence Interval"
+#'   }
 #'   \item{xlab}{
 #'     Label for the x-axis, default: "Value"   
 #'   }
 #'   \item{ylab}{
 #'     Label for the y-axis, default: "Density"   
+#'   }
+#'   \item{ylim}{
+#'     Limits for the y-axis, if not given there are determined automatically, default: NULL
+#'   }
+#'   \item{density.args}{
+#'     arguments delegated to the density function, default: list(x=x)
 #'   }
 #'   \item{\ldots}{
 #'     Arguments delegated to the plot function
@@ -369,8 +380,10 @@ athi$chr2ord = function (x,map) {
 #'
 
 
-athi$cihist <- function (x,conf.level=0.95,legend=TRUE,xlab="Value",ylab="Density",...) {
-    dens <- density(x)
+athi$cihist <- function (x,conf.level=0.95,legend=TRUE,main = "Density Plot with 95% Confidence Interval",
+                         xlab="Value",ylab="Density",ylim=NULL,density.args=list(),...) {
+    density.args[['x']]=x
+    dens <- do.call(density,density.args)
 
     # Calculate confidence interval (assuming normal distribution)
     ci <- 1.96 * sd(x) / sqrt(length(x))
@@ -378,8 +391,11 @@ athi$cihist <- function (x,conf.level=0.95,legend=TRUE,xlab="Value",ylab="Densit
     lower <- dens$y - ci
 
     # Create the plot
-    plot(dens, main = "Density Plot with 95% Confidence Interval", 
-     xlab = xlab, ylab = ylab, ylim = c(0, max(upper)))
+    if (class(ylim)=="NULL")  {
+        ylim= c(0, max(upper))
+    }
+    plot(dens, main = main, 
+     xlab = xlab, ylab = ylab, ylim=ylim,...)
 
     # Add confidence interval
     polygon(c(dens$x, rev(dens$x)), c(lower, rev(upper)), 
@@ -886,18 +902,25 @@ athi$eta_squared <- function (x,y=NULL) {
 #' \description{
 #'     This is a convinience method to plot a data set using MDS.
 #' }
-#' \usage{ athi_mds_plot(x,method="euclidean",p=0.5,row.labels=TRUE,grid=TRUE,...) }
+#' \usage{ athi_mds_plot(x,method="euclidean",p=0.5,row.labels=TRUE,points=FALSE,
+#'         col.labels='black',cex.labels=1, pch=19, grid=TRUE,...) }
 #' \arguments{
 #'   \item{x}{
 #'     data frame or matrix 
 #'   }
 #'   \item{method}{
-#'     distance measure 'euclidean', 'manhattan' or any other method supported by the dist method or 'correlation', default: 'euclidean'
+#'     distance measure 'euclidean', 'manhattan' or any other method supported by the dist method
+#'     or 'correlation' for Pearson correlation or 'spe' or 'spearman' for Spearman correlation,
+#'     default: 'euclidean'
 #'   }
 #'   \item{p}{
 #'     exponent if distance measure is minkowski, default: 0.5
 #'   }
 #'   \item{row.labels}{should be row labels computed, if FALSE or if row.names are not existing, plotting characters are displayed, default: TRUE}
+#'   \item{points}{should with row labels as well points be ploted, default: FALSE} 
+#'   \item{col.labels}{color for text labels, default: 'black'}
+#'   \item{cex.labels}{size of labels, default: 1}
+#'   \item{pch}{default plotting character, default: 19}
 #'   \item{grid}{should a grid being show, default: TRUE}
 #'   \item{\ldots}{delegating all remaining arguments to plot, points and text calls}
 #' }
@@ -920,14 +943,19 @@ athi$eta_squared <- function (x,y=NULL) {
 #'    \link[athi:athi-class]{athi-class} 
 #' }
 #'
-athi$mds_plot = function (x,method="euclidean",p=0.5,row.labels=TRUE,grid=TRUE,...) {
+athi$mds_plot = function (x,method="euclidean",p=0.5,row.labels=TRUE,
+                          points=FALSE,col.labels='black', cex.labels=1,pch=19,
+                          grid=TRUE,...) {
     if (length(method)>1) {
         opar=par(mfrow=c(2,ceiling(length(method)/2)))
     }
     for (m in method) {
-        if (m %in% c("cor","correlation")) {
+        if (m %in% c("cor","correlation","per","pearson")) {
             # negative cor: low sim, -> high -> dissim
             d.obj=(1-stats::cor(t(x),use="pairwise.complete.obs")+1)/2
+        } else if (m %in% c("spe","spearman")) {
+            # negative cor: low sim, -> high -> dissim
+            d.obj=(1-stats::cor(t(x),method="spearman",use="pairwise.complete.obs")+1)/2
         } else {
             d.obj=dist(x, method = m,p=p)
         }
@@ -938,12 +966,15 @@ athi$mds_plot = function (x,method="euclidean",p=0.5,row.labels=TRUE,grid=TRUE,.
         ylim=xlim
         plot(cmd,type="n",xlim=xlim,ylim=ylim,xlab="Dim 1",ylab="Dim 2", ...)
         if (grid) {
-            grid()
+            grid(col=1,lty=2,lwd=0.5)
         }
         if (row.labels & length(rownames(x))== nrow(x)) {
-            text(cmd,labels=rownames(x),...) 
+            if (points) {
+                points(cmd, pch=pch, ...)
+            }
+            text(cmd,labels=rownames(x),col=col.labels,cex=cex.labels)
         } else {
-            points(cmd, ...)
+            points(cmd,pch=pch,...)
         }
         if (length(method)>1) {
             title(m)
@@ -1889,7 +1920,7 @@ athi$ref_table <- function (sex,type) {
 #' \usage{ athi_ref_score(x,age,sex,type) }
 #' \arguments{
 #'   \item{x}{
-#'     the numerical value for height (cm) or weight (kg) or ...
+#'     the numerical value for height (cm) or weight (kg) or BMI or muac (mm) or head circumference (cm).
 #'   }
 #'   \item{age}{
 #'     age in years, fractional numbers are possible 
@@ -2093,12 +2124,18 @@ athi$impute <- function (x,method="rpart",k=5,cor.method="spearman")  {
             }
         }
     } else if (method == "rpart") {
+        mt=FALSE
+        if (is.matrix(x)) {
+            mt=TRUE
+            x=as.data.frame(x)
+        }
         # TODO: refinement for many variables, 
         # take only variables with high absolute correlation
         # into account if more than 10 variables take top 10
         data=x
         idata=data
         for (i in 1:ncol(data)) {
+            requireNamespace("rpart")
             idx = which(!is.na(data[,i]))
             if (length(idx) == nrow(data)) {
                 next
@@ -2116,6 +2153,9 @@ athi$impute <- function (x,method="rpart",k=5,cor.method="spearman")  {
             }
 
             idata[-idx,i]=x2
+        }
+        if (mt) {
+            idata=as.matrix(idata)
         }
         return(idata)
     } else if (method == "knn") {
