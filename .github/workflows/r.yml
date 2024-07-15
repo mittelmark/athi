@@ -45,9 +45,12 @@ jobs:
         run: rcmdcheck::rcmdcheck(args = "--no-manual", error_on = "error")
         shell: Rscript {0}
       - name: Buildk
-        run: R CMD build .
+        run: |
+            R CMD build .
+            mkdir athi-package
+            cp athi_*tar.gz athi-package/
       - name: Upload athi-archive
         uses: actions/upload-artifact@v4
         with: 
-           name: athi_0.4.2.tar.gz
-           path: athi_0.4.2.tar.gz
+           name: athi-package.zip
+           path: athi-package
