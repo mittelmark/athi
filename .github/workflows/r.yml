@@ -38,7 +38,7 @@ jobs:
             brew install basictex      
       - name: Install dependencies
         run: |
-          install.packages(c("remotes", "rcmdcheck", "quantreg","png","rmarkdown"))
+          install.packages(c("remotes", "rcmdcheck", "quantreg","png","rmarkdown"),repos="https://www.freestatistics.org/cran/")
           remotes::install_deps(dependencies = TRUE)
         shell: Rscript {0}
       - name: Check
