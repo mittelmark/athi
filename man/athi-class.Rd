@@ -21,6 +21,8 @@ the Guelpe Summer school Human Biology and Publich Health - Data Analysis and St
   \item{\link[athi:athi_corr_plot]{athi$corr_plot(x,...)}}{plot matrices with pairwise correlations (plot)} 
   \item{\link[athi:athi_df2md]{athi$df2md(x,caption='',rownames=TRUE)}}{print a matrix or data frame as a Markdown table (data)} 
   \item{\link[athi:athi_drop_na]{athi$drop_na(x,cols=NULL)}}{drop rows if the given columns contain NAs in this row for certain columns (data)} 
+  \item{\link[athi:athi_dpairs]{athi$dpairs(x)}}{improved pairs plot considering the data types} 
+  \item{\link[athi:athi_dpairs.legend]{athi$dpairs.legend(}}{adding legends to pairs plots} 
   \item{\link[athi:athi_epsilon_squared]{athi$epsilon_squared(x,y)}}{effect size for Kruskal test (stats)} 
   \item{\link[athi:athi_eta_squared]{athi$eta_squared(x,y=NULL)}}{effect size for ANOVA (stats)} 
   \item{\link[athi:athi_fmt]{athi$fmt(x,...)}}{formatted string output (data)} 
@@ -28,9 +30,10 @@ the Guelpe Summer school Human Biology and Publich Health - Data Analysis and St
   \item{\link[athi:athi_input]{athi$input(prompt)}}{readline replacement for scripts (programming)} 
   \item{\link[athi:athi_introNAs]{athi$introNAs(x,prop="0.05")}}{introduce missing values (data)} 
   \item{\link[athi:athi_kroki]{athi$kroki(text,mode="ditaa",...)}}{draw diagrams and flowcharts using kroki webservice (plot)} 
+  \item{\link[athi:athi_kurtosis]{athi$kurtosis(x,na.rm=TRUE)}}{fourth central moment of a distribution (stats)} 
   \item{\link[athi:athi_lm_plot]{athi$lm_plot(x,y=NULL,data=NULL,...)}}{plot a linear model with confidence intervals (plot)} 
-  \item{\link[athi:athi_mi]{athi$mi(x,y=NULL,norm=FALSE)}}{mutual information (stats)} 
   \item{\link[athi:athi_mds_plot]{athi$mds_plot(x,method="euclidean",...)}}{plot a multidimensional scaling (plot)} 
+  \item{\link[athi:athi_mi]{athi$mi(x,y=NULL,norm=FALSE)}}{mutual information (stats)} 
   \item{\link[athi:athi_norm]{athi$norm(x,method="z",ties.method="average")}}{normalize data (data)} 
   \item{\link[athi:athi_pastel]{athi$pastel(n)}}{create up to 20 pastel colors (plot)} 
   \item{\link[athi:athi_pca_biplot]{athi$pca_biplot(x)}}{improved biplot for pca objects (plot)} 
@@ -39,11 +42,13 @@ the Guelpe Summer school Human Biology and Publich Health - Data Analysis and St
   \item{\link[athi:athi_pca_plot]{athi$pca_plot(x)}}{improved screeplot for pca objects (plot)} 
   \item{\link[athi:athi_pcor]{athi$pcor(x,y,z)}}{determine partial correlation} 
   \item{\link[athi:athi_pcor.test]{athi$pcor.test(x,y,z)}}{test significance of partial correlations} 
+  \item{\link[athi:athi_qr_plot]{athi$qr_plot(x,data)}}{plot quantile regression models} 
   \item{\link[athi:athi_randomize]{athi$randomize(x)}}{randomize column data within matrix or data frame (data)} 
   \item{\link[athi:athi_ref_score]{athi$ref_score(x,age,sex,type)}}{reference score for the given age, sex and type (data)} 
   \item{\link[athi:athi_ref_table]{athi$ref_table(sex,type)}}{reference table for WHO for the given sex and measure type (daa)} 
   \item{\link[athi:athi_report_pvalue]{athi$report_pvalue(p,star=FALSE)}}{report a p-value using the significance thresholds (stats)} 
   \item{\link[athi:athi_sem]{athi$sem(x,na.rm=TRUE)}}{standard error of the mean (stats)} 
+  \item{\link[athi:athi_skewness]{athi$skewness(x,na.rm=TRUE)}}{third central moment of a distribution (stats)} 
   \item{\link[athi:athi_smartbind]{athi$smartbind(x,y)}}{combine two data frame even if the have different column names (data)} 
   \item{\link[athi:athi_textplot]{athi$textplot(x)}}{write the data for a data frame or matrix into a plot (plot)} 
   \item{\link[athi:athi_untab]{athi$untab(x)}}{expand a contingency table to a data frame one item per row (data)} 

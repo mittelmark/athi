@@ -17,7 +17,7 @@
 \value{NULL} 
 \examples{ 
  x <- margin.table(HairEyeColor, c(1, 2)) 
-athi$assoc_plot(x) 
+ athi$assoc_plot(x) 
 } 
 \seealso{ 
    \link[athi:athi-class]{athi-class}, \link[athi:athi_cor_plot]{athi$cor_plot}, \link[athi:athi_box_plot]{athi$box_plot} 

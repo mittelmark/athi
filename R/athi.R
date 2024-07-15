@@ -22,6 +22,8 @@
 #'   \item{\link[athi:athi_corr_plot]{athi$corr_plot(x,...)}}{plot matrices with pairwise correlations (plot)}
 #'   \item{\link[athi:athi_df2md]{athi$df2md(x,caption='',rownames=TRUE)}}{print a matrix or data frame as a Markdown table (data)}
 #'   \item{\link[athi:athi_drop_na]{athi$drop_na(x,cols=NULL)}}{drop rows if the given columns contain NAs in this row for certain columns (data)}
+#'   \item{\link[athi:athi_dpairs]{athi$dpairs(x)}}{improved pairs plot considering the data types}
+#'   \item{\link[athi:athi_dpairs.legend]{athi$dpairs.legend(}}{adding legends to pairs plots}
 #'   \item{\link[athi:athi_epsilon_squared]{athi$epsilon_squared(x,y)}}{effect size for Kruskal test (stats)}
 #'   \item{\link[athi:athi_eta_squared]{athi$eta_squared(x,y=NULL)}}{effect size for ANOVA (stats)}
 #'   \item{\link[athi:athi_fmt]{athi$fmt(x,...)}}{formatted string output (data)}
@@ -29,9 +31,10 @@
 #'   \item{\link[athi:athi_input]{athi$input(prompt)}}{readline replacement for scripts (programming)}
 #'   \item{\link[athi:athi_introNAs]{athi$introNAs(x,prop="0.05")}}{introduce missing values (data)}
 #'   \item{\link[athi:athi_kroki]{athi$kroki(text,mode="ditaa",...)}}{draw diagrams and flowcharts using kroki webservice (plot)}
+#'   \item{\link[athi:athi_kurtosis]{athi$kurtosis(x,na.rm=TRUE)}}{fourth central moment of a distribution (stats)}
 #'   \item{\link[athi:athi_lm_plot]{athi$lm_plot(x,y=NULL,data=NULL,...)}}{plot a linear model with confidence intervals (plot)}
-#'   \item{\link[athi:athi_mi]{athi$mi(x,y=NULL,norm=FALSE)}}{mutual information (stats)}
 #'   \item{\link[athi:athi_mds_plot]{athi$mds_plot(x,method="euclidean",...)}}{plot a multidimensional scaling (plot)}
+#'   \item{\link[athi:athi_mi]{athi$mi(x,y=NULL,norm=FALSE)}}{mutual information (stats)}
 #'   \item{\link[athi:athi_norm]{athi$norm(x,method="z",ties.method="average")}}{normalize data (data)}
 #'   \item{\link[athi:athi_pastel]{athi$pastel(n)}}{create up to 20 pastel colors (plot)}
 #'   \item{\link[athi:athi_pca_biplot]{athi$pca_biplot(x)}}{improved biplot for pca objects (plot)}
@@ -40,11 +43,13 @@
 #'   \item{\link[athi:athi_pca_plot]{athi$pca_plot(x)}}{improved screeplot for pca objects (plot)}
 #'   \item{\link[athi:athi_pcor]{athi$pcor(x,y,z)}}{determine partial correlation}
 #'   \item{\link[athi:athi_pcor.test]{athi$pcor.test(x,y,z)}}{test significance of partial correlations}
+#'   \item{\link[athi:athi_qr_plot]{athi$qr_plot(x,data)}}{plot quantile regression models}
 #'   \item{\link[athi:athi_randomize]{athi$randomize(x)}}{randomize column data within matrix or data frame (data)}
 #'   \item{\link[athi:athi_ref_score]{athi$ref_score(x,age,sex,type)}}{reference score for the given age, sex and type (data)}
 #'   \item{\link[athi:athi_ref_table]{athi$ref_table(sex,type)}}{reference table for WHO for the given sex and measure type (daa)}
 #'   \item{\link[athi:athi_report_pvalue]{athi$report_pvalue(p,star=FALSE)}}{report a p-value using the significance thresholds (stats)}
 #'   \item{\link[athi:athi_sem]{athi$sem(x,na.rm=TRUE)}}{standard error of the mean (stats)}
+#'   \item{\link[athi:athi_skewness]{athi$skewness(x,na.rm=TRUE)}}{third central moment of a distribution (stats)}
 #'   \item{\link[athi:athi_smartbind]{athi$smartbind(x,y)}}{combine two data frame even if the have different column names (data)}
 #'   \item{\link[athi:athi_textplot]{athi$textplot(x)}}{write the data for a data frame or matrix into a plot (plot)}
 #'   \item{\link[athi:athi_untab]{athi$untab(x)}}{expand a contingency table to a data frame one item per row (data)}
@@ -84,7 +89,7 @@ athi=new.env()
 #' \value{NULL}
 #' \examples{
 #'  x <- margin.table(HairEyeColor, c(1, 2))
-#' athi$assoc_plot(x)
+#'  athi$assoc_plot(x)
 #' }
 #' \seealso{
 #'    \link[athi:athi-class]{athi-class}, \link[athi:athi_cor_plot]{athi$cor_plot}, \link[athi:athi_box_plot]{athi$box_plot}
@@ -1062,6 +1067,246 @@ athi$df2md <- function(x,caption='', center=TRUE, rownames=TRUE) {
         
 }
 
+#' \name{athi$dpairs}
+#' \alias{athi$dpairs}
+#' \alias{athi_dpairs}
+#' \title{Improved pairs plot considering the data types}
+#' \description{
+#'   The function \code{athi_dpairs} provides an improved pairs plot which accounts
+#'   for the data type of the actual variables. It will plot in the 
+#'   lower diagonal xy-plots, box-plots or assoc-plots depending on the 
+#'   two data types. In the upper diagonal effect sizes and stars for the p-values
+#'   for the tests (anova, t.test, chisq.test or cor.test) will be shown. In the diagonal 
+#'   the data distribution will be outlined. This plot is usually an useful visualization for 3-8 variables.
+#' }
+#' \usage{athi_dpairs(data, col.box='grey80', col.xy="grey60", cex.diag=2.5, order=TRUE, 
+#'     pch=19)}
+#' \arguments{
+#'   \item{data}{
+#'     data frame with columns of class factor, numeric or integer.
+#'   }
+#'   \item{col.box}{
+#'     colors for the boxplots, either a single value or a vector of colors for each level of a factor variable, default; 'grey80'
+#'   }
+#'   \item{col.xy}{
+#'     colors for the xy-plots, either a single value of a vector which is as long as the number of data points, default: 'grey60'
+#'   }
+#'   \item{cex.diag}{
+#'     character expansion for the diagonal texts
+#'   }
+#'   \item{order}{
+#'     should the variables be ordered by data type and name, this is recommended as it orders the plots, starting with assocplots, then boxplots and finally xyplots, default: TRUE
+#'   }
+#'   \item{pch}{
+#'     plotting character for xy-plots, default 19 (round circle).
+#'   }
+#' }
+#' \examples{
+#'   data(iris)
+#'   ##options(repr.plot.width=12, repr.plot.height=12)
+#'   grDevices::dev.new(width = 10, height = 10)
+#'   par(omi = c(0.8, 0.4,0.4,0.4))
+#'   athi$dpairs(iris,col.box=2:4,col.xy=rep(c(2:4),each=50),
+#'      cex.diag=1.6)
+#'   athi$dpairs.legend(levels(iris$Species),col=2:4)
+#'   library(MASS)
+#'   btwt=birthwt; 
+#'   for (col in c('low','race','smoke','ptl','ht','ui','ftv')) { 
+#'      btwt[,col]=as.factor(btwt[,col]) 
+#'   }
+#'   grDevices::dev.new(width = 16, height = 16)
+#'   par(omi=rep(0.2,4))
+#'   athi$dpairs(btwt[,c(1:5,10)],cex.diag=1.6)
+#'       mtext('Birth-Weight data',side=3,outer=TRUE,
+#'       cex=1.5,line=1)
+#' }
+#' \seealso{ \code{\link[athi:athi-class]{athi-class}},
+#' \code{\link[athi:athi$dpairs.legend]{athi$dpairs.legend}}}
+#'
+
+athi$dpairs <- function (data,col.box='grey80',col.xy="grey60",cex.diag=2.5,
+                          order=TRUE,pch=19) {
+  oop=options()
+  options(warn=-1)
+  report.pval=athi$report_pvalue
+  if (any(class(data) %in% "tbl_df")) {
+    data=as.data.frame(data)
+  }
+  if (order) {
+    data=data[,sort(colnames(data))]
+    res=c(); for (i in 1:ncol(data)) { res=c(res,class(data[,i])) }
+    idx=order(res)
+    data=data[,idx]
+  }
+  mai=rep(0.0,4)
+  opar=par(mfrow=c(ncol(data),ncol(data)),mai=mai)
+  cnames=colnames(data)
+  for (i in 1:ncol(data)) {
+    for (j in 1:ncol(data)) {
+      if (i == j) {
+        plot(1,type='n',xlab='',ylab='',axes=FALSE,xlim=c(0,1),ylim=c(0,1))
+        text(0.5,0.5,cnames[i],cex=cex.diag)
+        par(mai=rep(0,4))
+        box(lty=3,col='grey70')
+        if (class(data[,i]) == "factor") {
+          rect(0.1,0.1,0.9,0.3,col="grey90")
+          for (ci in cumsum(prop.table(table(data[,i])))) {
+            x=0.1+0.8*ci
+            lines(x=c(x,x),y=c(0.1,0.3))
+          }
+        }
+        if (class(data[,i]) %in% c("numeric","integer")) {
+          ds=density(data[,i],na.rm=TRUE)
+          ds$x=ds$x-min(ds$x)
+          ds$x=ds$x/max(ds$x)
+          ds$y=(ds$y/max(ds$y)*0.3)
+          polygon(ds,col='grey80')
+        }
+        par(mai=mai)
+      } else if (i > j) {
+        if (class(data[,i]) %in% c("numeric","integer") & class(data[,j]) %in% c("numeric","integer")) {
+          plot(data[,i] ~ data[,j],xlab='',ylab='',axes=FALSE,pch=pch,
+               col=col.xy)
+          box(col='grey70')
+          if (j+1 == i) {
+            #axis(3)
+            #axis(4)
+          }
+          if (j == 1) {
+            axis(2)
+          }
+          if (i == ncol(data)) {
+            ticks=axTicks(1) 
+            axis(1,at=ticks[1:(length(ticks)-1)],labels=ticks[1:(length(ticks)-1)],col='grey70')
+          }
+        } else if (class(data[,i]) == "factor" & class(data[,j]) == "factor") {
+          par(mai=rep(0.3,4))
+          athi$assoc_plot(t(table(data[,i],data[,j])))
+          par(mai=rep(0,4))
+          box(lty=3,col='grey70')
+          par(mai=mai)
+        } else if (class(data[,i]) %in% c("numeric","integer")) {
+          boxplot(data[,i] ~ data[,j],col=col.box,axes=FALSE)
+          if (j+1 == i) {
+            #axis(3,at=1:length(levels(data[,j])),labels=levels(data[,j]))
+            #axis(4)
+          } 
+          if (j == 1) {
+            ticks=axTicks(2) 
+            axis(2,at=ticks[1:(length(ticks)-1)],labels=ticks[1:(length(ticks)-1)],col='grey70')
+          }
+          if (i == ncol(data)) {
+            axis(1,at=1:length(levels(data[,j])),labels=levels(data[,j]),col="grey70")
+          }
+          
+          box(col="grey70")
+        } else if (class(data[,j]) %in% c("numeric","integer")) {
+          boxplot(data[,j] ~ data[,i],col=col.box,axes=FALSE)
+          if (j == 1) {
+            axis(2)
+          }
+          if (i == ncol(data)) {
+            axis(1,at=1:length(levels(data[,j])),labels=levels(data[,j]))
+          }
+          box()
+          
+        } 
+      } else {
+        if (class(data[,i]) %in% c("numeric","integer") & class(data[,j]) %in% c("numeric","integer")) {
+          r=cor.test(data[,i],data[,j])
+          rs=cor.test(data[,i],data[,j],method='spearman')
+          plot(1,type='n',xlab='',ylab='',axes=FALSE,xlim=c(0,1),ylim=c(0,1))
+          text(0.5,0.59,bquote("" ~ r[P] ~ .(sprintf(" = %.2f%s",r$estimate,report.pval(r$p.value,star=TRUE)))),cex=1.5)
+          text(0.5,0.41,bquote("" ~ r[S] ~ .(sprintf(" = %.2f%s",rs$estimate,report.pval(rs$p.value,star=TRUE)))),cex=1.5)
+        } else if (class(data[,i]) == "factor" & class(data[,j]) == "factor") {
+          cw=athi$cohensW(table(data[,i],data[,j]))
+          chsq=chisq.test(table(data[,i],data[,j]))
+          plot(1,type='n',xlab='',ylab='',axes=FALSE,xlim=c(0,1),ylim=c(0,1))
+          text(0.5,0.5,sprintf("Cohen's w =\n%.2f %s",cw,report.pval(chsq$p.value,star=TRUE)),cex=1.5)
+          
+        } else if (class(data[,i]) %in% c("numeric","integer")) {
+          if (length(levels(data[,j]))==2) {
+            tt=t.test(data[,i] ~ data[,j]) 
+            cd=athi$cohensD(data[,i],data[,j])
+            plot(1,type='n',xlab='',ylab='',axes=FALSE,xlim=c(0,1),ylim=c(0,1))
+            text(0.5,0.5,sprintf("Cohen's d =\n%.2f %s",cd,report.pval(tt$p.value,star=TRUE)),cex=1.5)
+          } else {
+            raov=aov(data[,i] ~ data[,j]) 
+            #recover()
+            rs=athi$eta_squared(raov)
+            pval=report.pval(summary(raov)[[1]][1,5],star=TRUE)
+            plot(1,type='n',xlab='',ylab='',axes=FALSE,xlim=c(0,1),ylim=c(0,1))
+            text(0.5,0.5,bquote(eta~2~sprintf(" = %.2f %s",rs,pval)),cex=1.5)
+          }
+        } else if (class(data[,j]) %in% c("numeric","integer")) {
+          if (length(levels(data[,i]))==2) {
+            tt=t.test(data[,j] ~ data[,i]) 
+            cd=athi$cohensD(data[,j],data[,i])
+            plot(1,type='n',xlab='',ylab='',axes=FALSE,xlim=c(0,1),ylim=c(0,1))
+            text(0.5,0.5,sprintf("Cohen's d =\n%.2f %s",cd,report.pval(tt$p.value,star=TRUE)),cex=1.5)
+          } else {
+            raov=aov(data[,j] ~ data[,i]) 
+            rs=athi$eta_squared(raov)
+            pval=report.pval(summary(raov)[[1]][1,5],star=TRUE)
+            plot(1,type='n',xlab='',ylab='',axes=FALSE,xlim=c(0,1),ylim=c(0,1))
+            val=sprintf("%.2f %s",rs,pval)
+            text(0.5,0.5,bquote("" ~ eta^2 ~ " = " ~ .(val)),cex=1.5)
+          }
+        } 
+        par(mai=rep(0,4))
+        box(lty=3,col='grey70')
+        par(mai=mai)
+      }
+    }
+  }
+  options(oop)
+  par(opar)    
+}
+
+#' \name{athi$dpairs.legend}
+#' \alias{athi$dpairs.legend}
+#' \alias{athi_dpairs.legend}
+#' \title{Adding legend top or bottom to a \code{athi$dpairs} or \code{pairs} plot}
+#' \description{
+#'     The function \code{athi$dpairs.legend} allows the user to place a legend outside of a 
+#'   pairs or dpairs plot.
+#' }
+#' \usage{athi_dpairs.legend(labels, col='grey80', pch=15, cex=1)}
+#' \arguments{
+#'   \item{labels}{
+#'     txt labels to be plotted
+#'   }
+#'   \item{col}{
+#'     colors for the plotting characters
+#'   }
+#'   \item{pch}{
+#'     plotting symbol, default 15
+#'   }
+#'   \item{cex}{
+#'     the character expansion for text and plotting characters, default: 1
+#'   }
+#' }
+#' \examples{
+#'   data(iris)
+#'   par(omi = c(0.8, 0.4,0.8,0.4)) # reserve some space top and bottom
+#'   athi$dpairs(iris,col.box=2:4,col.xy=rep(c(2:4),each=50))
+#'   athi$dpairs.legend(levels(iris$Species),col=2:4)
+#'   mtext('Iris Data',side=3,outer=TRUE,cex=2,line=1)
+#' }
+#' \seealso{ \code{\link[athi:athi-class]{athi-class}}, 
+#' \code{\link[athi:athi_dpairs]{athi$dpairs}}}
+#'
+
+athi$dpairs.legend <- function (labels,col='grey80',pch=15,cex=1) {
+  opar=par()
+  options(warn=-1)
+  par(fig = c(0, 1, 0, 1), oma = c(0, 0, 0, 0), mar = c(0, 0, 0, 0), new = TRUE)
+  plot(0, 0, type = "n", bty = "n", xaxt = "n", yaxt = "n")
+  legend("bottom", labels, xpd = TRUE, horiz = TRUE, inset = c(0,0), 
+         bty = "n", pch = pch, col = col, cex = cex)
+  par(opar)
+}
+
 #' 
 #' \name{athi$drop_na}
 #' \alias{athi$drop_na}
@@ -1294,6 +1539,50 @@ athi$kroki <- function (text,filename=NULL,type="ditaa",ext="png",cache=TRUE,plo
     }
 }
 
+#' \name{athi$kurtosis}
+#' \alias{athi$kurtosis}
+#' \alias{athi_kurtosis}
+#' \title{Calculate the fourth central moment of a distribution}
+#' \usage{athi_kurtosis(x,na.rm=FALSE)}
+#' \description{
+#' The function calculates the fourth central moment of a distribution.
+#' Values higher than 0
+#' indicate heavy-tailed distributions, values of lower than zero means 
+#' light-tailed (sharp peak) distributions. Values around zero mean normal value
+#' like distribution. As the normal kurtosis formula has for normal distributions
+#' a value of three, usually the excess kurtosis as in this implementation is 
+#' used which involves substraction of 3.
+#' }
+#' 
+#' \arguments{
+#' \item{x}{vector with positive numerical values}
+#' \item{na.rm}{should NA's be removed, default: FALSE}
+#' }
+#' \value{numerical value for the excess kurtosis}
+#' \examples{
+#' athi$kurtosis(1:10)      # very uniform, should be negative
+#' athi$kurtosis(runif(10,min=1,max=5)+rnorm(10,mean=3,sd=0.2))
+#' athi$kurtosis(rnorm(100,mean=10,sd=0.5)) # close to zero
+#' athi$kurtosis(rt(50,df=1)) # higher than normal
+#' }
+#' 
+#' \seealso{
+#'    \link[athi:athi-class]{athi-class}, \link[athi:athi_skewness]{athi$skewness}
+#' }
+#' 
+
+athi$kurtosis <- function (x,na.rm=FALSE) {
+    if (na.rm) {
+        x=x[!is.na(x)]
+    } else {
+        if (any(is.na(x))) {
+            return(NA)
+        }
+    }
+    g=(sum((x-mean(x,na.rm=na.rm))^4)
+       /length(x))/(sd(x)^4)-3
+    return(g)
+}
 
 #' \name{athi$lm_plot}
 #' \alias{athi$lm_plot}
@@ -1670,7 +1959,7 @@ athi$pca_oncor <- function (x) {
 #' }
 #' 
 
-athi$pca_pairs = function (pca,n=10,groups=NULL, col='black',pch=19,legend=FALSE,...) {
+athi$pca_pairs <- function (pca,n=10,groups=NULL, col='black',pch=19,legend=FALSE,...) {
     athi$N = 1
     if (n>ncol(pca$x)) {
         n=ncol(pca$x)
@@ -1750,7 +2039,7 @@ athi$pca_pairs = function (pca,n=10,groups=NULL, col='black',pch=19,legend=FALSE
 #' }
 #' 
 
-athi$pca_plot = function (pca,n=10,type="bar", cex=1.5, 
+athi$pca_plot <- function (pca,n=10,type="bar", cex=1.5, 
                      legend=TRUE,xlab="Components",ylab="Variance (%)",
                      pc.col=c("light blue","grey"),...) {
     if (n>ncol(pca$x)) {
@@ -1833,7 +2122,7 @@ athi$pca_plot = function (pca,n=10,type="bar", cex=1.5,
 #'
 
 
-athi$qr_plot = function (x,data,quantiles=c(0.05,0.1,0.5,0.9,0.95),
+athi$qr_plot <- function (x,data,quantiles=c(0.05,0.1,0.5,0.9,0.95),
                          pred=NULL,plot=TRUE,...) {
     if (!requireNamespace("quantreg")) {
         stop("Error: quantile regression needs package quantreg!")
@@ -2516,6 +2805,47 @@ athi$sem <- function(x,na.rm=FALSE) {
     sd(x,na.rm=na.rm)/sqrt(length(x[!is.na(x)])) 
 }
 
+#' \name{athi$skewness}
+#' \alias{athi$skewness}
+#' \alias{athi_skewness}
+#' \title{Calculate the third central moment of a distribution}
+#' \usage{athi_skewness(x,na.rm=FALSE)} 
+#' 
+#' \description{
+#' This function calculates the third central moment of a distribution.
+#' Values higher than zero indicate right-tailed distributions, 
+#' values of lower than zero mean left-tailed distributions.
+#' Values around zero mean normal value like distribution. 
+#' }
+#' \arguments{
+#' \item{x}{vector with positive numerical values}
+#' \item{na.rm}{should NA's be removed, default: FALSE}
+#' }
+#' \value{numerical value for the skewness of the vector}
+#' \examples{
+#' athi$skewness(1:100)          # very uniform, 0
+#' athi$skewness(rnorm(100))     # normal, close to 0
+#' ## now with right tail
+#' athi$skewness(c(rnorm(100,mean=20),rnorm(30,mean=23,sd=2)))
+#' }
+#' \seealso{
+#'    \link[athi:athi-class]{athi-class}, \link[athi:athi_kurtosis]{athi$kurtosis}
+#' }
+#' 
+athi$skewness <- function (x,na.rm=FALSE) {
+    if (na.rm) {
+        x=x[!is.na(x)]
+    } else {
+        if (any(is.na(x))) {
+            return(NA)
+        }
+    }
+    g=(sum((x-mean(x,na.rm=na.rm))^3)/
+       length(x))/(sd(x)^3)
+    return(g)
+}
+
+
 #' \name{athi$smartbind}
 #' \alias{athi$smartbind}
 #' \alias{athi_smartbind}
@@ -2882,6 +3212,8 @@ athi_cor_plot = athi$cor_plot
 athi_corr_plot = athi$corr_plot
 athi_cv = athi$cv
 athi_df2md = athi$df2md
+athi_dpairs = athi$dpairs
+athi_dpairs.legend = athi$dpairs.legend
 athi_drop_na = athi$drop_na
 athi_epsilon_squared = athi$epsilon_squared
 athi_eta_squared = athi$eta_squared
@@ -2890,6 +3222,7 @@ athi_impute = athi$impute
 athi_input = athi$input
 athi_introNAs = athi$introNAs
 athi_kroki = athi$kroki
+athi_kurtosis = athi$kurtosis
 athi_lm_plot = athi$lm_plot
 athi_mi = athi$mi
 athi_mds_plot = athi$mds_plot
@@ -2907,6 +3240,7 @@ athi_report_pvalue = athi$report_pvalue
 athi_norm = athi$norm
 athi_randomize = athi$randomize
 athi_sem = athi$sem
+athi_skewness = athi$skewness
 athi_smartbind = athi$smartbind
 athi_textplot = athi$textplot
 athi_untab = athi$untab

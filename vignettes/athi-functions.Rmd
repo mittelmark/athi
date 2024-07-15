@@ -29,7 +29,7 @@ functions are provided  within an  environment  `athi` to see what methods are
 available you can use the `ls` command:
 
 ```{r}
-.libPaths(c("~/R",.libPaths()))
+.libPaths(c(.libPaths(),"~/R"))
 library(athi)
 ls(athi)
 ```
@@ -331,6 +331,23 @@ Embedded with code chunk options `echo=FALSE,results="asis" in this document it 
 data(swiss)
 athi$df2md(head(swiss),caption="<center>**Table: Sample swiss data**</center>")
 ```
+### athi$drop_na - drop rows with values having NA's
+
+Removes all rows were any of the columns contains missing values (NA's).
+
+In contrast to `na.omit`, the method `athi$drop_na` just checks the given columns 
+to delete rows which have any NA in these two columns in the given rows. 
+This mimics the `tidyr::drop_na` function.
+
+```{r}
+ir=iris
+ir[c(1,3),1]=NA
+ir[2,2]=NA
+ir[4,4]=NA
+head(ir)
+head(na.omit(ir)) # removes all rows with an NA somewhere
+head(athi$drop_na(ir,1:2)) # just checks the first two columns
+```
 
 ### athi$epsilon_squared - effect size for Kruskal test
 
@@ -554,6 +571,22 @@ See also:
 - [kroki documentation](https://kroki.io/)
 - [niolesk editor](https://niolesk.top/#https://kroki.io/plantuml/svg/eNplj0FvwjAMhe_5FVZP40CgaNMuUGkcdttp3Kc0NSVq4lRxGNKm_fe1HULuuD37-bOfuXPUm2QChEjRnlIMCDmdUfHNSYY6xh42a9Fsegflk-yYlOLlcHK2I2SGtX4WZm9sZ1o8uOzxxbuWAlIGj8cshs6M1jDuY2owyU2P8jAezdnn10j53X0hlBsZFW021Pq7HaVSNw-KN-OogG8F8BAGqT8dXhZjxW4cyJEW6kcC-yHWFagHqW0MfaThhYmaVyE26P_x27qaDmXeruqqAMMw1h-ZlRI4aF3dX7hOwm5XzfIKDctlNcshPT1tFa8JPYAj-Zf5F065sqM=)
 
+### athi$kurtosis(x,na.rm=FALSE) - fourth central moment of a distribution
+
+The function  calculates the fourth central moment of a  distribution.  Values
+higher than 0 indicate  heavy-tailed  distributions, values of lower than zero
+means light-tailed (sharp peak) distributions.  Values around zero mean normal
+value  like  distribution.  As the  normal  kurtosis  formula  has for  normal
+distributions  a value  of  three,  usually  the  excess  kurtosis  as in this
+implementation is used which involves substraction of 3.
+
+```{r}
+athi$kurtosis(1:10)      # very uniform, should be negative
+athi$kurtosis(runif(10,min=1,max=5)+rnorm(10,mean=3,sd=0.2))
+athi$kurtosis(rnorm(100,mean=10,sd=0.5)) # close to zero
+athi$kurtosis(rt(50,df=1)) # higher than normal
+```
+
 ### athi$lm_plot - linear model plot with CI
 
 Plot a linear model with confidence intervals.
@@ -650,6 +683,34 @@ sdata=read.table(text="4 3 6 4 7
 7 5 9 6 10
 ")
 athi$norm(sdata,method="mp")
+```
+
+### athi$paste- - create pastel colors
+
+Create up to 20 pastel colors.
+
+This is an alternative color creation function for R versions before 3.6 where 
+the function `hcl.colors` is not available.
+
+```{r}
+athi$pastel(4)
+par(mai=c(0.2,0.2,0.2,0.1))
+plot(1:20,col=athi$pastel(20),cex=3,pch=15)
+```
+
+### athi$qr_plot - plot quantile regression plots
+
+This is a  convinience  method to plot quantile  regression  models and giving
+optional percentile  intervals for a given range of predictions. The slope and
+the intercept for the different quantiles are returned as well if requested.
+
+```{r}
+data(iris) 
+athi$qr_plot(Sepal.Width ~ Sepal.Length,data=iris[51:151,])
+res=athi$qr_plot(Sepal.Width ~ Sepal.Length,data=iris[51:151,],
+    pred=c(5,5.5,6,6.5,7,7.5,8))
+res$centiles
+res$coef
 ```
 
 ### athi$pca_biplot - PCA biplot
@@ -760,7 +821,7 @@ athi$pca_plot(pcai)
 athi$pca_plot(pcai,type="scree",legend=FALSE)
 ```
 
-### athi$pcor / athi$pcor.test partial correlation
+### athi\$pcor and athi\$pcor.test partial correlation
 
 Calculate partial correlation coefficient and  parametric 
 ("Pearson") or non-parametric ("Spearman") test statistics for two variables corrected 
@@ -866,6 +927,20 @@ Usage: *athi$sem(x,na.rm=FALSE)*
 sem=athi$sem
 sem(rnorm(50,mean=10,sd=3))
 sem(rnorm(1000,mean=10,sd=3))
+```
+
+### athi$skewness(x,na.rm=TRUE) - third central moment of distribution
+
+This function calculates the third central moment of a distribution.
+Values higher than zero indicate right-tailed distributions, 
+values of lower than zero mean left-tailed distributions.
+Values around zero mean normal value like distribution. 
+
+```{r}
+athi$skewness(1:100)          # very uniform, 0
+athi$skewness(rnorm(100))     # normal, close to 0
+## now with right tail
+athi$skewness(c(rnorm(100,mean=20),rnorm(30,mean=23,sd=2)))
 ```
 
 ### athi$smartbind(x,y) - combine two data frames, matrices

@@ -8,7 +8,7 @@
 \usage{ athi_ref_score(x,age,sex,type) } 
 \arguments{ 
   \item{x}{ 
-    the numerical value for height (cm) or weight (kg) or ... 
+    the numerical value for height (cm) or weight (kg) or BMI or muac (mm) or head circumference (cm). 
   } 
   \item{age}{ 
     age in years, fractional numbers are possible  
