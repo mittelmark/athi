@@ -34,7 +34,8 @@ jobs:
         run: |
             brew install pandoc
             brew install --cask xquartz
-            brew install --cask r            
+            brew install --cask r      
+            brew install basictex      
       - name: Install dependencies
         run: |
           install.packages(c("remotes", "rcmdcheck", "quantreg","png","rmarkdown"))
@@ -43,3 +44,8 @@ jobs:
       - name: Check
         run: rcmdcheck::rcmdcheck(args = "--no-manual", error_on = "error")
         shell: Rscript {0}
+      - name: Upload athi-tar.gz
+        uses: actions/upload-artifact@v4
+        with: 
+           name: athi_0.4.2.tar.gz
+           path: athi_0.4.2.tar.gz
