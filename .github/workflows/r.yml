@@ -31,7 +31,7 @@ jobs:
         with:
           r-version: ${{ matrix.r-version }}
       - name: Install pandoc
-        run:
+        run: |
             brew install pandoc
             brew install --cask xquartz
             brew install r            
