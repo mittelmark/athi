@@ -9,3 +9,5 @@
 - improvement in mds_plot
 - documentation updates
 - more functions in vignette explained
+- dpairs function
+- skewness, kurtosis functions added
