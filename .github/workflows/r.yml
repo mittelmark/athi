@@ -22,7 +22,7 @@ jobs:
     runs-on: macos-latest
     strategy:
       matrix:
-        r-version: ['4.1.1', '4.2.3']
+        r-version: ['4.1.1']
 
     steps:
       - uses: actions/checkout@v4
@@ -30,6 +30,11 @@ jobs:
         uses: r-lib/actions/setup-r@f57f1301a053485946083d7a45022b278929a78a
         with:
           r-version: ${{ matrix.r-version }}
+      - name: Install pandoc
+        run:
+            brew install pandoc
+            brew install --cask xquartz
+            brew install r            
       - name: Install dependencies
         run: |
           install.packages(c("remotes", "rcmdcheck", "quantreg","png","rmarkdown"))
