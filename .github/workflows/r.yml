@@ -32,7 +32,7 @@ jobs:
 #          r-version: ${{ matrix.r-version }}
       - name: Install software pandoc, xquartz, r
         run: |
-            brew install --cask pandoc
+            brew install pandoc
             brew install --cask xquartz
             brew install --cask r            
       - name: Install dependencies
